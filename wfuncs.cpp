@@ -1,5 +1,5 @@
 //****************************************************************************
-//  Copyright (c) 1985-2014  Daniel D Miller
+//  Copyright (c) 1985-2017  Daniel D Miller
 //  winwiz.exe - Win32 version of Wizard's Castle
 //  wfuncs.cpp - handle data update and rendering functions
 //
@@ -16,11 +16,6 @@
 #include "cterminal.h" 
 #include "lode_png.h"
 
-extern LodePng pngSprites ;
-// extern LodePng pngVictory ;
-// extern LodePng pngDeath ;
-extern LodePng pngTiles ;
-
 //@@@  why do I need this here??   
 //@@@  It *should* be defined in windef.h
 #define min(a, b)  (((a) < (b)) ? (a) : (b)) 
@@ -35,6 +30,10 @@ extern LodePng pngTiles ;
 extern CTerminal *myTerminal ;
 
 extern bool prog_init_done ;
+
+//***********************************************************************
+static LodePng pngSprites("tiles32.png", SPRITE_HEIGHT, SPRITE_WIDTH) ;
+static LodePng pngTiles  ("images.png",  IMAGE_WIDTH,   IMAGE_HEIGHT) ;
 
 //*************************************************************
 #define  X_OFFSET    16

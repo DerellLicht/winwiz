@@ -105,7 +105,7 @@ der_libs/vlistview.o: der_libs/common.h der_libs/commonw.h
 der_libs/vlistview.o: der_libs/vlistview.h
 winwiz.o: resource.h der_libs/common.h der_libs/commonw.h der_libs/statbar.h
 winwiz.o: der_libs/cterminal.h der_libs/vlistview.h der_libs/winmsgs.h
-winwiz.o: wizard.h keywin32.h lode_png.h
+winwiz.o: wizard.h keywin32.h
 globals.o: der_libs/common.h wizard.h
 keyboard.o: der_libs/common.h wizard.h keywin32.h
 wfuncs.o: resource.h der_libs/common.h der_libs/commonw.h wizard.h keywin32.h

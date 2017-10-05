@@ -1,5 +1,5 @@
 //****************************************************************************
-//  Copyright (c) 1985-2014  Daniel D Miller
+//  Copyright (c) 1985-2017  Daniel D Miller
 //  winwiz.exe - Win32 version of Wizard's Castle
 //
 //  Written by:  Dan Miller
@@ -46,7 +46,6 @@ static const char *Version = "Wizard's Castle, Version 1.38" ;
 #include "winmsgs.h"
 #include "wizard.h"
 #include "keywin32.h"
-#include "lode_png.h"
 
 static char szAppName[] = "winwiz";
 
@@ -74,10 +73,6 @@ static HWND hToolTip ;  /* Tooltip handle */
 
 static bool redraw_in_progress = false ;
 bool prog_init_done = false ;
-
-//***********************************************************************
-LodePng pngSprites("tiles32.png", SPRITE_HEIGHT, SPRITE_WIDTH) ;
-LodePng pngTiles  ("images.png",  IMAGE_WIDTH,   IMAGE_HEIGHT) ;
 
 //*******************************************************************
 void status_message(char *msgstr)
@@ -737,7 +732,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine
       HWND hOther = NULL;
       EnumWindows(searcher, (LPARAM) &hOther);
 
-      if ( hOther != NULL ) { /* pop up */
+      if ( hOther != NULL ) { /*lint !e774   pop up */
          SetForegroundWindow( hOther );
 
          if ( IsIconic( hOther ) )  { /* restore */
