@@ -479,26 +479,11 @@ static LRESULT APIENTRY TermSubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, LP
 }
 
 //***********************************************************************
-static uint screen_width  = 0 ;
-static uint screen_height = 0 ;
-
-static void get_monitor_dimens(HWND hwnd)
-{
-   HMONITOR currentMonitor;      // Handle to monitor where fullscreen should go
-   MONITORINFO mi;               // Info of that monitor
-   currentMonitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
-   mi.cbSize = sizeof(MONITORINFO);
-   if (GetMonitorInfo(currentMonitor, &mi) != FALSE) {
-      screen_width  = mi.rcMonitor.right  - mi.rcMonitor.left ;
-      screen_height = mi.rcMonitor.bottom - mi.rcMonitor.top ;
-   }
-   // curr_dpi = GetScreenDPI() ;
-}
-
-//***********************************************************************
 static void center_window(void)
 {
    get_monitor_dimens(hwndMain);
+   uint screen_width  = get_screen_width() ;
+   uint screen_height = get_screen_height() ;
    
    RECT myRect ;
    GetWindowRect(hwndMain, &myRect) ;
