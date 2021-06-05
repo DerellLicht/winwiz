@@ -72,4 +72,7 @@ vers    date        actions taken
 		   redraws occur more promptly.
 1.38 - 04/22/14  Modify LodePng class to allow simpler calls to 
                  sprite-rendering function.
+1.39 - 06/06/21  - add display of damage done after chest explosion
+                 - fix bug after teleport, keymap in wrong state 
+                   and keyboard is handled wrong
 
