@@ -56,7 +56,7 @@ static void add_tooltip_target(HWND parent, HWND target, HWND hToolTip, char *ms
    // else {
    //    syslog("TTM_ADDTOOL: %u: success!!\n", target) ;
    // }
-}   //lint !e550  ti not accessed
+}  //lint !e550  Symbol 'ti' not accessed (DDM: yes it was)
 
 //****************************************************************************
 //  main-dialog tooltips

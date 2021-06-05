@@ -1,5 +1,5 @@
 //************************************************************************
-//  Copyright (c) 1986-2011  Daniel D Miller
+//  Copyright (c) 1986-2021  Daniel D Miller
 //  winwiz.exe - Wizard's Castle
 //  keyboard.cpp - keyboard state-machine interface for WinWiz
 //                         
@@ -13,6 +13,9 @@
 #include "common.h"
 #include "wizard.h"
 #include "keywin32.h"
+
+//  this constant enables debug function, currently tied to key 'z'
+// #define USE_DEBUG_KEY   1
 
 //lint -esym(769, keymap_states_e::KEYMAP_SPELL)
 
@@ -66,21 +69,57 @@ int push_keymap(keymap_states_t new_keymap)
    keymap_stack[keymap_idx] = keymap ;
    keymap = new_keymap ;
    keymap_idx++ ;
-   // wsprintf(tempstr, "+keymap [%u]=%s", keymap_idx, km_names[keymap]) ;
-   // Statusbar_ShowMessage(tempstr) ;
+   // wsprintf(tempstr, "+keymap [%u]=%s", keymap_idx, (uint) keymap) ;
+   // put_message(tempstr) ;
    return 1;
 }
 
+//  note: nobody looks at return code
 int pop_keymap(void)
 {
-   if (keymap_idx == 0)
-      return 0;
-   keymap_idx-- ;
+   if (keymap_idx > 0)
+   {
+      keymap_idx-- ;
+   }
    keymap = keymap_stack[keymap_idx] ;
-   // wsprintf(tempstr, "-keymap [%u]=%s", keymap_idx, km_names[keymap]) ;
-   // Statusbar_ShowMessage(tempstr) ;
+   // wsprintf(tempstr, "-keymap [%u]=%u", keymap_idx, (uint) keymap) ;
+   // put_message(tempstr) ;
    return 1;
 }
+
+//*******************************************************************************
+//  This function will pop all from current stack, 
+//  then initialize to specified state.
+//  This will hopefull solve issue with sometimes having keyboard get into
+//  unknown state and not recover.
+//*******************************************************************************
+//lint -esym(714, reset_keymap)
+//lint -esym(759, reset_keymap)
+//lint -esym(765, reset_keymap)
+void reset_keymap(keymap_states_t new_keymap_state)
+{
+   keymap_idx = 0 ;
+   push_keymap(new_keymap_state) ;
+   pop_keymap() ;
+}
+
+//*************************************************************
+void keymap_show_state(void)
+{
+   wsprintf(tempstr, "keymap state: idx: %u, keymap: %u/%u", 
+      keymap_idx, (uint) keymap_stack[keymap_idx], (uint) keymap);
+   put_message(tempstr) ;
+}
+
+//*************************************************************
+#ifdef  USE_DEBUG_KEY
+static void execute_debug_function(void)
+{
+   player.has_runestaff = true ;
+   put_color_msg(TERM_RUNESTAFF, "GREAT ZOT!! You've found the RUNESTAFF!!");
+   show_treasures() ;
+}
+#endif
 
 //*************************************************************
 bool is_intro_screen_active(void)
@@ -240,6 +279,12 @@ static int default_kbd_handler(HWND hwnd, unsigned inchr)
    case kESC:
       SendMessage(hwnd, WM_DESTROY, 0, 0) ;
       break;
+
+#ifdef  USE_DEBUG_KEY
+   case kz:
+      execute_debug_function();
+      break;
+#endif
 
    case '?':
       dump_level_knowledge();

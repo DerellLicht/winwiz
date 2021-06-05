@@ -1,5 +1,5 @@
 //****************************************************************************
-//  Copyright (c) 1985-2017  Daniel D Miller
+//  Copyright (c) 1985-2014  Daniel D Miller
 //  winwiz.exe - Win32 version of Wizard's Castle
 //  wfuncs.cpp - handle data update and rendering functions
 //
@@ -16,6 +16,11 @@
 #include "cterminal.h" 
 #include "lode_png.h"
 
+extern LodePng pngSprites ;
+// extern LodePng pngVictory ;
+// extern LodePng pngDeath ;
+extern LodePng pngTiles ;
+
 //@@@  why do I need this here??   
 //@@@  It *should* be defined in windef.h
 #define min(a, b)  (((a) < (b)) ? (a) : (b)) 
@@ -30,10 +35,6 @@
 extern CTerminal *myTerminal ;
 
 extern bool prog_init_done ;
-
-//***********************************************************************
-static LodePng pngSprites("tiles32.png", SPRITE_HEIGHT, SPRITE_WIDTH) ;
-static LodePng pngTiles  ("images.png",  IMAGE_WIDTH,   IMAGE_HEIGHT) ;
 
 //*************************************************************
 #define  X_OFFSET    16
@@ -1365,6 +1366,7 @@ int open_book_or_chest(HWND hwnd)
       } else if (room < 9) {
          put_message("KABOOM!  THE CHEST EXPLODES!!");
          Q = random(6); 
+         put_color_msg(TERM_MONSTER_HIT, "You took %u points damage", Q) ;
          if (Q >= player.hit_points) {
             player_dies(hwnd) ;
             return -1;
@@ -1501,6 +1503,7 @@ int teleport(HWND hwnd, unsigned inchr)
    static unsigned x, y, level ;
    static unsigned state = 0 ;
 
+   keymap_show_state();
    switch (state) {
    case 0:
       if (!player.has_runestaff) {
@@ -1585,10 +1588,13 @@ int teleport(HWND hwnd, unsigned inchr)
          draw_main_screen(NULL) ;
       } else {
          react_to_room(hwnd) ;
+         // reset_keymap(KEYMAP_DEFAULT);
+         pop_keymap() ;
       }
       state = 0 ;
       // push_keymap(KEYMAP_DEFAULT) ;
       pop_keymap() ;
+      // reset_keymap(KEYMAP_DEFAULT);
       break;
    }  //lint !e744  no default
 

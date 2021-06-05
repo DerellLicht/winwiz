@@ -1,5 +1,5 @@
 //****************************************************************************
-//  Copyright (c) 1985-2017  Daniel D Miller
+//  Copyright (c) 1985-2021  Daniel D Miller
 //  winwiz.exe - Win32 version of Wizard's Castle
 //
 //  Written by:  Dan Miller
@@ -27,7 +27,7 @@
 //  based on the Virtual ListView control                            
 //****************************************************************************
 
-static const char *Version = "Wizard's Castle, Version 1.38" ;
+static const char *Version = "Wizard's Castle, Version 1.39" ;
 
 //lint -esym(767, _WIN32_WINNT)
 #define  _WIN32_WINNT   0x0501
@@ -46,6 +46,7 @@ static const char *Version = "Wizard's Castle, Version 1.38" ;
 #include "winmsgs.h"
 #include "wizard.h"
 #include "keywin32.h"
+#include "lode_png.h"
 
 static char szAppName[] = "winwiz";
 
@@ -73,6 +74,10 @@ static HWND hToolTip ;  /* Tooltip handle */
 
 static bool redraw_in_progress = false ;
 bool prog_init_done = false ;
+
+//***********************************************************************
+LodePng pngSprites("tiles32.png", SPRITE_HEIGHT, SPRITE_WIDTH) ;
+LodePng pngTiles  ("images.png",  IMAGE_WIDTH,   IMAGE_HEIGHT) ;
 
 //*******************************************************************
 void status_message(char *msgstr)
@@ -474,11 +479,26 @@ static LRESULT APIENTRY TermSubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, LP
 }
 
 //***********************************************************************
+static uint screen_width  = 0 ;
+static uint screen_height = 0 ;
+
+static void ww_get_monitor_dimens(HWND hwnd)
+{
+   HMONITOR currentMonitor;      // Handle to monitor where fullscreen should go
+   MONITORINFO mi;               // Info of that monitor
+   currentMonitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
+   mi.cbSize = sizeof(MONITORINFO);
+   if (GetMonitorInfo(currentMonitor, &mi) != FALSE) {
+      screen_width  = mi.rcMonitor.right  - mi.rcMonitor.left ;
+      screen_height = mi.rcMonitor.bottom - mi.rcMonitor.top ;
+   }
+   // curr_dpi = GetScreenDPI() ;
+}
+
+//***********************************************************************
 static void center_window(void)
 {
-   get_monitor_dimens(hwndMain);
-   uint screen_width  = get_screen_width() ;
-   uint screen_height = get_screen_height() ;
+   ww_get_monitor_dimens(hwndMain);
    
    RECT myRect ;
    GetWindowRect(hwndMain, &myRect) ;
@@ -732,7 +752,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine
       HWND hOther = NULL;
       EnumWindows(searcher, (LPARAM) &hOther);
 
-      if ( hOther != NULL ) { /*lint !e774   pop up */
+      if ( hOther != NULL ) { //lint !e774
          SetForegroundWindow( hOther );
 
          if ( IsIconic( hOther ) )  { /* restore */

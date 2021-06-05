@@ -147,7 +147,6 @@ static void EndEncounter(void)
           player.y == runestaff_room.y  &&
           player.level == runestaff_room.level) {
          player.has_runestaff = true ;
-         // put_message(attr_rune_msg, 
          put_color_msg(TERM_RUNESTAFF, "GREAT ZOT!! You've found the RUNESTAFF!!");
          show_treasures() ;
       }

@@ -261,6 +261,8 @@ bool is_default_keymap(void) ;
 bool is_intro_screen_active(void);
 int push_keymap(keymap_states_t new_keymap);
 int pop_keymap(void);
+void reset_keymap(keymap_states_t new_keymap_state);
+void keymap_show_state(void);
 int process_keystroke(HWND hwnd, unsigned inchr);
 
 //  from wfuncs.cpp

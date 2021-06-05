@@ -7,7 +7,7 @@
 static unsigned item_prices[4] = { 0, 1250, 1500, 2000 } ;
 
 // static char dbg[128] ;
-
+// ilI1|  0Oo 
 //****************************************************************************
 static void vendor_show_value(HWND hDlg, int vid, unsigned value)
 {
