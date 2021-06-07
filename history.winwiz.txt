@@ -75,6 +75,7 @@ vers    date        actions taken
 1.39 - 06/06/21  - add display of damage done after chest explosion
                  - fix bug after teleport, keymap in wrong state 
                    and keyboard is handled wrong
-1.40 - 06/07/21  Fix bug where, when player dies while pressing invalid keys, 
-                 invalid text is displayed 
+1.40 - 06/07/21  - Fix bug where, when player dies while pressing invalid keys, 
+                   invalid text is displayed
+                 - Update the .chm help file, for first time since 2006  
 

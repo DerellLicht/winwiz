@@ -1,0 +1,290 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><!--//-->
+<script src="Lab%202%20--%20The%20Wizard%27s%20Castle_files/WindowOpen.txt"></script><!--//-->
+
+<script>PrxModAtr=1;</script><!--//-->
+
+<script> function NoError(){return(true);} onerror=NoError; </script><!--//-->
+
+<script> function moveTo(){return true;}function resizeTo(){return true;}</script><!-- XML file produced from file: wizard.tex
+     using Hyperlatex v 2.6 (c) Otfried Cheong
+     on Emacs 20.7.1, Sun Sep 18 16:51:01 2005 --><title>Lab 2 -- The Wizard's Castle</title>
+
+
+
+
+
+
+
+<style type="text/css">
+.maketitle { align : center }
+div.abstract { margin-left: 20%; margin-right: 10%; }
+h3.abstract  { align : center }
+div.verse, div.quote, div.quotation {
+  margin-left : 10%; 
+  margin-right : 10%;
+}
+</style></head><body bgcolor="#ffffff">
+
+
+
+
+<table><tbody><tr><td colspan="1" align="left">
+
+<img alt="" src="Lab%202%20--%20The%20Wizard%27s%20Castle_files/CSlogo.gif">
+</td><td colspan="1" align="left">
+<h1> Computer Science 136<br> Data Structures and Advanced Programming<br> </h1> <h3> Williams College <br> Fall 2005</h3>
+
+</td><td colspan="1" align="right">
+
+</td></tr></tbody></table>
+
+<hr>
+
+
+<div align="center"><p>
+<font size="+2"><b>Lab 2: The Wizard's Castle</b></font><br><b>Due: Monday, September 26, 2005 at 9:00 AM</b>
+</p></div>
+
+<font size="+2"><b>Before Lab</b></font>
+<p>You should come to lab with a proposed design for the <tt>Castle</tt>
+class that you will be writing this week.  Before lab, you should also
+familiarize yourself with the game.
+</p><p><font size="+2"><b>Background</b></font>
+</p><p>Long before first-person shooters and texture-mapping 3D graphics
+processing units, there were text-based games.  A favorite from my
+Commodore 64 days was called <i>The Wizard's Castle</i>.  The game was
+written in BASIC in 1980 by Joseph Power, and the version I used was
+converted to Commodore Basic by Jim Pryzyblo in 1983.
+
+</p><div align="center"><p>
+<a href="http://www.cs.williams.edu/%7Eterescoj/cs136_f05/labs/wizard/listing.jpg"><img alt="" src="Lab%202%20--%20The%20Wizard%27s%20Castle_files/listing-small.jpg"></a>
+<a href="http://www.cs.williams.edu/%7Eterescoj/cs136_f05/labs/wizard/intro.jpg"><img alt="" src="Lab%202%20--%20The%20Wizard%27s%20Castle_files/intro-small.jpg"></a>
+<a href="http://www.cs.williams.edu/%7Eterescoj/cs136_f05/labs/wizard/game.jpg"><img alt="" src="Lab%202%20--%20The%20Wizard%27s%20Castle_files/game-small.jpg"></a>
+</p></div>
+
+After coming across a "vintage" version on the web, I converted it
+to Java.  The BASIC program is available <a href="http://www.cs.williams.edu/%7Eterescoj/cs136_f05/labs/wizard/origwiz.bas">here</a> and in the CS 136
+shared directories as <tt>origwiz.bas</tt>.  In this lab, you will
+implement part of this program.
+<p>The basic rules of the game are described in the file <tt>castle.txt</tt>,
+also available both <a href="http://www.cs.williams.edu/%7Eterescoj/cs136_f05/labs/wizard/castle.txt">here</a> and in the CS 136 shared
+directories.
+</p><p><font size="+2"><b>Java Implementation</b></font>
+</p><p>You can run my version of the program on the Macs in TCL 217a with the
+command <tt>wizard</tt> (as long as you've run the script to set up the CS 136 Java
+environment).  
+Try it out to get a
+feel for the game.  Issue the command "h" to learn more about the
+interface.  If you provide any command-line parameter when you run
+this version, you will enter a debugging mode, where some additional
+information about the game is printed.  This allows you to test
+features of the game that would otherwise be difficult to test (such
+as finding which of the 65 monsters in the castle has the Runestaff).
+</p><p>I am providing the source code for 22 of the classes from my
+implementation.  You can get them from the CS136 common area on the
+TCL 217a Macs in the file <tt>wizard.tar.gz</tt>.  The classes that implement
+the castle itself are omitted.  Your task is to develop a <tt>Castle</tt>
+class, and any additional classes you deem appropriate, that will work
+with the rest of my implementation.
+</p><p>Here is a brief description of the classes.
+</p><dl><dt><b>Game Control</b></dt><dd>
+<p><tt>class WizardsCastle</tt> is responsible for setting up the game and
+managing game play.  The main method simply constructs an instance of
+<tt>WizardsCastle</tt> and calls its <tt>setup</tt> and <tt>play</tt>
+methods.  The <tt>setup</tt> and <tt>play</tt> methods interact with the
+<tt>Castle</tt> class (which you will write) through the public interface
+described later in this document.
+</p></dd><dt><b>Player</b></dt><dd>
+<p><tt>class Player</tt> and <tt>class Species</tt> define the player and his
+or her inventory and attributes.  
+</p></dd><dt><b>Castle Rooms</b></dt><dd>
+<p>The <tt>abstract class RoomContents</tt> defines the common behavior of
+all of the items that can be placed throughout the <tt>Castle</tt>.  A
+major part of your task in developing the <tt>Castle</tt> will be to
+manage the 512 instances of <tt>RoomContents</tt> subclasses.
+</p><p><tt>RoomContents</tt> defines one instance variable <tt>visible</tt> and
+appropriate accessor and mutator methods to access this variable.  It
+determines whether the player is aware of the contents of that room
+(by having been there or seen it by light of a flare, a lamp, or by
+gazing into a Crystal Orb).
+</p><p><tt>RoomContents</tt> provides default implementations of two methods
+that are overridden by some subclasses: <tt>take</tt> and <tt>interact</tt>.  The <tt>take</tt> method is overridden by classes that
+represent objects that can be picked up by the player.  The <tt>interact</tt> method is overridden by classes that define a room
+containing something the player can interact with.  It also defines
+two abstract methods, <tt>mapSymbol</tt> and <tt>contents</tt>, which
+must be provided by all classes extending <tt>RoomContents</tt>.
+</p><p>The following classes extend <tt>RoomContents</tt>:
+</p><ul><li><tt>class Book</tt> - The player in this room can open the book,
+which disappears after being opened, making the room empty.
+</li><li><tt>class Chest</tt> - The player in this room can open the chest,
+which disappears after being opened, making the room empty.
+</li><li><tt>class CrystalOrb</tt> - The player in this room can gaze into
+the orb, which never disappears.
+</li><li><tt>class EmptyRoom</tt> - There's not much you can do here.
+</li><li><tt>class Entrance</tt> - The player starts here, and if the
+player goes north from this room, he or she exits the castle.  It
+otherwise behaves as an empty room.
+</li><li><tt>class Flares</tt> - When the player enters a room that contains flares,
+the player picks up the flares and the room becomes empty.
+</li><li><tt>class GoldPieces</tt> - When the player enters a room that contains
+gold pieces, the player picks up the gold pieces and the room becomes
+empty.
+</li><li><tt>class Monster</tt> - When the player enters a room that contains a
+monster, he or she must fight the monster to the death or escape by
+retreating or bribing the monster.  Should the monster be killed by
+the player, the room becomes empty.
+</li><li><tt>class Pool</tt> - The player in this room can drink from the
+pool, which never disappears.
+</li><li><tt>class Sinkhole</tt> - When the player enters a room with a
+sinkhole, he or she falls through to the next level of the castle.
+</li><li><tt>class StairsDown</tt> - The player in this room may choose to
+descend the stairs to the next level.
+</li><li><tt>class StairsUp</tt> - The player in this room may choose to
+ascend the stairs to the next level.
+</li><li><tt>class Treasure</tt> - When the player enters a room with a
+treasure, the player picks up the treasure and the room becomes empty.
+</li><li><tt>class Vendor</tt> - When the player enters a room with a
+vendor, he may trade with or attack the vendor.  If any vendor in the
+castle is attacked, all vendors become hostile and refuse to trade and
+otherwise behave like monsters (and powerful ones at that).  To
+restore good relations, the player must bribe any vendor
+successfully.  If a vendor is killed, the room becomes empty.
+</li><li><tt>class Warp</tt> - When the player enters a warp room,
+he or she is transported to a random location in the castle. 
+</li></ul>
+</dd><dt><b>Miscellaneous Utilities</b></dt><dd>
+<p>Three utility classes are provided that do not implement any part of
+the game directly, but are used by other parts of the program.
+</p><ul><li><tt>class Location</tt> - encapsulates a row/column pair and is
+used for parameters and return values throughout the program.
+</li><li><tt>class Prompter</tt> - provides two <tt>prompt</tt> methods.  The
+first presents a prompt and waits for the player to specify one of a
+list of valid single-character responses.  The second presents a
+prompt and waits for the player to specify a number in the given
+range.
+</li><li><tt>class WCRand</tt> - provides a single static method <tt>randInt</tt> that returns a random number in the range 0 through one
+less than its parameter.
+</li></ul>
+</dd></dl>
+<p>My classes include Javadoc comments, so you may wish to generate the
+Javadoc to learn more about these classes.
+</p><p><font size="+2"><b>Lab Program</b></font>
+</p><p>This week, you will be developing your implementation of the <tt>Castle</tt> class for this program.  <b>You should come to lab with
+a written design of the classes you will be writing.</b>  You should not
+make any changes to the other classes provided.
+</p><p>Your implementation of <tt>class Castle</tt> is up to you, but in order
+to make it work with the rest of the program, you will need to take
+care that your class provides the required constructor and public
+methods.  Here are the specifications:
+</p><ul><li><tt>public Castle();</tt>
+<p>The constructor takes no parameters.  It creates the internal storage
+for the castle and initializes the castle contents.  Immediately after
+construction, the castle should contain:
+ </p><ul><li>The entrance on Level 1, Location (1,4).
+   </li><li>Two corresponding pairs of rooms containing stairs connecting
+ Level 1 to Level 2, Level 2 to Level 3, ..., and Level 7 to Level 8.
+ Since the top level is Level 1 and higher-numbered levels descend
+ into the dungeon, Level 1 should have two rooms with stairs going
+ down, Levels 2-7 should have two rooms with stairs going up and two
+ rooms with stairs going down, and Level 8 should have two rooms with
+ stairs going up.  And all stairs going in one direction should lead
+ to a room with stairs going in the other direction.
+   </li><li>One of each type of monster on each level.  The monster types
+ range from 1 to <tt>Monster.NUM_MONSTERS</tt>, with the monster type
+ specified in the <tt>Monster</tt> constructor.
+  </li><li>Three of each of these items on each level:
+  <ul><li>books
+   </li><li>crystal orbs
+   </li><li>pools
+   </li><li>chests
+   </li><li>rooms containing flares
+   </li><li>rooms containing gold pieces
+   </li><li>sinkholes (even on Level 8, where they allow the player to
+   "fall" through back up to Level 1)
+   </li><li>warps
+   </li><li>vendors
+  </li></ul>
+  </li><li>One of each type of treasure randomly throughout the castle.
+ The treasure types range from 1 to <tt>Treasure.NUM_TREASURES</tt>,
+ with the treasure type specified in the <tt>Treasure</tt> constructor.
+  </li><li>One additional monster of a random type placed at a random
+ location in the castle.  This monster has the Runestaff.  Your castle
+ implementation will need to remember which location has been assigned
+ the Runestaff.
+  </li><li>One additional warp placed at a random location in the
+ castle.  This warp hides the Orb of Zot.  Your castle implementation
+ will need to remember which location has been assigned the Runestaff.
+ </li><li>All remaining rooms are empty.  However, three of them should
+ be selected to hold curses.  One room should be designated for each
+ of the lethargy, leech, and forgetful curses.
+ </li></ul>
+</li><li><tt>public RoomContents roomAt(int level, Location pos);</tt>
+<p>Returns the contents of the room on the specified level and position.
+</p></li><li><tt>public void printMap(int level, Location pos);</tt>  
+<p>Prints a map of the specified level of the castle, with the room at
+<tt>pos</tt> printed enclosed in angle brackets (indicating the current
+location of the player).  Actual contents of rooms should be displayed
+only if the player has been in that room (the room's <tt>isVisible()</tt>
+method returns <tt>true</tt>).  Otherwise, the room should be denoted
+with ".".  Note that the map symbol for a visible room can be
+displayed using its <tt>toString()</tt> method.
+</p></li><li><tt>public void printMapRevealed(int level, Location pos);</tt>  
+<p>Same as <tt>printMap</tt>, except the contents of all rooms are
+displayed, not just visible rooms.  This is used only in debugging.
+</p></li><li><tt>public void makeEmpty(int level, Location pos);</tt>
+<p>Replaces the room at the givel level and position with an empty room.
+</p></li><li><tt>public int randomCoord();</tt>
+<p>Returns a random number in the range 1 through <tt>WizardsCastle.NUM_LEVELS</tt>.  In addition to be called by other
+classes, this will be a useful helper method for castle
+initialization.
+</p></li><li><tt>public boolean isOrb(int level, Location pos);</tt>
+<p>Returns <tt>true</tt> if the given level and position specifies the room
+containing the Orb of Zot.
+</p></li><li><tt>public boolean isRunestaff(int level, Location pos);</tt>
+<p>Returns <tt>true</tt> if the given level and position specifies the room
+containing the Runestaff.
+</p></li><li><tt>public void printOrbLocation();</tt>
+<p>Prints (using <tt>System.out.println</tt>) the location of the Orb of
+Zot.  This is used when gazing into a crystal orb.
+</p></li><li><tt>public void forgetRandomRoom();</tt>
+<p>Takes a random room anywhere in the castle and makes it invisible.
+This implements the effect of the forgetful curse.
+</p></li><li><tt>public boolean isLethargyRoom(int level, Location pos);</tt>
+<p>Returns <tt>true</tt> if the given level and position specifies the room
+that contains the lethargy curse.
+</p></li><li><tt>public boolean isLeechRoom(int level, Location pos);</tt>
+<p>Returns <tt>true</tt> if the given level and position specifies the room
+that contains the leech curse.
+</p></li><li><tt>public boolean isForgetfulRoom(int level, Location pos);</tt>
+<p>Returns <tt>true</tt> if the given level and position specifies the room
+that contains the forgetful curse.
+</p></li></ul>
+<p>There are a number of ways that you can approach this task.  Here is
+one possibility:
+</p><ol><li>Start writing the constructor.  At first, just initialize the
+castle to contain all empty rooms.
+</li><li>Write the <tt>printMapRevealed</tt> method.
+</li><li>Write a <tt>main</tt> method for <tt>class Castle</tt>.  This will
+allow you to test the <tt>Castle</tt> class as you go without having to
+write all of the methods to test it with the real game.  This main
+method should just construct a <tt>Castle</tt> and display it with calls
+to <tt>printMapRevealed</tt>.
+</li><li>Incrementally develop the constructor to add the required rooms
+to the castle.  Test as you go.
+</li><li>Once you have the contents of the castle created correctly,
+implement the other methods listed above so you can test with the
+entire game.
+</li></ol>
+<p>When you have finished the program, create a tar file of all of the
+files you wish to submit.  Please call this file <tt>lab2.tar</tt>, and
+submit it using the <tt>turnin</tt> utility.
+</p><p>As in all labs, you will be graded on design, documentation, style,
+and correctness.  Be sure to document your program with appropriate
+Javadoc comments, including a general description at the top of the file, a
+description of each method with pre- and post-conditions where
+appropriate.  Also use comments and descriptive variable names to
+clarify sections of the code which may not be clear to someone trying
+to understand it.
+</p><hr>
+<!--//--><script>PrxRST();</script></body></html>
