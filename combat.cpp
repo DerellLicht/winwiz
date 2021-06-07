@@ -549,7 +549,9 @@ int run_one_encounter_round(HWND hwnd, unsigned inchr)
       wsprintf(tempstr, "The %s is not impressed...", monster_info.desc);
       put_message(tempstr);
       result = monsters_turn(hwnd) ;
-      show_combat_info() ;
+      if (result >= 0) {
+         show_combat_info() ;
+      }
    }  //  switch
 
    if (result == 0) 
