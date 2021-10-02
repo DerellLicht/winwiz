@@ -81,10 +81,6 @@ void add_main_tooltips(HWND hwnd, HWND hwndToolTip)
    for (idx=0; main_tooltips[idx].ControlID != 0; idx++) {
       // if (idx < 10) {
       //    //  for some reason, these tooltips *never* get rendered...
-      //    //  Later note:
-      //    //  This doesn't work because the second argument requires a
-      //    //  tooltip ID (which is a uint), but the hwndTreasures[]
-      //    //  array contains hwnd handles...
       //    add_tooltip_target(hwnd, hwndTreasures[idx], hwndToolTip, main_tooltips[idx].msg) ;
       // } else {
          add_tooltip_target(hwnd, GetDlgItem(hwnd, main_tooltips[idx].ControlID),
