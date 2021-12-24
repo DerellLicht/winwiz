@@ -191,14 +191,12 @@ static void update_position(void)
       wsprintf (tempstr, " X=?, Y=?");
    else
       wsprintf (tempstr, " X=%u, Y=%u", player.x, player.y);
-   // StatusBar_SetText (hwndStatusBar, 1, 0, tempstr);
    status_message(1, tempstr);
+   
    if (player.is_blind  ||  is_location_forgotten()) 
       wsprintf (tempstr, " level=?");
-      // wsprintf (tempstr, " level=%u", player.level);
    else
       wsprintf (tempstr, " level=%u", player.level);
-   // StatusBar_SetText (hwndStatusBar, 2, 0, tempstr);
    status_message(2, tempstr);
 }
 
