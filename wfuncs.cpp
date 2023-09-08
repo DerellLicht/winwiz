@@ -1191,12 +1191,31 @@ int gaze_into_orb(HWND hwnd)
    return 0;   
 }
 
-//******************************************************************
-//  This still tends to favour STR over DEX, and DEX over INT.
-//*********************************************************
+//************************************************************************************
+//  This function is one of the optional operations that may be invoked when
+//  a chest is opened.  The original design attempted to add up the existing
+//  attribute values and randomly re-distribute them, but that is difficult to
+//  do in a truly balanced fashion.
+//  
+//  Instead, this modified routine (from 09/08/23) randomly generates new attributes
+//  from the theoretical maximum values.  
+//  It may generate a total amount which is more or less than the original total, 
+//  but it has advantage of being a truly random distribution.
+//************************************************************************************
 static void ScrambleAttr(void)
 {
    unsigned j=0, k=0, l=0 ;
+   
+#define  USE_BASIC_SYSTEM   
+
+#ifdef  USE_BASIC_SYSTEM
+#define  MAX_SINGLE_ATTR   18
+
+   j = 1 + random_int(MAX_SINGLE_ATTR);
+   k = 1 + random_int(MAX_SINGLE_ATTR);
+   l = 1 + random_int(MAX_SINGLE_ATTR);
+#else
+   //  This method favours STR over DEX, and DEX over INT.
    unsigned attr_temp = player.str + player.dex + player.iq ;
 
    j = (1 + random(min(attr_temp, 18))) ;
@@ -1238,6 +1257,7 @@ skipping:
          break;
       }
    }
+#endif   
 
    //  attribute selection here should also be random...
    player.str = j ;
