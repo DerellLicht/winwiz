@@ -69,6 +69,9 @@ dist:
 	rm -f winwiz.zip
 	zip winwiz.zip winwiz.exe winwiz.chm $(IMAGES) history.winwiz.txt
 
+wc:
+	wc -l *.cpp *.rc
+
 source:
 	rm -f winwizsrc.zip
 	zip -D winwizsrc.zip *
