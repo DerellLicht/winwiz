@@ -79,3 +79,4 @@ vers    date        actions taken
                    invalid text is displayed
                  - Update the .chm help file, for first time since 2006  
 
+1.41 - 10/26/23  Add the [E]xecute command, which replaces [O]pen, [G]aze, d[R]ink, and [T]rade

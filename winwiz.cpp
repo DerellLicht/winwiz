@@ -27,7 +27,7 @@
 //  based on the Virtual ListView control                            
 //****************************************************************************
 
-static const char *Version = "Wizard's Castle, Version 1.40" ;
+static const char *Version = "Wizard's Castle, Version 1.41" ;
 
 //lint -esym(767, _WIN32_WINNT)
 #define  _WIN32_WINNT   0x0501

@@ -24,13 +24,14 @@ extern uint key_mask ;
 
 //  from wfuncs.cpp
 extern void do_idle_tasks(void);
-extern int  open_book_or_chest(HWND hwnd);
+extern int execute_local_object(HWND hwnd);
+// extern int  open_book_or_chest(HWND hwnd);
+// extern int  gaze_into_orb(HWND hwnd);
+// extern int  drink_from_pool(HWND hwnd);
 extern int  manage_zot_input(HWND hwnd, unsigned inchr);
 extern int  teleport(HWND hwnd, unsigned inchr);
 extern int  attack_vendor(HWND hwnd);
 extern int  light_a_flare(HWND hwnd);
-extern int  gaze_into_orb(HWND hwnd);
-extern int  drink_from_pool(HWND hwnd);
 extern void view_special_items(void);
 
 //  loadhelp.cpp
@@ -38,9 +39,6 @@ extern void view_help_screen(HWND hwnd);
 
 //  initscrn.cpp
 extern void draw_init_screen(HWND hwnd);
-
-//  vendor.cpp
-extern int  trade_with_vendor(HWND hwnd);
 
 //  combat.cpp
 extern int  cast_spell(HWND hwnd, unsigned inchr);
@@ -202,7 +200,7 @@ extern void dump_level_knowledge(void);
 
 static int default_kbd_handler(HWND hwnd, unsigned inchr)
 {
-   int result ;
+   // int result ;
    do_idle_tasks() ;
 
    // syslog("inchr=%02X, key_down=%X", inchr, VK_DOWN) ;
@@ -259,21 +257,29 @@ static int default_kbd_handler(HWND hwnd, unsigned inchr)
       break;
 
    case kf:  light_a_flare(hwnd); break;
-   case kg:  gaze_into_orb(hwnd); break;
-   case kr:  
-      result = drink_from_pool(hwnd); 
-      if (result < 0) 
-         return 1;
-      if (result > 0) 
-         push_keymap(KEYMAP_POOLDIR) ;
-      break;
+   
+   //  10/26/23 - Change all 'use object at this location' operations
+   //             to use 'e' key (Execute), then select based on current object.
+   case ke:
+      execute_local_object(hwnd);
+      break ;
+   
+   // case kg: gaze_into_orb(hwnd); break;
+   // case ko: open_book_or_chest(hwnd); break;
+   // case kt: trade_with_vendor(hwnd);  break ;
+   
+   // case kr:  
+   //    result = drink_from_pool(hwnd); 
+   //    if (result < 0) 
+   //       return 1;
+   //    if (result > 0) 
+   //       push_keymap(KEYMAP_POOLDIR) ;
+   //    break;
 
-   case ko: open_book_or_chest(hwnd); break;
    case kp: teleport(hwnd, inchr); break;
    case kj: view_special_items(); break;
    case kh: view_help_screen(hwnd);  break ;
    case ka: attack_vendor(hwnd);  break ;
-   case kt: trade_with_vendor(hwnd);  break ;
 
    case kCc:
    case kESC:

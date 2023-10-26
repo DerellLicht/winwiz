@@ -311,17 +311,10 @@ static BOOL CALLBACK VendorDlgProc (
 //****************************************************************************
 int trade_with_vendor(HWND hwnd)
 {
-   int contents = get_room_contents(player.x, player.y, player.level) ;
-   if (contents != VENDOR) {
-      put_message("Hmmm... I don't see any shops...") ;
-      return 0;
-   }
-
    int result = DialogBox (g_hinst, MAKEINTRESOURCE(IDD_VENDORBOX), hwnd, VendorDlgProc);
    if (result < 0) {
       syslog("Vendor: DialogBox: %s\n", get_system_message()) ;
    } 
-
-   return 0;
+   return result;
 }
 
