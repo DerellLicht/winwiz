@@ -1,5 +1,5 @@
 //************************************************************************
-//  Copyright (c) 1986-2011  Daniel D Miller
+//  Copyright (c) 1986-2021  Daniel D Miller
 //  winwiz.exe - Wizard's Castle
 //  keyboard.cpp - keyboard state-machine interface for WinWiz
 //                         
@@ -14,6 +14,9 @@
 #include "wizard.h"
 #include "keywin32.h"
 
+//  this constant enables debug function, currently tied to key 'z'
+// #define USE_DEBUG_KEY   1
+
 //lint -esym(769, keymap_states_e::KEYMAP_SPELL)
 
 //  term_app.cpp
@@ -21,13 +24,14 @@ extern uint key_mask ;
 
 //  from wfuncs.cpp
 extern void do_idle_tasks(void);
-extern int  open_book_or_chest(HWND hwnd);
+extern int execute_local_object(HWND hwnd);
+// extern int  open_book_or_chest(HWND hwnd);
+// extern int  gaze_into_orb(HWND hwnd);
+// extern int  drink_from_pool(HWND hwnd);
 extern int  manage_zot_input(HWND hwnd, unsigned inchr);
 extern int  teleport(HWND hwnd, unsigned inchr);
 extern int  attack_vendor(HWND hwnd);
 extern int  light_a_flare(HWND hwnd);
-extern int  gaze_into_orb(HWND hwnd);
-extern int  drink_from_pool(HWND hwnd);
 extern void view_special_items(void);
 
 //  loadhelp.cpp
@@ -35,9 +39,6 @@ extern void view_help_screen(HWND hwnd);
 
 //  initscrn.cpp
 extern void draw_init_screen(HWND hwnd);
-
-//  vendor.cpp
-extern int  trade_with_vendor(HWND hwnd);
 
 //  combat.cpp
 extern int  cast_spell(HWND hwnd, unsigned inchr);
@@ -66,21 +67,57 @@ int push_keymap(keymap_states_t new_keymap)
    keymap_stack[keymap_idx] = keymap ;
    keymap = new_keymap ;
    keymap_idx++ ;
-   // wsprintf(tempstr, "+keymap [%u]=%s", keymap_idx, km_names[keymap]) ;
-   // Statusbar_ShowMessage(tempstr) ;
+   // wsprintf(tempstr, "+keymap [%u]=%s", keymap_idx, (uint) keymap) ;
+   // put_message(tempstr) ;
    return 1;
 }
 
+//  note: nobody looks at return code
 int pop_keymap(void)
 {
-   if (keymap_idx == 0)
-      return 0;
-   keymap_idx-- ;
+   if (keymap_idx > 0)
+   {
+      keymap_idx-- ;
+   }
    keymap = keymap_stack[keymap_idx] ;
-   // wsprintf(tempstr, "-keymap [%u]=%s", keymap_idx, km_names[keymap]) ;
-   // Statusbar_ShowMessage(tempstr) ;
+   // wsprintf(tempstr, "-keymap [%u]=%u", keymap_idx, (uint) keymap) ;
+   // put_message(tempstr) ;
    return 1;
 }
+
+//*******************************************************************************
+//  This function will pop all from current stack, 
+//  then initialize to specified state.
+//  This will hopefull solve issue with sometimes having keyboard get into
+//  unknown state and not recover.
+//*******************************************************************************
+//lint -esym(714, reset_keymap)
+//lint -esym(759, reset_keymap)
+//lint -esym(765, reset_keymap)
+void reset_keymap(keymap_states_t new_keymap_state)
+{
+   keymap_idx = 0 ;
+   push_keymap(new_keymap_state) ;
+   pop_keymap() ;
+}
+
+//*************************************************************
+void keymap_show_state(void)
+{
+   wsprintf(tempstr, "keymap state: idx: %u, keymap: %u/%u", 
+      keymap_idx, (uint) keymap_stack[keymap_idx], (uint) keymap);
+   put_message(tempstr) ;
+}
+
+//*************************************************************
+#ifdef  USE_DEBUG_KEY
+static void execute_debug_function(void)
+{
+   player.has_runestaff = true ;
+   put_color_msg(TERM_RUNESTAFF, "GREAT ZOT!! You've found the RUNESTAFF!!");
+   show_treasures() ;
+}
+#endif
 
 //*************************************************************
 bool is_intro_screen_active(void)
@@ -163,7 +200,7 @@ extern void dump_level_knowledge(void);
 
 static int default_kbd_handler(HWND hwnd, unsigned inchr)
 {
-   int result ;
+   // int result ;
    do_idle_tasks() ;
 
    // syslog("inchr=%02X, key_down=%X", inchr, VK_DOWN) ;
@@ -220,26 +257,40 @@ static int default_kbd_handler(HWND hwnd, unsigned inchr)
       break;
 
    case kf:  light_a_flare(hwnd); break;
-   case kg:  gaze_into_orb(hwnd); break;
-   case kr:  
-      result = drink_from_pool(hwnd); 
-      if (result < 0) 
-         return 1;
-      if (result > 0) 
-         push_keymap(KEYMAP_POOLDIR) ;
-      break;
+   
+   //  10/26/23 - Change all 'use object at this location' operations
+   //             to use 'e' key (Execute), then select based on current object.
+   case ke:
+      execute_local_object(hwnd);
+      break ;
+   
+   // case kg: gaze_into_orb(hwnd); break;
+   // case ko: open_book_or_chest(hwnd); break;
+   // case kt: trade_with_vendor(hwnd);  break ;
+   
+   // case kr:  
+   //    result = drink_from_pool(hwnd); 
+   //    if (result < 0) 
+   //       return 1;
+   //    if (result > 0) 
+   //       push_keymap(KEYMAP_POOLDIR) ;
+   //    break;
 
-   case ko: open_book_or_chest(hwnd); break;
    case kp: teleport(hwnd, inchr); break;
    case kj: view_special_items(); break;
    case kh: view_help_screen(hwnd);  break ;
    case ka: attack_vendor(hwnd);  break ;
-   case kt: trade_with_vendor(hwnd);  break ;
 
    case kCc:
    case kESC:
       SendMessage(hwnd, WM_DESTROY, 0, 0) ;
       break;
+
+#ifdef  USE_DEBUG_KEY
+   case kz:
+      execute_debug_function();
+      break;
+#endif
 
    case '?':
       dump_level_knowledge();

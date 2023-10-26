@@ -72,4 +72,12 @@ vers    date        actions taken
 		   redraws occur more promptly.
 1.38 - 04/22/14  Modify LodePng class to allow simpler calls to 
                  sprite-rendering function.
+1.39 - 06/06/21  - add display of damage done after chest explosion
+                 - fix bug after teleport, keymap in wrong state 
+                   and keyboard is handled wrong
+1.40 - 06/07/21  - Fix bug where, when player dies while pressing invalid keys, 
+                   invalid text is displayed
+                 - Update the .chm help file, for first time since 2006  
+
+1.41 - 10/26/23  Add the [E]xecute command, which replaces [O]pen, [G]aze, d[R]ink, and [T]rade
 

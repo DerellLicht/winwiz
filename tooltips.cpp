@@ -56,7 +56,7 @@ static void add_tooltip_target(HWND parent, HWND target, HWND hToolTip, char *ms
    // else {
    //    syslog("TTM_ADDTOOL: %u: success!!\n", target) ;
    // }
-}
+}  //lint !e550  Symbol 'ti' not accessed (DDM: yes it was)
 
 //****************************************************************************
 //  main-dialog tooltips
@@ -81,8 +81,6 @@ void add_main_tooltips(HWND hwnd, HWND hwndToolTip)
    for (idx=0; main_tooltips[idx].ControlID != 0; idx++) {
       // if (idx < 10) {
       //    //  for some reason, these tooltips *never* get rendered...
-      //    //  Yet the Help tooltip, which was defined identically, works fine.  
-      //    //  I don't know why two identical objects behave differently...
       //    add_tooltip_target(hwnd, hwndTreasures[idx], hwndToolTip, main_tooltips[idx].msg) ;
       // } else {
          add_tooltip_target(hwnd, GetDlgItem(hwnd, main_tooltips[idx].ControlID),

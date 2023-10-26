@@ -87,6 +87,35 @@ void dump_level_knowledge(void)
       player.level) ;
 }
 
+//*************************************************************
+static unsigned get_room_contents(unsigned x, unsigned y, unsigned level)
+{
+   return castle[x][y][level].contents ;
+}
+
+unsigned get_room_contents(void)
+{
+   return castle[player.x][player.y][player.level].contents ;
+}
+
+//*************************************************************
+char *get_room_contents_str(void)
+{  
+   return object_data[get_room_contents()].desc ;
+}
+
+//*************************************************************
+static char *get_object_in_room(int x, int y, int level)
+{  
+   return object_data[get_room_contents(x, y, level)].desc ;
+}
+
+//*************************************************************
+char *get_object_name(int index)
+{
+   return object_data[index].desc ;
+}         
+
 /************************************************************************/
 //  used only for Runestaff and OrbOfZot fields
 /************************************************************************/
@@ -191,14 +220,12 @@ static void update_position(void)
       wsprintf (tempstr, " X=?, Y=?");
    else
       wsprintf (tempstr, " X=%u, Y=%u", player.x, player.y);
-   // StatusBar_SetText (hwndStatusBar, 1, 0, tempstr);
    status_message(1, tempstr);
+   
    if (player.is_blind  ||  is_location_forgotten()) 
       wsprintf (tempstr, " level=?");
-      // wsprintf (tempstr, " level=%u", player.level);
    else
       wsprintf (tempstr, " level=%u", player.level);
-   // StatusBar_SetText (hwndStatusBar, 2, 0, tempstr);
    status_message(2, tempstr);
 }
 
@@ -414,42 +441,89 @@ static void hide_room(unsigned x, unsigned y, unsigned level)
 }
 
 //*************************************************************
-// unsigned get_room_contents(int x, int y, int level)
-unsigned get_room_contents(unsigned x, unsigned y, unsigned level)
-{
-   return castle[x][y][level].contents ;
-}
-
-unsigned get_room_contents(void)
-{
-   return castle[player.x][player.y][player.level].contents ;
-}
-
-//*************************************************************
-char *get_room_contents_str(void)
-{  
-   return object_data[get_room_contents()].desc ;
-}
-
-//*************************************************************
-static char *get_object_in_room(int x, int y, int level)
-{  
-   return object_data[get_room_contents(x, y, level)].desc ;
-}
-
-//*************************************************************
-char *get_object_name(int index)
-{
-   return object_data[index].desc ;
-}         
-
-//*************************************************************
 void render_combat_bitmap(void)
 {
    HDC hdc = GetDC(hwndMapArea) ;
    map_image = MI_COMBAT ;
    pngTiles.render_bitmap(hdc, 0, 0, TILE_COMBAT) ;
    ReleaseDC(hwndMapArea, hdc) ;
+}
+
+//************************************************************************************
+//  This function is one of the optional operations that may be invoked when
+//  a chest is opened.  The original design attempted to add up the existing
+//  attribute values and randomly re-distribute them, but that is difficult to
+//  do in a truly balanced fashion.
+//  
+//  Instead, this modified routine (from 09/08/23) randomly generates new attributes
+//  from the theoretical maximum values.  
+//  It may generate a total amount which is more or less than the original total, 
+//  but it has advantage of being a truly random distribution.
+//************************************************************************************
+static void ScrambleAttr(void)
+{
+   unsigned j=0, k=0, l=0 ;
+   
+#define  USE_BASIC_SYSTEM   
+
+#ifdef  USE_BASIC_SYSTEM
+#define  MAX_SINGLE_ATTR   18
+
+   j = 1 + random_int(MAX_SINGLE_ATTR);
+   k = 1 + random_int(MAX_SINGLE_ATTR);
+   l = 1 + random_int(MAX_SINGLE_ATTR);
+#else
+   //  This method favours STR over DEX, and DEX over INT.
+   unsigned attr_temp = player.str + player.dex + player.iq ;
+
+   j = (1 + random(min(attr_temp, 18))) ;
+   attr_temp -= j ;
+   if (attr_temp == 0)  goto skipping ;
+   k = (1 + random(min(attr_temp, 18))) ;
+   attr_temp -= k ;
+   if (attr_temp == 0)  goto skipping ;
+   l = (1 + random(min(attr_temp, 18))) ;
+   attr_temp -= l ;
+skipping:
+   // printf("init str=%u, dex=%u, int=%u, j=%u, k=%u, l=%u, temp=%u\n", 
+   //    str, dex, iq, j, k, l, attr_temp) ;
+
+   //  distribute remaining points evenly across all stats
+   while (attr_temp != 0) {
+      unsigned touched = 0 ;
+      if (j < 18) {
+         j++ ;
+         touched++ ;
+         if (--attr_temp == 0)
+            continue;
+      }
+      if (k < 18) {
+         k++ ;
+         touched++ ;
+         if (--attr_temp == 0)
+            continue;
+      }
+      if (l < 18) {
+         l++ ;
+         touched++ ;
+         if (--attr_temp == 0)
+            continue;
+      }
+      if (!touched) {
+         wsprintf(tempstr, "no touch: str=%u, dex=%u, int=%u\n", j, k, l) ;
+         status_message(tempstr);
+         break;
+      }
+   }
+#endif   
+
+   //  attribute selection here should also be random...
+   player.str = j ;
+   player.dex = k ;
+   player.iq  = l ;
+   adjust_hit_points() ;
+   
+   update_status() ;
 }
 
 //*************************************************************
@@ -1111,10 +1185,9 @@ int light_a_flare(HWND hwnd)
 }
 
 //****************************************************************************
-int gaze_into_orb(HWND hwnd)
+static int gaze_into_orb(HWND hwnd)
 {
    unsigned A, B, C ;
-   int contents ;
 
    if (player.is_blind) {
       wsprintf(tempstr, "You can't SEE, you foolish %s...", race_str[player.race]) ;
@@ -1122,11 +1195,11 @@ int gaze_into_orb(HWND hwnd)
       return 1;
    }
 
-   contents = get_room_contents(player.x, player.y, player.level);
-   if (contents != CRYSTAL_ORB) {
-      put_message("IT'S HARD TO GAZE WITHOUT AN ORB!!");
-      return 1;
-   }
+   // int contents = get_room_contents(player.x, player.y, player.level);
+   // if (contents != CRYSTAL_ORB) {
+   //    put_message("IT'S HARD TO GAZE WITHOUT AN ORB!!");
+   //    return 1;
+   // }
 
    switch (random(6)) {
    case 0:
@@ -1193,70 +1266,12 @@ int gaze_into_orb(HWND hwnd)
    return 0;   
 }
 
-//******************************************************************
-//  This still tends to favour STR over DEX, and DEX over INT.
-//*********************************************************
-static void ScrambleAttr(void)
-{
-   unsigned j=0, k=0, l=0 ;
-   unsigned attr_temp = player.str + player.dex + player.iq ;
-
-   j = (1 + random(min(attr_temp, 18))) ;
-   attr_temp -= j ;
-   if (attr_temp == 0)  goto skipping ;
-   k = (1 + random(min(attr_temp, 18))) ;
-   attr_temp -= k ;
-   if (attr_temp == 0)  goto skipping ;
-   l = (1 + random(min(attr_temp, 18))) ;
-   attr_temp -= l ;
-skipping:
-   // printf("init str=%u, dex=%u, int=%u, j=%u, k=%u, l=%u, temp=%u\n", 
-   //    str, dex, iq, j, k, l, attr_temp) ;
-
-   //  distribute remaining points evenly across all stats
-   while (attr_temp != 0) {
-      unsigned touched = 0 ;
-      if (j < 18) {
-         j++ ;
-         touched++ ;
-         if (--attr_temp == 0)
-            continue;
-      }
-      if (k < 18) {
-         k++ ;
-         touched++ ;
-         if (--attr_temp == 0)
-            continue;
-      }
-      if (l < 18) {
-         l++ ;
-         touched++ ;
-         if (--attr_temp == 0)
-            continue;
-      }
-      if (!touched) {
-         wsprintf(tempstr, "no touch: str=%u, dex=%u, int=%u\n", j, k, l) ;
-         status_message(tempstr);
-         break;
-      }
-   }
-
-   //  attribute selection here should also be random...
-   player.str = j ;
-   player.dex = k ;
-   player.iq  = l ;
-   adjust_hit_points() ;
-   
-   update_status() ;
-}
-
 //****************************************************************************
-int open_book_or_chest(HWND hwnd)
+static int open_book_or_chest(HWND hwnd, int contents)
 {
-   int contents ;
    unsigned Q, room ;
 
-   contents = get_room_contents(player.x, player.y, player.level);
+   // int contents = get_room_contents(player.x, player.y, player.level);
 
    //*****************************************************
    //  deal with a book
@@ -1366,6 +1381,7 @@ int open_book_or_chest(HWND hwnd)
       } else if (room < 9) {
          put_message("KABOOM!  THE CHEST EXPLODES!!");
          Q = random(6); 
+         put_color_msg(TERM_MONSTER_HIT, "You took %u points damage", Q) ;
          if (Q >= player.hit_points) {
             player_dies(hwnd) ;
             return -1;
@@ -1391,15 +1407,15 @@ int open_book_or_chest(HWND hwnd)
 //    1 = decision to be made
 //   -1 = player dies
 //**********************************************************************
-int drink_from_pool(HWND hwnd)
+static int drink_from_pool(HWND hwnd)
 {
    unsigned j ;
 
-   int contents = get_room_contents(player.x, player.y, player.level);
-   if (contents != POOL) {
-      put_message("** IF YOU WANT A DRINK, FIND A POOL!") ;
-      return 0;
-   }
+   // int contents = get_room_contents(player.x, player.y, player.level);
+   // if (contents != POOL) {
+   //    put_message("** IF YOU WANT A DRINK, FIND A POOL!") ;
+   //    return 0;
+   // }
 
    switch (random(8)) {
    case 0:
@@ -1497,11 +1513,46 @@ int drink_from_pool(HWND hwnd)
 }
 
 //****************************************************************************
+int execute_local_object(HWND hwnd)
+{
+   int result = 1 ;
+   // int contents = get_room_contents(player.x, player.y, player.level);
+   int contents = get_room_contents();
+   switch (contents) {
+   case CRYSTAL_ORB:
+      result = gaze_into_orb(hwnd);
+      break ;
+      
+   case POOL:
+      result = drink_from_pool(hwnd); 
+      if (result < 0) 
+         return 1;
+      if (result > 0) 
+         push_keymap(KEYMAP_POOLDIR) ;
+      break ;
+      
+   case BOOK:
+   case CHEST:
+      result = open_book_or_chest(hwnd, contents); 
+      break ;
+   
+   case VENDOR:   
+      result = trade_with_vendor(hwnd);  
+      break ;
+      
+   default:
+      break ;
+   }
+   return result ;
+}
+      
+//****************************************************************************
 int teleport(HWND hwnd, unsigned inchr)
 {
    static unsigned x, y, level ;
    static unsigned state = 0 ;
 
+   keymap_show_state();
    switch (state) {
    case 0:
       if (!player.has_runestaff) {
@@ -1586,10 +1637,13 @@ int teleport(HWND hwnd, unsigned inchr)
          draw_main_screen(NULL) ;
       } else {
          react_to_room(hwnd) ;
+         // reset_keymap(KEYMAP_DEFAULT);
+         pop_keymap() ;
       }
       state = 0 ;
       // push_keymap(KEYMAP_DEFAULT) ;
       pop_keymap() ;
+      // reset_keymap(KEYMAP_DEFAULT);
       break;
    }  //lint !e744  no default
 

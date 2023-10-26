@@ -147,7 +147,6 @@ static void EndEncounter(void)
           player.y == runestaff_room.y  &&
           player.level == runestaff_room.level) {
          player.has_runestaff = true ;
-         // put_message(attr_rune_msg, 
          put_color_msg(TERM_RUNESTAFF, "GREAT ZOT!! You've found the RUNESTAFF!!");
          show_treasures() ;
       }
@@ -550,7 +549,9 @@ int run_one_encounter_round(HWND hwnd, unsigned inchr)
       wsprintf(tempstr, "The %s is not impressed...", monster_info.desc);
       put_message(tempstr);
       result = monsters_turn(hwnd) ;
-      show_combat_info() ;
+      if (result >= 0) {
+         show_combat_info() ;
+      }
    }  //  switch
 
    if (result == 0) 

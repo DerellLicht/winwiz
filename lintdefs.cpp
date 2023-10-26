@@ -11,6 +11,7 @@
 //lint -esym(1065, _iob)
 
 //lint -esym(715, hdcUnused)  // (line 572) not referenced
+//lint -esym(769, SHOW_ARROW::SHOW_NO_ARROW)
 
 //lint -e1066  Symbol ... declared as "C" conflicts with line ...
 //lint -e1708  typedef not declared as "C" conflicts with line ...

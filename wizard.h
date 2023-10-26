@@ -261,6 +261,8 @@ bool is_default_keymap(void) ;
 bool is_intro_screen_active(void);
 int push_keymap(keymap_states_t new_keymap);
 int pop_keymap(void);
+void reset_keymap(keymap_states_t new_keymap_state);
+void keymap_show_state(void);
 int process_keystroke(HWND hwnd, unsigned inchr);
 
 //  from wfuncs.cpp
@@ -275,8 +277,6 @@ int  move_up(HWND hwnd);
 void move_one_square(HWND hwnd);
 int  look_in_direction(HWND hwnd, unsigned chr);
 unsigned get_room_contents(void);
-// unsigned get_room_contents(int x, int y, int level);
-unsigned get_room_contents(unsigned x, unsigned y, unsigned level);
 char *get_room_contents_str(void);
 char *get_object_name(int index);
 void show_player(void);
@@ -299,6 +299,9 @@ bool starts_with_vowel(char *monster);
 void update_cursor(void);
 void render_combat_bitmap(void);
 void draw_current_screen(void);
+
+//  vendor.cpp
+int  trade_with_vendor(HWND hwnd);
 
 //  iface_lib.cpp
 // int  textheight(HDC hdc, unsigned selected);

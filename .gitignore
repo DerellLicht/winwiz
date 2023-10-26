@@ -1,0 +1,9 @@
+_lint.tmp
+*.o
+*.exe
+*.bak
+*.zip
+help/files/
+help/winwiz.htm
+help/winwiz.chm
+

@@ -1,5 +1,5 @@
 //****************************************************************************
-//  Copyright (c) 1985-2014  Daniel D Miller
+//  Copyright (c) 1985-2021  Daniel D Miller
 //  winwiz.exe - Win32 version of Wizard's Castle
 //
 //  Written by:  Dan Miller
@@ -27,7 +27,7 @@
 //  based on the Virtual ListView control                            
 //****************************************************************************
 
-static const char *Version = "Wizard's Castle, Version 1.38" ;
+static const char *Version = "Wizard's Castle, Version 1.41" ;
 
 //lint -esym(767, _WIN32_WINNT)
 #define  _WIN32_WINNT   0x0501
@@ -482,7 +482,7 @@ static LRESULT APIENTRY TermSubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, LP
 static uint screen_width  = 0 ;
 static uint screen_height = 0 ;
 
-static void get_monitor_dimens(HWND hwnd)
+static void ww_get_monitor_dimens(HWND hwnd)
 {
    HMONITOR currentMonitor;      // Handle to monitor where fullscreen should go
    MONITORINFO mi;               // Info of that monitor
@@ -498,7 +498,7 @@ static void get_monitor_dimens(HWND hwnd)
 //***********************************************************************
 static void center_window(void)
 {
-   get_monitor_dimens(hwndMain);
+   ww_get_monitor_dimens(hwndMain);
    
    RECT myRect ;
    GetWindowRect(hwndMain, &myRect) ;
@@ -752,7 +752,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine
       HWND hOther = NULL;
       EnumWindows(searcher, (LPARAM) &hOther);
 
-      if ( hOther != NULL ) { /* pop up */
+      if ( hOther != NULL ) { //lint !e774
          SetForegroundWindow( hOther );
 
          if ( IsIconic( hOther ) )  { /* restore */

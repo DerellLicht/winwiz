@@ -109,6 +109,7 @@
 #define  kSQuote     0x00DE
 
 //  control and shift composite keys
+//  WINWIZ NOTE: control/shift flags only work in terminal window
 #define  kA          (ka | kShift)
 #define  kB          (kb | kShift)
 #define  kC          (kc | kShift)
