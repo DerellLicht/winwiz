@@ -910,7 +910,7 @@ static void update_room(void)
    }
 
    //  do not repeatedly display the "here you find normal room" message
-   uint idx = get_room_contents(player.x, player.y, player.level) ;
+   uint idx = get_room_contents() ;
    if (idx != EMPTY_ROOM) {
       // if (idx >= MONSTER_BASE  &&  idx <= MONSTER_END) {
       if (is_monster_index(idx)) {
@@ -990,7 +990,7 @@ int move_south(HWND hwnd)
 //****************************************************************************
 int move_down(HWND hwnd)
 {
-   int room_chr = get_room_contents(player.x, player.y, player.level);
+   int room_chr = get_room_contents();
    if (room_chr != STAIRS_DOWN) {
       put_message("It's hard to climb the walls...FIND SOME STAIRS!!");
       return 1 ;
@@ -1019,7 +1019,7 @@ int move_down(HWND hwnd)
 //****************************************************************************
 int move_up(HWND hwnd)
 {
-   int room_chr = get_room_contents(player.x, player.y, player.level);
+   int room_chr = get_room_contents();
    if (room_chr != STAIRS_UP) {
       put_message("It's hard to climb the walls...FIND SOME STAIRS!!");
       return 1 ;
@@ -1195,12 +1195,6 @@ static int gaze_into_orb(HWND hwnd)
       return 1;
    }
 
-   // int contents = get_room_contents(player.x, player.y, player.level);
-   // if (contents != CRYSTAL_ORB) {
-   //    put_message("IT'S HARD TO GAZE WITHOUT AN ORB!!");
-   //    return 1;
-   // }
-
    switch (random(6)) {
    case 0:
       put_message("You see yourself in a bloody heap.");
@@ -1270,8 +1264,6 @@ static int gaze_into_orb(HWND hwnd)
 static int open_book_or_chest(HWND hwnd, int contents)
 {
    unsigned Q, room ;
-
-   // int contents = get_room_contents(player.x, player.y, player.level);
 
    //*****************************************************
    //  deal with a book
@@ -1411,12 +1403,6 @@ static int drink_from_pool(HWND hwnd)
 {
    unsigned j ;
 
-   // int contents = get_room_contents(player.x, player.y, player.level);
-   // if (contents != POOL) {
-   //    put_message("** IF YOU WANT A DRINK, FIND A POOL!") ;
-   //    return 0;
-   // }
-
    switch (random(8)) {
    case 0:
       put_message("You take a drink and feel stronger");
@@ -1516,7 +1502,6 @@ static int drink_from_pool(HWND hwnd)
 int execute_local_object(HWND hwnd)
 {
    int result = 1 ;
-   // int contents = get_room_contents(player.x, player.y, player.level);
    int contents = get_room_contents();
    switch (contents) {
    case CRYSTAL_ORB:
@@ -1655,7 +1640,7 @@ extern int vendor_angry ;  //  combat.cpp
 
 int attack_vendor(HWND hwnd)
 {
-   int contents = get_room_contents(player.x, player.y, player.level) ;
+   int contents = get_room_contents() ;
    if (contents != VENDOR) {
       put_message("***  You're sure attacky person! (no monster found)") ;
       return 0;
@@ -1832,7 +1817,7 @@ static void react_to_room(HWND hwndUnused)
    CheckCurses(hdc) ;
 
    //  repeat Reacts until yesno;  
-   contents = get_room_contents(player.x, player.y, player.level) ;
+   contents = get_room_contents() ;
 
    switch (contents) {
    case GOLD_PIECES:
