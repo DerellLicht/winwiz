@@ -80,4 +80,5 @@ vers    date        actions taken
                  - Update the .chm help file, for first time since 2006  
 
 1.41 - 10/26/23  Add the [E]xecute command, which replaces [O]pen, [G]aze, d[R]ink, and [T]rade
+       01/06/23  Add message when old commands are used; update help file
 
