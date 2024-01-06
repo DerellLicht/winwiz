@@ -275,6 +275,13 @@ static int default_kbd_handler(HWND hwnd, unsigned inchr)
    //    if (result > 0) 
    //       push_keymap(KEYMAP_POOLDIR) ;
    //    break;
+   
+   case kg: 
+   case ko: 
+   case kt: 
+   case kr:  
+      put_message("This command has been replaced by [E]xecute..."); 
+      break;
 
    case kp: teleport(hwnd, inchr); break;
    case kj: view_special_items(); break;
