@@ -546,8 +546,6 @@ static void do_init_dialog(HWND hwnd)
    //  add tooltips and bitmaps
    //***************************************************************************
    create_and_add_tooltips(hwnd, 150, 100, 10000, main_tooltips);
-   // hToolTip = create_tooltips(hwnd, 150, 100, 10000) ;
-   // add_main_tooltips(hwnd, hToolTip) ;
 
    // RECT rWindow;
    // unsigned stTop ;

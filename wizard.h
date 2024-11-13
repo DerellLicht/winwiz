@@ -312,8 +312,3 @@ int  trade_with_vendor(HWND hwnd);
 
 //  from combat.cpp
 void react_to_monsters(HDC hdcUnused);
-
-//  tooltips.cpp
-HWND create_tooltips(HWND hwnd, uint max_width, uint popup_msec, uint stayup_msec);
-void add_main_tooltips(HWND hwnd, HWND hwndToolTip);
-
