@@ -47,6 +47,7 @@ static const char *Version = "Wizard's Castle, Version 1.41" ;
 #include "wizard.h"
 #include "keywin32.h"
 #include "lode_png.h"
+#include "tooltips.h"
 
 static char szAppName[] = "winwiz";
 
@@ -70,7 +71,7 @@ uint cyClient = 0 ;
 
 static CStatusBar *MainStatusBar = NULL;
 CTerminal *myTerminal = NULL;
-static HWND hToolTip ;  /* Tooltip handle */
+// static HWND hToolTip ;  /* Tooltip handle */
 
 static bool redraw_in_progress = false ;
 bool prog_init_done = false ;
@@ -513,6 +514,21 @@ static void center_window(void)
 }
 
 //***********************************************************************
+static tooltip_data_t main_tooltips[] = {
+{ IDC_T0,    " the Ruby Red "   },  
+{ IDC_T1,    " the Norn Stone " },  
+{ IDC_T2,    " the Pale Pearl " },  
+{ IDC_T3,    " the Opal Eye "   },  
+{ IDC_RS,    " the RuneStaff "  },
+{ IDC_T4,    " the Green Gem "  },  
+{ IDC_T5,    " the Blue Flame " },  
+{ IDC_T6,    " the Palantir "   },  
+{ IDC_T7,    " the Silmaril "   },  
+{ IDC_OZ,    " the Orb of Zot " },
+{ IDS_HELP,  " show Help file " },
+{ 0, NULL }} ;
+
+//***********************************************************************
 static void do_init_dialog(HWND hwnd)
 {
    char msgstr[81] ;
@@ -529,8 +545,9 @@ static void do_init_dialog(HWND hwnd)
    //***************************************************************************
    //  add tooltips and bitmaps
    //***************************************************************************
-   hToolTip = create_tooltips(hwnd, 150, 100, 10000) ;
-   add_main_tooltips(hwnd, hToolTip) ;
+   create_and_add_tooltips(hwnd, 150, 100, 10000, main_tooltips);
+   // hToolTip = create_tooltips(hwnd, 150, 100, 10000) ;
+   // add_main_tooltips(hwnd, hToolTip) ;
 
    // RECT rWindow;
    // unsigned stTop ;
