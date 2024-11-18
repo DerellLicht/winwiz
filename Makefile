@@ -63,7 +63,7 @@ endif
 all: winwiz.exe
 
 clean:
-	rm -f winwiz.exe der_libs/*.o *.o *.zip *.bak *~
+	rm -vf winwiz.exe $(OBJS) *.zip *.bak *~
 
 dist:
 	rm -f winwiz.zip
