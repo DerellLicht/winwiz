@@ -76,9 +76,8 @@ CTerminal *myTerminal = NULL;
 static bool redraw_in_progress = false ;
 bool prog_init_done = false ;
 
-//***********************************************************************
-LodePng pngSprites("tiles32.png", SPRITE_HEIGHT, SPRITE_WIDTH) ;
-LodePng pngTiles  ("images.png",  IMAGE_WIDTH,   IMAGE_HEIGHT) ;
+//  user-defined Windows messages
+static const UINT WM_ARE_YOU_ME = (WM_USER + 106) ;
 
 //*******************************************************************
 void status_message(char *msgstr)

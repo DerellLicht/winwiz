@@ -16,10 +16,8 @@
 #include "cterminal.h" 
 #include "lode_png.h"
 
-extern LodePng pngSprites ;
 // extern LodePng pngVictory ;
 // extern LodePng pngDeath ;
-extern LodePng pngTiles ;
 
 //@@@  why do I need this here??   
 //@@@  It *should* be defined in windef.h
@@ -35,6 +33,16 @@ extern LodePng pngTiles ;
 extern CTerminal *myTerminal ;
 
 extern bool prog_init_done ;
+
+enum {
+TILE_COMBAT=0,
+TILE_VICTORY,
+TILE_DEATH
+} ;
+
+//***********************************************************************
+static LodePng pngSprites("tiles32.png", SPRITE_HEIGHT, SPRITE_WIDTH) ;
+static LodePng pngTiles  ("images.png",  IMAGE_WIDTH,   IMAGE_HEIGHT) ;
 
 //*************************************************************
 #define  X_OFFSET    16
@@ -188,6 +196,10 @@ static void draw_all_room_sprites(HDC hdc)
 }
 
 /************************************************************************/
+//  screen-positioning constants
+// #define  HORZ_DIVIDER   360
+// #define  VERT_DIVIDER   360
+
 static void clear_map_area(HDC hdc, COLORREF Color)
 {
    RECT   rect ;

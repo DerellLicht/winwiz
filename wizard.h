@@ -5,10 +5,6 @@
 //****************************************************
 
 
-//  screen-positioning constants
-#define  HORZ_DIVIDER   360
-#define  VERT_DIVIDER   360
-
 //************************************************************
 #define  OFF   0
 #define  ON    1
@@ -29,9 +25,6 @@ extern uint dbg_flags ;
 
 extern HWND hwndMain ;
 
-//  user-defined Windows messages
-static const UINT WM_ARE_YOU_ME = (WM_USER + 106) ;
-
 //***********************************************************************
 //  sprite handler constants
 //***********************************************************************
@@ -40,12 +33,6 @@ static const UINT WM_ARE_YOU_ME = (WM_USER + 106) ;
 
 #define  SPRITE_WIDTH      32
 #define  SPRITE_HEIGHT     32
-
-enum {
-TILE_COMBAT=0,
-TILE_VICTORY,
-TILE_DEATH
-} ;
 
 //***********************************************************************
 extern HINSTANCE g_hinst ; //  top-level hinstance
