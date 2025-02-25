@@ -39,7 +39,8 @@ CastleInit.cpp initscrn.cpp combat.cpp vendor.cpp loadhelp.cpp
 
 OBJS = $(CSRC:.cpp=.o) rc.o
 
-BIN=winwiz.exe
+BASE=winwiz
+BIN=$(BASE).exe
 
 ifeq ($(USE_BMP),YES)
 CFLAGS += -DUSE_BMP
@@ -60,29 +61,20 @@ endif
 	g++ $(CFLAGS) -Weffc++ -c $< -o $@
 
 #************************************************************
-all: winwiz.exe
+all: $(BIN)
 
 clean:
-	rm -vf winwiz.exe $(OBJS) *.zip *.bak *~
+	rm -vf $(BIN) $(OBJS) *.zip *.bak *~
 
 dist:
-	rm -f winwiz.zip
-	zip winwiz.zip winwiz.exe winwiz.chm $(IMAGES) history.winwiz.txt
+	rm -f $(BASE).zip
+	zip $(BASE).zip *.exe winwiz.chm $(IMAGES) history.winwiz.txt
 
 wc:
 	wc -l *.cpp *.rc
 
-source:
-	rm -f winwizsrc.zip
-	zip -D winwizsrc.zip *
-	zip -r winwizsrc.zip help/*
-	zip -r winwizsrc.zip der_libs/*.cpp der_libs/*.h der_libs/*.txt
-
 lint:
 	cmd /C "c:\lint9\lint-nt +v -width(160,4) $(LiFLAGS) -ic:\lint9 mingw.lnt -os(_lint.tmp) lintdefs.cpp $(CSRC)"
-
-lint8:
-	cmd /C "c:\lint8\lint-nt +v -width(160,4) $(LiFLAGS) -ic:\lint8 mingw.lnt -os(_lint.tmp) lintdefs.cpp $(CSRC)"
 
 depend:
 	makedepend $(CFLAGS) $(CSRC)
