@@ -46,7 +46,6 @@ static const char *Version = "Wizard's Castle, Version 1.41" ;
 #include "winmsgs.h"
 #include "wizard.h"
 #include "keywin32.h"
-#include "lode_png.h"
 #include "tooltips.h"
 
 static char szAppName[] = "winwiz";
