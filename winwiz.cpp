@@ -91,6 +91,13 @@ void status_message(uint idx, char *msgstr)
 }
 
 //****************************************************************************
+//*****************************************************************
+//lint -esym(756, attrib_table_t)
+typedef struct attrib_table_s {
+   COLORREF fgnd ;
+   COLORREF bgnd ;
+} attrib_table_t ;
+
 #define  NUM_TERM_ATTR_ENTRIES   8
 static attrib_table_t term_atable[NUM_TERM_ATTR_ENTRIES] = {
    { WIN_CYAN,   WIN_BLACK },    // TERM_NORMAL 
