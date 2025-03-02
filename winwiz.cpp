@@ -27,7 +27,7 @@
 //  based on the Virtual ListView control                            
 //****************************************************************************
 
-static const char *Version = "Wizard's Castle, Version 1.41" ;
+static const char *Version = "Wizard's Castle, Version 1.42" ;
 
 //lint -esym(767, _WIN32_WINNT)
 #define  _WIN32_WINNT   0x0501
@@ -42,7 +42,8 @@ static const char *Version = "Wizard's Castle, Version 1.41" ;
 #include "common.h"
 #include "commonw.h"
 #include "statbar.h"
-#include "cterminal.h" 
+#include "cterminal.h"  //  MAX_TERM_CHARS
+#include "terminal.h" 
 #include "winmsgs.h"
 #include "wizard.h"
 #include "keywin32.h"
@@ -69,7 +70,7 @@ uint cxClient = 0 ;
 uint cyClient = 0 ;
 
 static CStatusBar *MainStatusBar = NULL;
-CTerminal *myTerminal = NULL;
+// CTerminal *myTerminal = NULL;
 // static HWND hToolTip ;  /* Tooltip handle */
 
 static bool redraw_in_progress = false ;
@@ -91,19 +92,12 @@ void status_message(uint idx, char *msgstr)
 }
 
 //****************************************************************************
-//*****************************************************************
 //lint -esym(756, attrib_table_t)
-typedef struct attrib_table_s {
-   COLORREF fgnd ;
-   COLORREF bgnd ;
-} attrib_table_t ;
-
-#define  NUM_TERM_ATTR_ENTRIES   8
 static attrib_table_t term_atable[NUM_TERM_ATTR_ENTRIES] = {
-   { WIN_CYAN,   WIN_BLACK },    // TERM_NORMAL 
-   { WIN_BCYAN,  WIN_GREY },     // TERM_INFO
-   { WIN_YELLOW, WIN_BLUE },     // TERM_QUERY
-   { WIN_RED,    WIN_BLACK },    // TERM_PLAYER_HIT
+   { WIN_CYAN,    WIN_BLACK },    // TERM_NORMAL 
+   { WIN_BCYAN,   WIN_GREY },     // TERM_INFO
+   { WIN_YELLOW,  WIN_BLUE },     // TERM_QUERY
+   { WIN_RED,     WIN_BLACK },    // TERM_PLAYER_HIT
    { WIN_BLUE,    WIN_BLACK },   // TERM_MONSTER_HIT
    { WIN_GREY,    WIN_BLACK },   // TERM_RUNESTAFF
    { WIN_BBLUE,   WIN_BLACK },   // TERM_DEATH
@@ -126,22 +120,26 @@ static void set_local_terminal_colors(void)
 }
 
 //********************************************************************
-static void set_term_attr(uint atidx)
+void set_term_attr_default(void)
+{
+   term_set_attr(term_atable[TERM_NORMAL].fgnd, term_atable[TERM_NORMAL].bgnd) ;
+}
+
+//********************************************************************
+//lint -esym(714, set_term_attr, termout, put_color_term_msg)
+//lint -esym(759, set_term_attr, termout, put_color_term_msg)
+//lint -esym(765, set_term_attr, termout, put_color_term_msg)
+void set_term_attr(uint atidx)
 {
    if (atidx >= NUM_TERM_ATTR_ENTRIES) {
       syslog("set_term_attr: invalid index %u\n", atidx) ;
       return ;
    }
-      
-   myTerminal->set_term_attr(term_atable[atidx].fgnd, term_atable[atidx].bgnd) ;
+   term_set_attr(term_atable[atidx].fgnd, term_atable[atidx].bgnd) ;
 }
 
 //********************************************************************
-void set_term_attr_default(void)
-{
-   myTerminal->set_term_attr(term_atable[TERM_NORMAL].fgnd, term_atable[TERM_NORMAL].bgnd) ;
-}
-
+//  This outputs to terminal in default colors
 //********************************************************************
 int termout(const char *fmt, ...)
 {
@@ -150,12 +148,8 @@ int termout(const char *fmt, ...)
 
    va_start(al, fmt);   //lint !e1055 !e530
    vsprintf(consoleBuffer, fmt, al);   //lint !e64
-   // syslog("ecterm attribs: fgnd=%06X, bgnd=%06X\n", 
-   //    term->term_fgnd, term->term_bgnd) ;
-   // myTerminal->set_term_attr_default() ;
-   // myTerminal->put(consoleBuffer);
-   set_term_attr(TERM_NORMAL) ;
-   myTerminal->put(consoleBuffer);
+   set_term_attr(TERM_NORMAL);
+   term_put(consoleBuffer);
    va_end(al);
    return 1;
 }
@@ -173,13 +167,13 @@ int term_append(const char *fmt, ...)
    // myTerminal->set_term_attr_default() ;
    // myTerminal->put(consoleBuffer);
    set_term_attr(TERM_NORMAL) ;
-   myTerminal->append(consoleBuffer);
+   term_append(consoleBuffer);
    va_end(al);
    return 1;
 }
 
 //********************************************************************
-int term_replace(const char *fmt, ...)
+int wterm_replace(const char *fmt, ...)
 {
    char consoleBuffer[MAX_TERM_CHARS + 1];
    va_list al; //lint !e522
@@ -191,7 +185,7 @@ int term_replace(const char *fmt, ...)
    // myTerminal->set_term_attr_default() ;
    // myTerminal->put(consoleBuffer);
    set_term_attr(TERM_NORMAL) ;
-   myTerminal->replace(consoleBuffer);
+   term_replace(consoleBuffer);
    va_end(al);
    return 1;
 }
@@ -208,7 +202,7 @@ int queryout(const char *fmt, ...)
    //    term->term_fgnd, term->term_bgnd) ;
    // myTerminal->set_term_attr(WIN_YELLOW, WIN_BLUE) ;
    set_term_attr(TERM_QUERY) ;
-   myTerminal->put(consoleBuffer);
+   term_put(consoleBuffer);
    va_end(al);
    return 1;
 }
@@ -224,7 +218,7 @@ int infoout(const char *fmt, ...)
    // syslog("ecterm attribs: fgnd=%06X, bgnd=%06X\n", 
    //    term->term_fgnd, term->term_bgnd) ;
    set_term_attr(TERM_INFO) ;
-   myTerminal->put(consoleBuffer);
+   term_put(consoleBuffer);
    va_end(al);
    return 1;
 }
@@ -248,11 +242,8 @@ int put_message(COLORREF attr, const char *fmt, ...)
 
    va_start(al, fmt);   //lint !e1055 !e530
    vsprintf(consoleBuffer, fmt, al);   //lint !e64
-   COLORREF prev_fgnd, prev_bgnd ;
-   myTerminal->get_term_attr(&prev_fgnd, &prev_bgnd) ;
-   myTerminal->set_term_attr(attr, term_atable[TERM_NORMAL].bgnd) ;
-   myTerminal->put(consoleBuffer);
-   myTerminal->set_term_attr(prev_fgnd, prev_bgnd) ;
+   term_set_attr(attr, term_atable[TERM_NORMAL].bgnd) ;
+   term_put(consoleBuffer);
    va_end(al);
    return 1;
 }
@@ -268,11 +259,8 @@ int put_message(COLORREF fgnd, COLORREF bgnd, const char *fmt, ...)
 
    va_start(al, fmt);   //lint !e1055 !e530
    vsprintf(consoleBuffer, fmt, al);   //lint !e64
-   COLORREF prev_fgnd, prev_bgnd ;
-   myTerminal->get_term_attr(&prev_fgnd, &prev_bgnd) ;
-   myTerminal->set_term_attr(fgnd, bgnd) ;
-   myTerminal->put(consoleBuffer);
-   myTerminal->set_term_attr(prev_fgnd, prev_bgnd) ;
+   term_set_attr(fgnd, bgnd) ;
+   term_put(consoleBuffer);
    va_end(al);
    return 1;
 }
@@ -289,7 +277,7 @@ int put_color_msg(uint idx, const char *fmt, ...)
    va_start(al, fmt);   //lint !e1055 !e530
    vsprintf(consoleBuffer, fmt, al);   //lint !e64
    set_term_attr(idx) ;
-   myTerminal->put(consoleBuffer);
+   term_put(consoleBuffer);
    va_end(al);
    return 1;
 }
@@ -357,48 +345,6 @@ static BOOL CALLBACK searcher(HWND hWnd, LPARAM lParam)
    } /* found it */
    return true; // continue search
 } // CMyApp::searcher
-
-//******************************************************************
-static bool term_notify(HWND hwnd, LPARAM lParam)
-{
-   int msg_code = (int) ((NMHDR FAR *) lParam)->code ;
-   if (dbg_flags & DBG_WINMSGS) {
-      switch (msg_code) {
-      //  list messages to be ignored
-      case LVN_GETDISPINFO:   //lint !e650  Constant '4294967146' out of range for operator 'case'
-      case NM_CUSTOMDRAW:
-      case NM_KILLFOCUS:
-      case TTN_SHOW:          //lint !e650  Constant '4294967146' out of range for operator 'case'
-      case TTN_POP:           //lint !e650  Constant '4294967146' out of range for operator 'case'
-      case LVN_ODCACHEHINT:   //lint !e650  Constant '4294967146' out of range for operator 'case'
-      case LVN_KEYDOWN:       //lint !e650  Constant '4294967146' out of range for operator 'case'
-         break;
-      default:
-         syslog("TNOT [%s]\n", lookup_winmsg_name(msg_code)) ;
-         break;
-      }
-   }
-
-   switch (msg_code) {
-
-   //**********************************************************
-   //  terminal listview notifications
-   //**********************************************************
-   case LVN_GETDISPINFO:  //lint !e650
-      // get_terminal_entry(term, lParam) ;
-      myTerminal->get_terminal_entry(lParam) ;
-      return true;
-
-   case NM_CUSTOMDRAW:
-      SetWindowLongA (hwnd, DWL_MSGRESULT, (LONG) myTerminal->TerminalCustomDraw(lParam));
-      return true;
-
-   default:
-      // if (dbg_flags & DBG_WINMSGS)
-      //    syslog("WM_NOTIFY: [%d] %s\n", msg_code, lookup_winmsg_name(msg_code)) ;
-      return false;
-   }
-}  //lint !e715
 
 //******************************************************************
 // Subclass procedure for the Terminal Virtual ListView control
@@ -473,7 +419,7 @@ static LRESULT APIENTRY TermSubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, LP
       inchr = (char) wParam ;
       if (inchr == CtrlC) {
          // term_info_p tiSelf = find_term_from_hwnd(hwnd) ;
-         myTerminal->copy_selected_rows() ;
+         term_copy_selected_rows();
          return 0;
       }
       // syslog("WM_CHAR: process_keystroke [0x%X]\n", wParam) ;
@@ -578,25 +524,24 @@ static void do_init_dialog(HWND hwnd)
    //****************************************************************
    //  create/configure terminal
    //****************************************************************
-   uint ctrl_bottom = get_bottom_line(hwnd, IDC_MAP_AREA) ;
-   uint lvdy = cyClient - ctrl_bottom - MainStatusBar->height() ;
-
-   myTerminal = new CTerminal(hwnd, IDC_TERMINAL, g_hinst, 
-      0, ctrl_bottom, cxClient-1, lvdy,
-      LVL_STY_VIRTUAL | LVL_STY_NO_HEADER | LVL_STY_PAGE_TO_END ) ;
-   myTerminal->set_terminal_font("Courier New", 100, EZ_ATTR_BOLD) ;
-   myTerminal->lview_assign_column_headers() ;
-
-   set_local_terminal_colors() ; //  should this be wrapped in the terminal module?
-
+   setup_terminal_window(hwnd, MainStatusBar->height(), IDC_MAP_AREA);
+   // uint ctrl_bottom = get_bottom_line(hwnd, IDC_MAP_AREA) ;
+   // uint lvdy = cyClient - ctrl_bottom - MainStatusBar->height() ;
+   // myTerminal = new CTerminal(hwnd, IDC_TERMINAL, g_hinst, 
+   //    0, ctrl_bottom, cxClient-1, lvdy,
+   //    LVL_STY_VIRTUAL | LVL_STY_NO_HEADER | LVL_STY_PAGE_TO_END ) ;
+   // myTerminal->set_terminal_font("Courier New", 100, EZ_ATTR_BOLD) ;
+   // myTerminal->lview_assign_column_headers() ;
+   set_local_terminal_colors() ;
+    
    // Subclass the terminal ListView
    // wpOrigTermProc = (WNDPROC) SetWindowLongPtr(term->hwndSelf, GWL_WNDPROC, (LONG) TermSubclassProc); 
-   wpOrigTermProc = (WNDPROC) myTerminal->terminal_lview_subclass((LONG) TermSubclassProc); 
+   wpOrigTermProc = term_lview_subclass((LONG) TermSubclassProc); 
       
    // SetClassLong(this_port->cpterm->hwndSelf, GCL_HCURSOR,(long) 0);  //  disable class cursor
    // termout("terminal size: columns=%u, screen rows=%u", term->cols, term->rows) ;
    termout("terminal size: columns=%u, screen rows=%u",
-      myTerminal->get_term_columns(), myTerminal->get_term_rows()) ;
+      term_get_columns(), term_get_rows()) ;
 
    //****************************************************************
    main_timer_id = SetTimer(hwnd, IDT_TIMER_MAIN, 100, (TIMERPROC) NULL) ;

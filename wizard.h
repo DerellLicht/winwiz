@@ -36,6 +36,7 @@ extern HWND hwndMain ;
 
 //***********************************************************************
 extern HINSTANCE g_hinst ; //  top-level hinstance
+
 //************************************************************
 //  player attributes
 //************************************************************
@@ -179,15 +180,6 @@ extern char tempstr[128] ;
 //**************************************************************
 //  misc variables
 //**************************************************************
-// extern int vendor_repeat_visit_unwelcome ;
-
-//**************************************************************
-// #ifdef USE_BMP
-// extern HBITMAP hSpriteBitmap ;
-// extern HBITMAP hStreamBitmap ;
-// extern HBITMAP hDeathBitmap  ;
-// extern HBITMAP hCombatBitmap ;
-// #endif
 
 //**************************************************************
 //  function prototypes
@@ -195,19 +187,16 @@ extern char tempstr[128] ;
 
 //  winwiz.cpp
 extern uint cxClient, cyClient ;
+
+typedef struct attrib_table_s {
+   COLORREF fgnd ;
+   COLORREF bgnd ;
+} attrib_table_t ;
+
+#define  NUM_TERM_ATTR_ENTRIES   8
 void status_message(char *msgstr);
 void status_message(uint idx, char *msgstr);
-int  termout(const char *fmt, ...);
-int  infoout(const char *fmt, ...);
-int  queryout(const char *fmt, ...);
-int  term_append(const char *fmt, ...);
-int  term_replace(const char *fmt, ...);
-void put_message(char *msgstr);
-int  put_message(COLORREF attr, const char *fmt, ...);
-int  put_message(COLORREF fgnd, COLORREF bgnd, const char *fmt, ...);
-unsigned random(unsigned Q);
 
-//****************************************************************************
 //  indices for put_color_msg()
 enum {
 TERM_NORMAL = 0,
@@ -219,7 +208,20 @@ TERM_RUNESTAFF,
 TERM_DEATH,
 TERM_ATMOSPHERE
 } ;
-int put_color_msg(uint idx, const char *fmt, ...);
+
+int  termout(const char *fmt, ...);
+int  infoout(const char *fmt, ...);
+int  queryout(const char *fmt, ...);
+int  term_append(const char *fmt, ...);
+int  wterm_replace(const char *fmt, ...);
+void put_message(char *msgstr);
+int  put_message(COLORREF attr, const char *fmt, ...);
+int  put_message(COLORREF fgnd, COLORREF bgnd, const char *fmt, ...);
+int  put_color_msg(uint idx, const char *fmt, ...);
+
+unsigned random(unsigned Q);
+
+//****************************************************************************
 void set_term_attr_default(void);
 
 //  CastleInit.cpp

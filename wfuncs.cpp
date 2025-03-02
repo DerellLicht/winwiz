@@ -13,7 +13,8 @@
 #include "commonw.h"
 #include "wizard.h"
 #include "keywin32.h"
-#include "cterminal.h" 
+// #include "cterminal.h" 
+#include "terminal.h" 
 #include "lode_png.h"
 
 // extern LodePng pngVictory ;
@@ -30,7 +31,7 @@
 //lint -esym(715, hdc, hwnd)
 
 //  winwiz.cpp
-extern CTerminal *myTerminal ;
+// extern CTerminal *myTerminal ;
 
 extern bool prog_init_done ;
 
@@ -547,7 +548,7 @@ void win_game(HWND hwnd)
    map_image = MI_VICTORY ;
    pngTiles.render_bitmap(hdc, 0, 0, TILE_VICTORY) ;
    ReleaseDC(hwndMapArea, hdc) ;
-   myTerminal->clear_message_area() ;
+   term_clear_message_area();
    put_message("You find yourself standing beside a sweet, cool") ;
    put_message("stream in the shade of a glowing, verdant forest...") ;
    put_message(" ") ;
@@ -609,7 +610,7 @@ static void wrong_castle_death(HWND hwnd)
    // enable_player_info(false) ;
    // HDC hdc = hdcMain ;
    // draw_main_screen(NULL) ;
-   myTerminal->clear_message_area() ;
+   term_clear_message_area() ;
    // redraw_game_screen(hdc) ;  // wrong_castle_death()
    // show_status_area() ;
    // enable_player_info(true) ;
@@ -646,6 +647,8 @@ static char *second_zot_chest_msg[] = {
 0 } ;
 
 //*************************************************************
+// #define  USE_MESSAGE_WINDOW   1
+
 #define  MAX_CASTLE_NAME   20
 static char castle_name[MAX_CASTLE_NAME+1] ;
 static unsigned cn_len ;
@@ -653,7 +656,6 @@ static unsigned cn_len ;
 static unsigned zot_name_row = 0 ;
 #endif
 
-// #define  USE_MESSAGE_WINDOW   1
 //*************************************************************
 static int process_zot_keystroke (HWND hwnd, unsigned inchr)
 {
@@ -682,7 +684,7 @@ static int process_zot_keystroke (HWND hwnd, unsigned inchr)
          //  modify name and redraw it
          cn_len-- ;
          castle_name[cn_len] = 0 ;  //  make sure string stays NULL-term
-         term_replace(castle_name) ;
+         wterm_replace(castle_name) ;
 #endif
       }
    }   
@@ -700,7 +702,7 @@ static int process_zot_keystroke (HWND hwnd, unsigned inchr)
 #ifdef  USE_MESSAGE_WINDOW
          dprints_centered_x(hwnd, zot_name_row, WIN_BGREEN, 0, castle_name) ;
 #else
-         term_replace(castle_name) ;
+         wterm_replace(castle_name) ;
 #endif
       }
    }
@@ -740,7 +742,7 @@ static void draw_zot_window(HWND hwnd)
 {
    unsigned j ;
    
-   myTerminal->clear_message_area() ;
+   term_clear_message_area() ;
    // clear_dialog_area(hdcMain, WIN_BLACK);
    cn_len = 0 ;
    castle_name[cn_len] = 0 ;  //  make sure string stays NULL-term
@@ -769,11 +771,11 @@ static void draw_zot_window(HWND hwnd)
    zot_name_row = y ;
 #else
    for (j=0; first_zot_chest_msg[j] != 0; j++) {
-      put_message(WIN_BRED, WIN_BLACK, first_zot_chest_msg[j]) ;
+      put_color_msg(TERM_PLAYER_HIT, first_zot_chest_msg[j]) ;
    }
    put_message(WIN_BMAGENTA, WIN_BLACK, " He speaks: ") ;
    for (j=0; second_zot_chest_msg[j] != 0; j++) {
-      put_message(WIN_BRED, WIN_BLACK, second_zot_chest_msg[j]) ;
+      put_color_msg(TERM_PLAYER_HIT, second_zot_chest_msg[j]) ;
    }
 #endif
 }
@@ -2002,7 +2004,7 @@ void draw_beginning_screen(void)
 {
    // clear_dialog_area(hdcMain, GetSysColor(COLOR_3DFACE));
    draw_main_screen(NULL) ;
-   myTerminal->set_terminal_font("Bodacious-Normal", 120, EZ_ATTR_NORMAL) ;
+   term_set_font("Bodacious-Normal", 120, EZ_ATTR_NORMAL) ;
    set_term_attr_default();
    update_room() ;
    level_known[0] = true ;
