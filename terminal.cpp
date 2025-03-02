@@ -20,6 +20,14 @@
 
 static CTerminal *myTerminal = NULL;
 
+static bool debug_enabled = false ;
+
+//******************************************************************
+void term_set_debug(bool enabled)
+{
+   debug_enabled = enabled ;
+}
+
 //******************************************************************
 void term_set_attr(uint fgnd, uint bgnd)
 {
@@ -32,10 +40,18 @@ void term_put(char *term_str)
    myTerminal->put(term_str);
 }
 
+//lint -esym(714, term_append)
+//lint -esym(759, term_append)
+//lint -esym(765, term_append)
+
 void term_append(char *term_str)
 {
    myTerminal->append(term_str);
 }
+
+//lint -esym(714, term_replace)
+//lint -esym(759, term_replace)
+//lint -esym(765, term_replace)
 
 void term_replace(char *term_str)
 {
@@ -73,7 +89,7 @@ void term_set_font(char *font_name, uint fsize, uint attr)
 bool term_notify(HWND hwnd, LPARAM lParam)
 {
    int msg_code = (int) ((NMHDR FAR *) lParam)->code ;
-   if (dbg_flags & DBG_WINMSGS) {
+   if (debug_enabled) {
       switch (msg_code) {
       //  list messages to be ignored
       case LVN_GETDISPINFO:   //lint !e650  Constant '4294967146' out of range for operator 'case'

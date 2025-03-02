@@ -498,6 +498,9 @@ static void do_init_dialog(HWND hwnd)
    //***************************************************************************
    create_and_add_tooltips(hwnd, 150, 100, 10000, main_tooltips);
 
+   if (dbg_flags & DBG_WINMSGS) {
+      term_set_debug(true);
+   }
    // RECT rWindow;
    // unsigned stTop ;
    RECT myRect ;
