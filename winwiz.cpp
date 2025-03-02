@@ -527,7 +527,7 @@ static void do_init_dialog(HWND hwnd)
    //****************************************************************
    //  create/configure terminal
    //****************************************************************
-   setup_terminal_window(hwnd, MainStatusBar->height(), IDC_MAP_AREA);
+   setup_terminal_window(hwnd, MainStatusBar->height(), IDC_MAP_AREA, IDC_TERMINAL);
    // uint ctrl_bottom = get_bottom_line(hwnd, IDC_MAP_AREA) ;
    // uint lvdy = cyClient - ctrl_bottom - MainStatusBar->height() ;
    // myTerminal = new CTerminal(hwnd, IDC_TERMINAL, g_hinst, 

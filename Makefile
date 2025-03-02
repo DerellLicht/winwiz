@@ -29,10 +29,11 @@ der_libs/common_win.cpp \
 der_libs/winmsgs.cpp \
 der_libs/statbar.cpp \
 der_libs/cterminal.cpp \
+der_libs/terminal.cpp \
 der_libs/tooltips.cpp \
 der_libs/vlistview.cpp 
 
-CSRC+=winwiz.cpp terminal.cpp globals.cpp keyboard.cpp wfuncs.cpp \
+CSRC+=winwiz.cpp globals.cpp keyboard.cpp wfuncs.cpp \
 CastleInit.cpp initscrn.cpp combat.cpp vendor.cpp loadhelp.cpp 
 
 # iface_lib.cpp 
@@ -96,20 +97,21 @@ der_libs/common_win.o: der_libs/common.h der_libs/commonw.h
 der_libs/statbar.o: der_libs/common.h der_libs/commonw.h der_libs/statbar.h
 der_libs/cterminal.o: der_libs/common.h der_libs/commonw.h
 der_libs/cterminal.o: der_libs/cterminal.h der_libs/vlistview.h
+der_libs/terminal.o: resource.h der_libs/common.h der_libs/commonw.h wizard.h
+der_libs/terminal.o: der_libs/statbar.h der_libs/cterminal.h
+der_libs/terminal.o: der_libs/vlistview.h der_libs/terminal.h
+der_libs/terminal.o: der_libs/winmsgs.h
 der_libs/tooltips.o: der_libs/iface_32_64.h der_libs/common.h
 der_libs/tooltips.o: der_libs/tooltips.h
 der_libs/vlistview.o: der_libs/common.h der_libs/commonw.h
 der_libs/vlistview.o: der_libs/vlistview.h
 winwiz.o: resource.h der_libs/common.h der_libs/commonw.h der_libs/statbar.h
-winwiz.o: der_libs/cterminal.h der_libs/vlistview.h terminal.h
+winwiz.o: der_libs/cterminal.h der_libs/vlistview.h der_libs/terminal.h
 winwiz.o: der_libs/winmsgs.h wizard.h keywin32.h der_libs/tooltips.h
-terminal.o: resource.h der_libs/common.h der_libs/commonw.h wizard.h
-terminal.o: der_libs/statbar.h der_libs/cterminal.h der_libs/vlistview.h
-terminal.o: terminal.h der_libs/winmsgs.h
 globals.o: der_libs/common.h wizard.h
 keyboard.o: der_libs/common.h wizard.h keywin32.h
 wfuncs.o: resource.h der_libs/common.h der_libs/commonw.h wizard.h keywin32.h
-wfuncs.o: der_libs/cterminal.h der_libs/vlistview.h lode_png.h
+wfuncs.o: der_libs/terminal.h lode_png.h
 CastleInit.o: der_libs/common.h wizard.h
 initscrn.o: resource.h der_libs/common.h wizard.h
 combat.o: der_libs/common.h wizard.h keywin32.h
