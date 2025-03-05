@@ -1,8 +1,11 @@
 #include <windows.h>
+#include <vfw.h>
 
 #include "resource.h"
 #include "common.h"
 #include "wizard.h"
+
+#define min(a, b)  (((a) < (b)) ? (a) : (b)) 
 
 static unsigned item_prices[4] = { 0, 1250, 1500, 2000 } ;
 
