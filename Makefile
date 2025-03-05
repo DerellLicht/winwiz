@@ -21,7 +21,6 @@ LFLAGS=-s
 endif
 CFLAGS += -Wno-write-strings
 # new errors/warnings in TDM g++ 10.3.0
-CFLAGS += -Wno-literal-suffix
 CFLAGS += -Wno-stringop-truncation
 CFLAGS += -Wno-conversion-null
 
