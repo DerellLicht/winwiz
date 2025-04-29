@@ -1383,6 +1383,7 @@ static int open_book_or_chest(HWND hwnd, int contents)
          put_message("YOU STAGGER FROM THE ROOM IN CONFUSION!!") ; 
          ScrambleAttr() ; 
          move_one_square(hwnd) ;
+         //  don't remove chest in this case
          // clear_room(hdcMain); 
       } else if (room < 9) {
          put_message("KABOOM!  THE CHEST EXPLODES!!");
@@ -1391,14 +1392,14 @@ static int open_book_or_chest(HWND hwnd, int contents)
          if (Q >= player.hit_points) {
             player_dies(hwnd) ;
             return -1;
-         } else {
-            player.hit_points -= Q ;
-            show_hit_points() ;
-         }
+         } 
+         player.hit_points -= Q ;
+         show_hit_points() ;
          clear_room(NULL); 
       } else {
          push_keymap(KEYMAP_ZOT_SCR) ;
          draw_zot_window(hwnd) ;
+         clear_room(NULL); 
       }
    } else {
       put_message("You can call your pen, but it won't answer...") ;

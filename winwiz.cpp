@@ -1,8 +1,6 @@
 //****************************************************************************
-//  Copyright (c) 1985-2021  Daniel D Miller
+//  Copyright (c) 1985-2025  Daniel D Miller
 //  winwiz.exe - Win32 version of Wizard's Castle
-//
-//  Written by:  Dan Miller
 //****************************************************************************
 //  WIZARD'S CASTLE GAME FROM JULY/AUGUST 1980                       
 //  ISSUE OF RECREATIONAL COMPUTING MAGAZINE.                        
@@ -27,7 +25,7 @@
 //  based on the Virtual ListView control                            
 //****************************************************************************
 
-static const char *Version = "Wizard's Castle, Version 1.42" ;
+static const char *Version = "Wizard's Castle, Version 1.43" ;
 
 //lint -esym(767, _WIN32_WINNT)
 #define  _WIN32_WINNT   0x0501
