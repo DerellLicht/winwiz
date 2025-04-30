@@ -61,9 +61,12 @@ OBJS = $(CSRC:.cpp=.o) rc.o
 BASE=winwiz
 BIN=$(BASE).exe
 
+LIBS= -lgdi32 -lcomctl32 -lhtmlhelp -lolepro32 -lole32 -luuid
+
 # none of the BMP/JPG code is relevant, if UNICODE is defined
 ifeq ($(USE_UNICODE), YES)
 CSRC+=gdi_plus.cpp
+LIBS += -lgdiplus 
 else
 ifeq ($(USE_BMP),YES)
 CFLAGS += -DUSE_BMP
@@ -108,7 +111,7 @@ lodepng.o: lodepng.cpp
 	g++ $(CFLAGS) -c $< -o $@
 
 winwiz.exe: $(OBJS)
-	g++ $(CFLAGS) $(LFLAGS) $(OBJS) -o $@ -lgdiplus -lgdi32 -lcomctl32 -lhtmlhelp -lolepro32 -lole32 -luuid
+	g++ $(CFLAGS) $(LFLAGS) $(OBJS) -o $@ $(LIBS)
 
 rc.o: winwiz.rc 
 	windres $< -O coff -o $@
