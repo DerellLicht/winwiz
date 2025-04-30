@@ -54,8 +54,12 @@ static const TCHAR *Version = _T("Wizard's Castle, Version 1.44") ;
 #ifdef UNICODE
 using namespace Gdiplus;
 #endif
+#undef CHECK_MULTIPLE_COPIES
+// #define CHECK_MULTIPLE_COPIES
 
+#ifdef  CHECK_MULTIPLE_COPIES
 static TCHAR szAppName[] = _T("winwiz") ;
+#endif
 
 //lint -esym(714, dbg_flags)
 //lint -esym(759, dbg_flags)
@@ -316,6 +320,7 @@ unsigned random(unsigned Q)
 }         
 
 //***********************************************************************
+#ifdef  CHECK_MULTIPLE_COPIES
 static BOOL WeAreAlone(TCHAR *szName)
 {
    HANDLE hMutex = CreateMutex(NULL, true, szName);
@@ -351,6 +356,7 @@ static BOOL CALLBACK searcher(HWND hWnd, LPARAM lParam)
    } /* found it */
    return true; // continue search
 } // CMyApp::searcher
+#endif
 
 //******************************************************************
 // Subclass procedure for the Terminal Virtual ListView control
@@ -593,7 +599,9 @@ static LRESULT CALLBACK TermProc (HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lP
 
    switch(iMsg) {
    case WM_INITDIALOG:
+      syslog(_T("WM_INITDIALOG\n")) ;
       do_init_dialog(hwnd) ;
+      syslog(_T("WM_INITDIALOG done\n")) ;
       // wpOrigMainProc = (WNDPROC) SetWindowLongPtr(hwnd, GWL_WNDPROC, (LONG) MainSubclassProc); 
       return TRUE;
 
@@ -717,6 +725,8 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine
    //     another mutex using szAppName,
    //  then this would not have the results intended!!
    //***************************************************************
+   syslog(_T("enter WinMain\n")) ;
+#ifdef  CHECK_MULTIPLE_COPIES
    if (!WeAreAlone (szAppName)) {
       //  The old technique:
       //  We are already running, display message and quit
@@ -735,8 +745,10 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine
       } /* pop up */
       return 0;
    }
+#endif   
 
    g_hinst = hInstance;
+   syslog(_T("begin\n")) ;
 
    //Plant seed for random number generator with system time
    time_t ti ;
@@ -745,17 +757,21 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine
    // sprintf(tempstr, "ti=%u, rand=%u", ti, rand()) ;
    // OutputDebugString(tempstr) ;
 
+#ifdef  UNICODE
    GdiplusStartupInput gdiplusStartupInput;
    ULONG_PTR           gdiplusToken;
    
    // Initialize GDI+.
    GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
+   syslog(_T("GDI+ startup done\n")) ;
+#endif   
    
    load_exec_filename() ;  //  get our executable name
    //  set up initial data structs
    // read_config_data() ;
    init_castle_contents() ;
    init_player() ;
+   syslog(_T("game inits done\n")) ;
 
    // hdlTopLevel = OpenProcess(PROCESS_ALL_ACCESS, false, _getpid()) ;
    HWND hwnd = CreateDialog(g_hinst, MAKEINTRESOURCE(IDD_MAIN_DIALOG), NULL, (DLGPROC) TermProc) ;
@@ -780,7 +796,9 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine
       }
    }
 
+#ifdef  UNICODE
    GdiplusShutdown(gdiplusToken);
+#endif   
    return (int) Msg.wParam ;
 }  //lint !e715
 

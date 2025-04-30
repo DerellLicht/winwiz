@@ -1,5 +1,5 @@
 //************************************************************************
-//  Copyright (c) 1986-2021  Daniel D Miller
+//  Copyright (c) 1986-2025  Daniel D Miller
 //  winwiz.exe - Wizard's Castle
 //  keyboard.cpp - keyboard state-machine interface for WinWiz
 //                         
@@ -9,6 +9,7 @@
 //****************************************************************************
 
 #include <windows.h>
+#include <stdio.h>
 #include <tchar.h>
 
 #include "common.h"

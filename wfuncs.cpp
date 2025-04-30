@@ -6,6 +6,7 @@
 //  Written by:  Dan Miller
 //****************************************************************************
 #include <windows.h>
+#include <stdio.h>
 #include <stdlib.h>  //  rand() 
 #include <tchar.h>
 
@@ -56,8 +57,10 @@ TILE_DEATH
 #define  IMAGE_HEIGHT      362
 
 #ifdef UNICODE
-static gdi_plus pngSprites(_T("tiles32.png"), SPRITE_HEIGHT, SPRITE_WIDTH) ;
-static gdi_plus pngTiles  (_T("images.png"),  IMAGE_WIDTH,   IMAGE_HEIGHT) ;
+//  tiles32.png: 1280x960, 40x26 images, 1017 total
+static gdi_plus pngSprites(_T("tiles32.png"), 40, 26) ;
+//  images.png:  1077x362, 3x1 images, 3 total
+static gdi_plus pngTiles  (_T("images.png"), 3, 1) ;
 #else
 static LodePng pngSprites(_T("tiles32.png"), SPRITE_HEIGHT, SPRITE_WIDTH) ;
 static LodePng pngTiles  (_T("images.png"),  IMAGE_WIDTH,   IMAGE_HEIGHT) ;
@@ -320,17 +323,17 @@ void draw_current_screen(void)
    switch (map_image) {
    case MI_COMBAT:
       hdc = GetDC(hwndMapArea) ;
-      pngTiles.render_bitmap(hdc, 0, 0, TILE_COMBAT) ;
+      pngTiles.render_bitmap(hdc, 0, 0, TILE_COMBAT, 0) ;
       ReleaseDC(hwndMapArea, hdc) ;
       break;
    case MI_VICTORY:
       hdc = GetDC(hwndMapArea) ;
-      pngTiles.render_bitmap(hdc, 0, 0, TILE_VICTORY) ;
+      pngTiles.render_bitmap(hdc, 0, 0, TILE_VICTORY, 0) ;
       ReleaseDC(hwndMapArea, hdc) ;
       break;
    case MI_DEATH:  
       hdc = GetDC(hwndMapArea) ;
-      pngTiles.render_bitmap(hdc, 0, 0, TILE_DEATH) ;
+      pngTiles.render_bitmap(hdc, 0, 0, TILE_DEATH, 0) ;
       ReleaseDC(hwndMapArea, hdc) ;
       break;
       
@@ -476,7 +479,7 @@ void render_combat_bitmap(void)
 {
    HDC hdc = GetDC(hwndMapArea) ;
    map_image = MI_COMBAT ;
-   pngTiles.render_bitmap(hdc, 0, 0, TILE_COMBAT) ;
+   pngTiles.render_bitmap(hdc, 0, 0, TILE_COMBAT, 0) ;
    ReleaseDC(hwndMapArea, hdc) ;
 }
 
@@ -564,7 +567,7 @@ void win_game(HWND hwnd)
    HDC hdc = GetDC(hwndMapArea) ;
    clear_map_area(hdc, WIN_BLACK) ;
    map_image = MI_VICTORY ;
-   pngTiles.render_bitmap(hdc, 0, 0, TILE_VICTORY) ;
+   pngTiles.render_bitmap(hdc, 0, 0, TILE_VICTORY, 0) ;
    ReleaseDC(hwndMapArea, hdc) ;
    term_clear_message_area();
    put_message(_T("You find yourself standing beside a sweet, cool")) ;
@@ -608,7 +611,7 @@ void player_dies(HWND hwnd)
    update_status() ;
    // pngDeath.render_bitmap(hdc, 0, 0);
    map_image = MI_DEATH ;
-   pngTiles.render_bitmap(hdc, 0, 0, TILE_DEATH) ;
+   pngTiles.render_bitmap(hdc, 0, 0, TILE_DEATH, 0) ;
    display_atmosphere(hdc) ;
    ReleaseDC(hwndMapArea, hdc) ;
 }
@@ -637,7 +640,7 @@ static void wrong_castle_death(HWND hwnd)
       put_color_msg(TERM_DEATH, zot_chest_end_msg[j]) ;
    // pngDeath.render_bitmap(hdc, 0, 0);
    HDC hdc = GetDC(hwndMapArea) ;
-   pngTiles.render_bitmap(hdc, 0, 0, TILE_DEATH) ;
+   pngTiles.render_bitmap(hdc, 0, 0, TILE_DEATH, 0) ;
    ReleaseDC(hwndMapArea, hdc) ;
    map_image = MI_DEATH ;
    infoout(_T("You died while exploring %s"), names[player.castle_nbr]) ;

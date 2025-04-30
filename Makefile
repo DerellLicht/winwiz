@@ -1,7 +1,7 @@
 USE_DEBUG = NO
-USE_BMP = NO
-USE_PNG = NO
-USE_UNICODE = YES
+USE_BMP = YES
+USE_PNG = YES
+USE_UNICODE = NO
 USE_64BIT = NO
 
 ifeq ($(USE_64BIT),YES)
@@ -30,13 +30,13 @@ CFLAGS=-Wall -O2 -mwindows
 LFLAGS=-s
 endif
 CFLAGS += -Wno-write-strings
-# new errors/warnings in TDM g++ 10.3.0
-CFLAGS += -Wno-stringop-truncation
-CFLAGS += -Wno-conversion-null
 
 ifeq ($(USE_UNICODE),YES)
 CFLAGS += -DUNICODE -D_UNICODE
 LFLAGS += -dUNICODE -d_UNICODE
+else
+CFLAGS += -Wno-stringop-truncation
+CFLAGS += -Wno-conversion-null
 endif
 
 # link library files
@@ -136,10 +136,11 @@ winwiz.o: der_libs/winmsgs.h wizard.h keywin32.h der_libs/tooltips.h
 globals.o: der_libs/common.h wizard.h
 keyboard.o: der_libs/common.h wizard.h keywin32.h
 wfuncs.o: resource.h der_libs/common.h der_libs/commonw.h wizard.h keywin32.h
-wfuncs.o: der_libs/terminal.h gdi_plus.h
+wfuncs.o: der_libs/terminal.h lode_png.h
 CastleInit.o: der_libs/common.h wizard.h
 initscrn.o: resource.h der_libs/common.h wizard.h
 combat.o: der_libs/common.h wizard.h keywin32.h
 vendor.o: resource.h der_libs/common.h wizard.h
 loadhelp.o: der_libs/common.h
-gdi_plus.o: der_libs/common.h gdi_plus.h
+lodepng.o: lodepng.h
+lode_png.o: der_libs/common.h lode_png.h lodepng.h

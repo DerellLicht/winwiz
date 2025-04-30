@@ -13,7 +13,7 @@ private:
    // std::vector<unsigned char> bmp ;
    // std::vector<unsigned char> img ;
    
-   char *img_name ;
+   TCHAR *img_name ;
    // HBITMAP hBitmap ;
    Bitmap *gbitmap ;
    uint nWidth ;
@@ -28,6 +28,7 @@ private:
    // void encodeBMP(std::vector<unsigned char>& bmp, const unsigned char* image, int w, int h);
    // HBITMAP ConvertDibToHBitmap(void* bmpData);
    // HBITMAP load_png_to_bmp(void);
+   void copy_imagelist_item(Graphics& graphics, int xsrc, int ysrc, int dx, int dy, int xdest, int ydest);
 
    //  disable the assignment operator and copy constructor
    gdi_plus &operator=(const gdi_plus &src) ;
@@ -38,12 +39,12 @@ private:
 public:   
    // gdi_plus();
    gdi_plus(TCHAR *new_img_name) ;
-   gdi_plus(TCHAR *new_img_name, uint dx, uint dy) ;
+   // gdi_plus(TCHAR *new_img_name, uint dx, uint dy) ;
+   gdi_plus(TCHAR *new_img_name, uint icons_per_column, uint icon_rows);
    ~gdi_plus();
-   void render_bitmap(HDC hdc, unsigned x, unsigned y);
-   // void render_bitmap(HDC hdc, uint xdest, uint ydest, uint xsrc, uint ysrc);
+   // void render_bitmap(HDC hdc, unsigned x, unsigned y);
    void render_bitmap(HDC hdc, uint xdest, uint ydest, uint sprite_col, uint sprite_row);
-   void render_bitmap(HDC hdc, uint xdest, uint ydest, uint tile_index);
+   // void render_bitmap(HDC hdc, uint xdest, uint ydest, uint tile_index);
    uint img_width(void) const
       { return nWidth ; } ;
    uint img_height(void) const
