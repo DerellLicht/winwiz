@@ -26,15 +26,6 @@ extern uint dbg_flags ;
 extern HWND hwndMain ;
 
 //***********************************************************************
-//  sprite handler constants
-//***********************************************************************
-#define  IMAGE_WIDTH       359
-#define  IMAGE_HEIGHT      362
-
-#define  SPRITE_WIDTH      32
-#define  SPRITE_HEIGHT     32
-
-//***********************************************************************
 extern HINSTANCE g_hinst ; //  top-level hinstance
 
 //************************************************************
@@ -161,21 +152,21 @@ typedef struct object_data_s {
    // unsigned obj_idx ;
    unsigned sprite_row ;
    unsigned sprite_col ;
-   char*    desc ;
+   TCHAR*    desc ;
 } object_data_t ;
 extern object_data_t object_data[LAST_OBJECT] ;
 
 //**************************************************************
 //  misc string arrays
 //**************************************************************
-extern char *names[10] ;
-extern char *race_str[4] ;
-extern char *weapon_str[5] ;
-extern char *armour_str[4] ;
-extern char *meal[8] ;
-extern char *curse_str[3] ;
+extern TCHAR *names[10] ;
+extern TCHAR *race_str[4] ;
+extern TCHAR *weapon_str[5] ;
+extern TCHAR *armour_str[4] ;
+extern TCHAR *meal[8] ;
+extern TCHAR *curse_str[3] ;
 
-extern char tempstr[128] ;
+extern TCHAR tempstr[128] ;
 
 //**************************************************************
 //  misc variables
@@ -194,8 +185,8 @@ typedef struct attrib_table_s {
 } attrib_table_t ;
 
 #define  NUM_TERM_ATTR_ENTRIES   8
-void status_message(char *msgstr);
-void status_message(uint idx, char *msgstr);
+void status_message(TCHAR *msgstr);
+void status_message(uint idx, TCHAR *msgstr);
 
 //  indices for put_color_msg()
 enum {
@@ -209,15 +200,15 @@ TERM_DEATH,
 TERM_ATMOSPHERE
 } ;
 
-int  termout(const char *fmt, ...);
-int  infoout(const char *fmt, ...);
-int  queryout(const char *fmt, ...);
-int  term_append(const char *fmt, ...);
-int  wterm_replace(const char *fmt, ...);
-void put_message(char *msgstr);
-int  put_message(COLORREF attr, const char *fmt, ...);
-int  put_message(COLORREF fgnd, COLORREF bgnd, const char *fmt, ...);
-int  put_color_msg(uint idx, const char *fmt, ...);
+int  termout(const TCHAR *fmt, ...);
+int  infoout(const TCHAR *fmt, ...);
+int  queryout(const TCHAR *fmt, ...);
+int  term_append(const TCHAR *fmt, ...);
+int  wterm_replace(const TCHAR *fmt, ...);
+void put_message(TCHAR *msgstr);
+int  put_message(COLORREF attr, const TCHAR *fmt, ...);
+int  put_message(COLORREF fgnd, COLORREF bgnd, const TCHAR *fmt, ...);
+int  put_color_msg(uint idx, const TCHAR *fmt, ...);
 
 unsigned random(unsigned Q);
 
@@ -266,8 +257,8 @@ int  move_up(HWND hwnd);
 void move_one_square(HWND hwnd);
 int  look_in_direction(HWND hwnd, unsigned chr);
 unsigned get_room_contents(void);
-char *get_room_contents_str(void);
-char *get_object_name(int index);
+TCHAR *get_room_contents_str(void);
+TCHAR *get_object_name(int index);
 void show_player(void);
 void player_dies(HWND hwnd);
 void win_game(HWND hwnd);
@@ -284,7 +275,7 @@ void show_gold(void);
 void draw_beginning_screen(void);
 void update_status(void);
 void show_treasures(void);
-bool starts_with_vowel(char *monster);
+bool starts_with_vowel(TCHAR *monster);
 void update_cursor(void);
 void render_combat_bitmap(void);
 void draw_current_screen(void);

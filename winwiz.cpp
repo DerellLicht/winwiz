@@ -25,15 +25,17 @@
 //  based on the Virtual ListView control                            
 //****************************************************************************
 
-static const char *Version = "Wizard's Castle, Version 1.43" ;
-
 //lint -esym(767, _WIN32_WINNT)
 #define  _WIN32_WINNT   0x0501
 #include <windows.h>
 #include <stdio.h>   //  vsprintf, sprintf, which supports %f
 #include <time.h>
+#include <tchar.h>
 #ifdef _lint
 #include <stdlib.h>  //  RAND_MAX
+#endif
+#ifdef UNICODE
+#include <gdiplus.h>
 #endif
 
 #include "resource.h"
@@ -47,7 +49,13 @@ static const char *Version = "Wizard's Castle, Version 1.43" ;
 #include "keywin32.h"
 #include "tooltips.h"
 
-static char szAppName[] = "winwiz";
+static const TCHAR *Version = _T("Wizard's Castle, Version 1.44") ;
+
+#ifdef UNICODE
+using namespace Gdiplus;
+#endif
+
+static TCHAR szAppName[] = _T("winwiz") ;
 
 //lint -esym(714, dbg_flags)
 //lint -esym(759, dbg_flags)
@@ -78,13 +86,13 @@ bool prog_init_done = false ;
 static const UINT WM_ARE_YOU_ME = (WM_USER + 106) ;
 
 //*******************************************************************
-void status_message(char *msgstr)
+void status_message(TCHAR *msgstr)
 {
    MainStatusBar->show_message(msgstr);
 }
 
 //*******************************************************************
-void status_message(uint idx, char *msgstr)
+void status_message(uint idx, TCHAR *msgstr)
 {
    MainStatusBar->show_message(idx, msgstr);
 }
@@ -130,7 +138,7 @@ void set_term_attr_default(void)
 void set_term_attr(uint atidx)
 {
    if (atidx >= NUM_TERM_ATTR_ENTRIES) {
-      syslog("set_term_attr: invalid index %u\n", atidx) ;
+      syslog(_T("set_term_attr: invalid index %u\n"), atidx) ;
       return ;
    }
    term_set_attr(term_atable[atidx].fgnd, term_atable[atidx].bgnd) ;
@@ -139,13 +147,13 @@ void set_term_attr(uint atidx)
 //********************************************************************
 //  This outputs to terminal in default colors
 //********************************************************************
-int termout(const char *fmt, ...)
+int termout(const TCHAR *fmt, ...)
 {
-   char consoleBuffer[MAX_TERM_CHARS + 1];
+   TCHAR consoleBuffer[MAX_TERM_CHARS + 1];
    va_list al; //lint !e522
 
    va_start(al, fmt);   //lint !e1055 !e530
-   vsprintf(consoleBuffer, fmt, al);   //lint !e64
+   _vstprintf(consoleBuffer, fmt, al);   //lint !e64
    set_term_attr(TERM_NORMAL);
    term_put(consoleBuffer);
    va_end(al);
@@ -153,13 +161,13 @@ int termout(const char *fmt, ...)
 }
 
 //********************************************************************
-int term_append(const char *fmt, ...)
+int term_append(const TCHAR *fmt, ...)
 {
-   char consoleBuffer[MAX_TERM_CHARS + 1];
+   TCHAR consoleBuffer[MAX_TERM_CHARS + 1];
    va_list al; //lint !e522
 
    va_start(al, fmt);   //lint !e1055 !e530
-   vsprintf(consoleBuffer, fmt, al);   //lint !e64
+   _vstprintf(consoleBuffer, fmt, al);   //lint !e64
    // syslog("ecterm attribs: fgnd=%06X, bgnd=%06X\n", 
    //    term->term_fgnd, term->term_bgnd) ;
    // myTerminal->set_term_attr_default() ;
@@ -171,13 +179,13 @@ int term_append(const char *fmt, ...)
 }
 
 //********************************************************************
-int wterm_replace(const char *fmt, ...)
+int wterm_replace(const TCHAR *fmt, ...)
 {
-   char consoleBuffer[MAX_TERM_CHARS + 1];
+   TCHAR consoleBuffer[MAX_TERM_CHARS + 1];
    va_list al; //lint !e522
 
    va_start(al, fmt);   //lint !e1055 !e530
-   vsprintf(consoleBuffer, fmt, al);   //lint !e64
+   _vstprintf(consoleBuffer, fmt, al);   //lint !e64
    // syslog("ecterm attribs: fgnd=%06X, bgnd=%06X\n", 
    //    term->term_fgnd, term->term_bgnd) ;
    // myTerminal->set_term_attr_default() ;
@@ -189,13 +197,13 @@ int wterm_replace(const char *fmt, ...)
 }
 
 //********************************************************************
-int queryout(const char *fmt, ...)
+int queryout(const TCHAR *fmt, ...)
 {
-   char consoleBuffer[MAX_TERM_CHARS + 1];
+   TCHAR consoleBuffer[MAX_TERM_CHARS + 1];
    va_list al; //lint !e522
 
    va_start(al, fmt);   //lint !e1055 !e530
-   vsprintf(consoleBuffer, fmt, al);   //lint !e64
+   _vstprintf(consoleBuffer, fmt, al);   //lint !e64
    // syslog("ecterm attribs: fgnd=%06X, bgnd=%06X\n", 
    //    term->term_fgnd, term->term_bgnd) ;
    // myTerminal->set_term_attr(WIN_YELLOW, WIN_BLUE) ;
@@ -206,13 +214,13 @@ int queryout(const char *fmt, ...)
 }
 
 //********************************************************************
-int infoout(const char *fmt, ...)
+int infoout(const TCHAR *fmt, ...)
 {
-   char consoleBuffer[MAX_TERM_CHARS + 1];
+   TCHAR consoleBuffer[MAX_TERM_CHARS + 1];
    va_list al; //lint !e522
 
    va_start(al, fmt);   //lint !e1055 !e530
-   vsprintf(consoleBuffer, fmt, al);   //lint !e64
+   _vstprintf(consoleBuffer, fmt, al);   //lint !e64
    // syslog("ecterm attribs: fgnd=%06X, bgnd=%06X\n", 
    //    term->term_fgnd, term->term_bgnd) ;
    set_term_attr(TERM_INFO) ;
@@ -224,7 +232,7 @@ int infoout(const char *fmt, ...)
 //*******************************************************************
 //  this uses default font and color
 //*******************************************************************
-void put_message(char *msgstr)
+void put_message(TCHAR *msgstr)
 {
    termout(msgstr) ;
 }
@@ -233,13 +241,13 @@ void put_message(char *msgstr)
 //  this function is only used for displaying RuneStaff and/or
 //  Orb Of Zot, in "treasures" listing
 //********************************************************************
-int put_message(COLORREF attr, const char *fmt, ...)
+int put_message(COLORREF attr, const TCHAR *fmt, ...)
 {
-   char consoleBuffer[MAX_TERM_CHARS + 1];
+   TCHAR consoleBuffer[MAX_TERM_CHARS + 1];
    va_list al; //lint !e522
 
    va_start(al, fmt);   //lint !e1055 !e530
-   vsprintf(consoleBuffer, fmt, al);   //lint !e64
+   _vstprintf(consoleBuffer, fmt, al);   //lint !e64
    term_set_attr(attr, term_atable[TERM_NORMAL].bgnd) ;
    term_put(consoleBuffer);
    va_end(al);
@@ -250,13 +258,13 @@ int put_message(COLORREF attr, const char *fmt, ...)
 //  this function is only used for displaying RuneStaff and/or
 //  Orb Of Zot, in "treasures" listing
 //********************************************************************
-int put_message(COLORREF fgnd, COLORREF bgnd, const char *fmt, ...)
+int put_message(COLORREF fgnd, COLORREF bgnd, const TCHAR *fmt, ...)
 {
-   char consoleBuffer[MAX_TERM_CHARS + 1];
+   TCHAR consoleBuffer[MAX_TERM_CHARS + 1];
    va_list al; //lint !e522
 
    va_start(al, fmt);   //lint !e1055 !e530
-   vsprintf(consoleBuffer, fmt, al);   //lint !e64
+   _vstprintf(consoleBuffer, fmt, al);   //lint !e64
    term_set_attr(fgnd, bgnd) ;
    term_put(consoleBuffer);
    va_end(al);
@@ -267,13 +275,13 @@ int put_message(COLORREF fgnd, COLORREF bgnd, const char *fmt, ...)
 //  this *cannot* be called with a color attribute;
 //  it must be called with an index into term_atable[] !!
 //********************************************************************
-int put_color_msg(uint idx, const char *fmt, ...)
+int put_color_msg(uint idx, const TCHAR *fmt, ...)
 {
-   char consoleBuffer[MAX_TERM_CHARS + 1];
+   TCHAR consoleBuffer[MAX_TERM_CHARS + 1];
    va_list al; //lint !e522
 
    va_start(al, fmt);   //lint !e1055 !e530
-   vsprintf(consoleBuffer, fmt, al);   //lint !e64
+   _vstprintf(consoleBuffer, fmt, al);   //lint !e64
    set_term_attr(idx) ;
    term_put(consoleBuffer);
    va_end(al);
@@ -308,9 +316,9 @@ unsigned random(unsigned Q)
 }         
 
 //***********************************************************************
-static BOOL WeAreAlone(LPSTR szName)
+static BOOL WeAreAlone(TCHAR *szName)
 {
-   HANDLE hMutex = CreateMutexA(NULL, true, szName);
+   HANDLE hMutex = CreateMutex(NULL, true, szName);
    if (GetLastError() == ERROR_ALREADY_EXISTS) {
       CloseHandle(hMutex);
       return false;
@@ -464,29 +472,29 @@ static void center_window(void)
 
 //***********************************************************************
 static tooltip_data_t main_tooltips[] = {
-{ IDC_T0,    " the Ruby Red "   },  
-{ IDC_T1,    " the Norn Stone " },  
-{ IDC_T2,    " the Pale Pearl " },  
-{ IDC_T3,    " the Opal Eye "   },  
-{ IDC_RS,    " the RuneStaff "  },
-{ IDC_T4,    " the Green Gem "  },  
-{ IDC_T5,    " the Blue Flame " },  
-{ IDC_T6,    " the Palantir "   },  
-{ IDC_T7,    " the Silmaril "   },  
-{ IDC_OZ,    " the Orb of Zot " },
-{ IDS_HELP,  " show Help file " },
+{ IDC_T0,    _T(" the Ruby Red "  ) },  
+{ IDC_T1,    _T(" the Norn Stone ") },  
+{ IDC_T2,    _T(" the Pale Pearl ") },  
+{ IDC_T3,    _T(" the Opal Eye "  ) },  
+{ IDC_RS,    _T(" the RuneStaff " ) },
+{ IDC_T4,    _T(" the Green Gem " ) },  
+{ IDC_T5,    _T(" the Blue Flame ") },  
+{ IDC_T6,    _T(" the Palantir "  ) },  
+{ IDC_T7,    _T(" the Silmaril "  ) },  
+{ IDC_OZ,    _T(" the Orb of Zot ") },
+{ IDS_HELP,  _T(" show Help file ") },
 { 0, NULL }} ;
 
 //***********************************************************************
 static void do_init_dialog(HWND hwnd)
 {
-   char msgstr[81] ;
+   TCHAR msgstr[81] ;
    // hwndTopLevel = hwnd ;   //  do I need this?
-   wsprintfA(msgstr, "%s", Version) ;
-   SetWindowTextA(hwnd, msgstr) ;
+   _stprintf(msgstr, _T("%s"), Version) ;
+   SetWindowText(hwnd, msgstr) ;
 
-   SetClassLongA(hwnd, GCL_HICON,   (LONG) LoadIcon(g_hinst, (LPCTSTR)WINWIZICO));
-   SetClassLongA(hwnd, GCL_HICONSM, (LONG) LoadIcon(g_hinst, (LPCTSTR)WINWIZICO));
+   SetClassLong(hwnd, GCL_HICON,   (LONG) LoadIcon(g_hinst, (LPCTSTR)WINWIZICO));
+   SetClassLong(hwnd, GCL_HICONSM, (LONG) LoadIcon(g_hinst, (LPCTSTR)WINWIZICO));
 
    hwndMain = hwnd ;
 
@@ -541,7 +549,7 @@ static void do_init_dialog(HWND hwnd)
       
    // SetClassLong(this_port->cpterm->hwndSelf, GCL_HCURSOR,(long) 0);  //  disable class cursor
    // termout("terminal size: columns=%u, screen rows=%u", term->cols, term->rows) ;
-   termout("terminal size: columns=%u, screen rows=%u",
+   termout(_T("terminal size: columns=%u, screen rows=%u"),
       term_get_columns(), term_get_rows()) ;
 
    //****************************************************************
@@ -578,7 +586,7 @@ static LRESULT CALLBACK TermProc (HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lP
       case WM_COMMAND:  //  prints its own msgs below
          break;
       default:
-         syslog("TOP [%s]\n", lookup_winmsg_name(iMsg)) ;
+         syslog(_T("TOP [%s]\n"), lookup_winmsg_name(iMsg)) ;
          break;
       }
    }
@@ -665,10 +673,10 @@ static LRESULT CALLBACK TermProc (HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lP
          switch(target) {
             
          case IDB_HELP:
-            queryout("Terminal keyboard shortcuts") ;
-            infoout("Alt-s = send command (i.e., print command in terminal)") ;
-            infoout("Alt-h = show this help screen") ;
-            infoout("Alt-c = Close this program") ;
+            queryout(_T("Terminal keyboard shortcuts")) ;
+            infoout(_T("Alt-s = send command (i.e., print command in terminal)")) ;
+            infoout(_T("Alt-h = show this help screen")) ;
+            infoout(_T("Alt-c = Close this program")) ;
             break;
             
          case IDB_CLOSE:
@@ -737,6 +745,13 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine
    // sprintf(tempstr, "ti=%u, rand=%u", ti, rand()) ;
    // OutputDebugString(tempstr) ;
 
+   GdiplusStartupInput gdiplusStartupInput;
+   ULONG_PTR           gdiplusToken;
+   
+   // Initialize GDI+.
+   GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
+   
+   load_exec_filename() ;  //  get our executable name
    //  set up initial data structs
    // read_config_data() ;
    init_castle_contents() ;
@@ -745,7 +760,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine
    // hdlTopLevel = OpenProcess(PROCESS_ALL_ACCESS, false, _getpid()) ;
    HWND hwnd = CreateDialog(g_hinst, MAKEINTRESOURCE(IDD_MAIN_DIALOG), NULL, (DLGPROC) TermProc) ;
    if (hwnd == NULL) {
-      syslog("CreateDialog: %s\n", get_system_message()) ;
+      syslog(_T("CreateDialog: %s\n"), get_system_message()) ;
       return 0;
    }
    HACCEL hAccel = LoadAccelerators(g_hinst, MAKEINTRESOURCE(IDR_ACCELERATOR1));  
@@ -765,6 +780,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine
       }
    }
 
+   GdiplusShutdown(gdiplusToken);
    return (int) Msg.wParam ;
 }  //lint !e715
 

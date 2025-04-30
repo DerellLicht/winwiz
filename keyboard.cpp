@@ -9,6 +9,7 @@
 //****************************************************************************
 
 #include <windows.h>
+#include <tchar.h>
 
 #include "common.h"
 #include "wizard.h"
@@ -67,7 +68,7 @@ int push_keymap(keymap_states_t new_keymap)
    keymap_stack[keymap_idx] = keymap ;
    keymap = new_keymap ;
    keymap_idx++ ;
-   // wsprintf(tempstr, "+keymap [%u]=%s", keymap_idx, (uint) keymap) ;
+   // _stprintf(tempstr, "+keymap [%u]=%s", keymap_idx, (uint) keymap) ;
    // put_message(tempstr) ;
    return 1;
 }
@@ -80,7 +81,7 @@ int pop_keymap(void)
       keymap_idx-- ;
    }
    keymap = keymap_stack[keymap_idx] ;
-   // wsprintf(tempstr, "-keymap [%u]=%u", keymap_idx, (uint) keymap) ;
+   // _stprintf(tempstr, "-keymap [%u]=%u", keymap_idx, (uint) keymap) ;
    // put_message(tempstr) ;
    return 1;
 }
@@ -104,7 +105,7 @@ void reset_keymap(keymap_states_t new_keymap_state)
 //*************************************************************
 void keymap_show_state(void)
 {
-   wsprintf(tempstr, "keymap state: idx: %u, keymap: %u/%u", 
+   _stprintf(tempstr, _T("keymap state: idx: %u, keymap: %u/%u"), 
       keymap_idx, (uint) keymap_stack[keymap_idx], (uint) keymap);
    put_message(tempstr) ;
 }
@@ -114,7 +115,7 @@ void keymap_show_state(void)
 static void execute_debug_function(void)
 {
    player.has_runestaff = true ;
-   put_color_msg(TERM_RUNESTAFF, "GREAT ZOT!! You've found the RUNESTAFF!!");
+   put_color_msg(TERM_RUNESTAFF, _T("GREAT ZOT!! You've found the RUNESTAFF!!"));
    show_treasures() ;
 }
 #endif
@@ -151,7 +152,7 @@ static int kbd_handler_pool(HWND hwnd, unsigned inchr)
       skip_keymap_pop = 1 ;
       break;
    default:
-      put_message("Hmph... you're as stupid as you look...") ;
+      put_message(_T("Hmph... you're as stupid as you look...")) ;
       break;
    }
    if (!skip_keymap_pop)
@@ -172,7 +173,7 @@ static int kbd_handler_intro(HWND hwnd, unsigned inchr)
    } else if (inchr == kESC) {
       SendMessage(hwnd, WM_DESTROY, 0, 0) ;
    } else {
-      wsprintf (tempstr, "PRESS=0x%04X", inchr);
+      _stprintf (tempstr, _T("PRESS=0x%04X"), inchr);
       status_message(tempstr);
    }
    return 0;
@@ -181,14 +182,14 @@ static int kbd_handler_intro(HWND hwnd, unsigned inchr)
 //*************************************************************
 static bool can_I_see(void)
 {
-   char msgstr[81] ;
+   TCHAR msgstr[81] ;
    if (player.is_blind) {
-      wsprintf(msgstr, "YOU CAN'T SEE, YOU BLIND %s !!", race_str[player.race]);
+      _stprintf(msgstr, _T("YOU CAN'T SEE, YOU BLIND %s !!"), race_str[player.race]);
       put_message(msgstr) ;
       return false;
    }
    if (!player.has_lamp) {
-      put_message("Dang, it's dim in here!!") ;
+      put_message(_T("Dang, it's dim in here!!")) ;
       return false;
    }
    return true;
@@ -251,8 +252,8 @@ static int default_kbd_handler(HWND hwnd, unsigned inchr)
    case kl:
       if (!can_I_see())
          break;
-      put_message(" "); 
-      put_message("Where do you shine the lamp? "); 
+      put_message(_T(" ")); 
+      put_message(_T("Where do you shine the lamp? ")); 
       push_keymap(KEYMAP_LOOKDIR) ;
       break;
 
@@ -280,7 +281,7 @@ static int default_kbd_handler(HWND hwnd, unsigned inchr)
    case ko: 
    case kt: 
    case kr:  
-      put_message("This command has been replaced by [E]xecute..."); 
+      put_message(_T("This command has been replaced by [E]xecute...")); 
       break;
 
    case kp: teleport(hwnd, inchr); break;
@@ -304,7 +305,7 @@ static int default_kbd_handler(HWND hwnd, unsigned inchr)
       break;
 
    default:
-      wsprintf (tempstr, "PRESS=0x%04X", inchr);
+      _stprintf (tempstr, _T("PRESS=0x%04X"), inchr);
       status_message(tempstr);
       return -1;
       // break;

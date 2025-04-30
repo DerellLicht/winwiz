@@ -1,4 +1,5 @@
 #include <windows.h>
+#include <tchar.h>
 #include <vfw.h>
 
 #include "resource.h"
@@ -14,9 +15,9 @@ static unsigned item_prices[4] = { 0, 1250, 1500, 2000 } ;
 //****************************************************************************
 static void vendor_show_value(HWND hDlg, int vid, unsigned value)
 {
-   char stext[20] ;
+   TCHAR stext[20] ;
    HWND hwndTemp = GetDlgItem(hDlg, vid) ;
-   wsprintf(stext, " %u ", value) ;
+   _stprintf(stext, _T(" %u "), value) ;
    SetWindowText(hwndTemp, stext) ;
 }
 
@@ -92,7 +93,7 @@ static BOOL CALLBACK VendorDlgProc (
          vendor_show_value(hDlg, tval, treasure_prices[idx]) ;
       }
       //  debug
-      // wsprintf(dbg, "va=%u, hgt=%u, clhgt=%u, go_top=%u\n",
+      // _stprintf(dbg, _T("va=%u, hgt=%u, clhgt=%u, go_top=%u\n"),
       //    VARMOR_TOP, CR_HEIGHT, CL_HEIGHT, GO_TOP) ;
       // OutputDebugString(dbg) ;
 
@@ -316,7 +317,7 @@ int trade_with_vendor(HWND hwnd)
 {
    int result = DialogBox (g_hinst, MAKEINTRESOURCE(IDD_VENDORBOX), hwnd, VendorDlgProc);
    if (result < 0) {
-      syslog("Vendor: DialogBox: %s\n", get_system_message()) ;
+      syslog(_T("Vendor: DialogBox: %s\n"), get_system_message()) ;
    } 
    return result;
 }

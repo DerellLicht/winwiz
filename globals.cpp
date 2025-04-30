@@ -9,6 +9,8 @@
 //************************************************************
 
 #include <windows.h>
+#include <tchar.h>
+
 #include "common.h"
 #include "wizard.h"
 
@@ -16,7 +18,7 @@ player_info_t player ;    //  player attributes
 
 castle_room_t castle[DIMEN_COUNT][DIMEN_COUNT][DIMEN_COUNT] ; //  Castle definitions
 
-char tempstr[128] ;
+TCHAR tempstr[128] ;
 
 //  locations of special objects which share room with other objects
 castle_room_t runestaff_room, orb_room ;
@@ -29,53 +31,53 @@ castle_room_t curse_rooms[3] ;
 //    char*    desc ;
 // } object_data_t ;
 object_data_t object_data[LAST_OBJECT] = {
-{ 25,  9, "unassigned room" }, // UNSEEN_ROOM    ,  
-{ 21,  1, "normal room"     }, // EMPTY_ROOM     ,  
-{ 21,  4, "entrance"        }, // CASTLE_ENTRANCE,  
-{ 21, 11, "stairs up"       }, // STAIRS_UP      ,  
-{ 21, 12, "stairs down"     }, // STAIRS_DOWN    ,  
+{ 25,  9, _T("unassigned room") }, // UNSEEN_ROOM    ,  
+{ 21,  1, _T("normal room"    ) }, // EMPTY_ROOM     ,  
+{ 21,  4, _T("entrance"       ) }, // CASTLE_ENTRANCE,  
+{ 21, 11, _T("stairs up"      ) }, // STAIRS_UP      ,  
+{ 21, 12, _T("stairs down"    ) }, // STAIRS_DOWN    ,  
 
-// { OBJECT_BASE    ,   0,  6 },
-{ 22, 17, "a pool"        }, // POOL           ,  
-{ 14, 26, "a chest"       }, // CHEST          ,  
-{ 14, 28, "gold pieces"   }, // GOLD_PIECES    ,  
-{ 16,  3, "flares"        }, // FLARES         ,  
-{ 22, 11, "a warp"        }, // WARP           ,  
-{ 22,  2, "a sinkhole"    }, // SINKHOLE       ,  
-{  0, 32, "a crystal orb" }, // CRYSTAL_ORB    ,  
-{ 18,  0, "a book"        }, // BOOK           ,  
-// { OBJECT_END     ,  26,  9 },
+// { OBJECT_BASE    ,   0,  6) },
+{ 22, 17, _T("a pool"       ) }, // POOL           ,  
+{ 14, 26, _T("a chest"      ) }, // CHEST          ,  
+{ 14, 28, _T("gold pieces"  ) }, // GOLD_PIECES    ,  
+{ 16,  3, _T("flares"       ) }, // FLARES         ,  
+{ 22, 11, _T("a warp"       ) }, // WARP           ,  
+{ 22,  2, _T("a sinkhole"   ) }, // SINKHOLE       ,  
+{  0, 32, _T("a crystal orb") }, // CRYSTAL_ORB    ,  
+{ 18,  0, _T("a book"       ) }, // BOOK           ,  
+// { OBJECT_END     ,  26,  9) },
 
-// { MONSTER_BASE   ,  26,  9 },
-{  1, 21, "kobold"   }, // KOBOLD         ,    
-{  1, 35, "orc"      }, // ORC            ,   
-{  0, 22, "kresh"    }, // KRESH          ,   
-{  1,  5, "goblin"   }, // GOBLIN         ,   
-{  5,  5, "ogre"     }, // OGRE           ,   
-{  4, 12, "troll"    }, // TROLL          ,   
-{  8, 16, "minotaur" }, // MINOTAUR       ,   
-{  9, 12, "ur-vile"  }, // UR_VILE        ,   
-{  1, 14, "gargoyle" }, // GARGOYLE       ,   
-{  7, 33, "chimera"  }, // CHIMERA        ,   
-{  7, 17, "balrog"   }, // BALROG         ,   
-{  3, 27, "dragon"   }, // DRAGON         ,   
-// { MONSTER_END    ,  26,  9 },
+// { MONSTER_BASE   ,  26,  9) },
+{  1, 21, _T("kobold"  ) }, // KOBOLD         ,    
+{  1, 35, _T("orc"     ) }, // ORC            ,   
+{  0, 22, _T("kresh"   ) }, // KRESH          ,   
+{  1,  5, _T("goblin"  ) }, // GOBLIN         ,   
+{  5,  5, _T("ogre"    ) }, // OGRE           ,   
+{  4, 12, _T("troll"   ) }, // TROLL          ,   
+{  8, 16, _T("minotaur") }, // MINOTAUR       ,   
+{  9, 12, _T("ur-vile" ) }, // UR_VILE        ,   
+{  1, 14, _T("gargoyle") }, // GARGOYLE       ,   
+{  7, 33, _T("chimera" ) }, // CHIMERA        ,   
+{  7, 17, _T("balrog"  ) }, // BALROG         ,   
+{  3, 27, _T("dragon"  ) }, // DRAGON         ,   
+// { MONSTER_END    ,  26,  9) },
 
-{ 14, 34, "vendor" }, // VENDOR         ,  
+{ 14, 34, _T("vendor") }, // VENDOR         ,  
 
-// { TREASURE_BASE  ,  26,  9 },
-{ 19, 29, "the Ruby Red"   }, // RUBY_RED       ,  
-{ 19, 30, "the Norn Stone" }, // NORN_STONE     ,  
-{ 20,  1, "the Pale Pearl" }, // PALE_PEARL     ,  
-{ 16, 13, "the Opal Eye"   }, // OPAL_EYE       ,  
-{ 19, 33, "the Green Gem"  }, // GREEN_GEM      ,  
-{ 19, 31, "the Blue Flame" }, // BLUE_FLAME     ,  
-{ 20,  3, "the Palantir"   }, // PALANTIR       ,  
-{ 20,  0, "the Silmaril"   }, // SILMARIL       ,  
+// { TREASURE_BASE  ,  26,  9) },
+{ 19, 29, _T("the Ruby Red"  ) }, // RUBY_RED       ,  
+{ 19, 30, _T("the Norn Stone") }, // NORN_STONE     ,  
+{ 20,  1, _T("the Pale Pearl") }, // PALE_PEARL     ,  
+{ 16, 13, _T("the Opal Eye"  ) }, // OPAL_EYE       ,  
+{ 19, 33, _T("the Green Gem" ) }, // GREEN_GEM      ,  
+{ 19, 31, _T("the Blue Flame") }, // BLUE_FLAME     ,  
+{ 20,  3, _T("the Palantir"  ) }, // PALANTIR       ,  
+{ 20,  0, _T("the Silmaril"  ) }, // SILMARIL       ,  
 
-{ 19, 25, "the RuneStaff"  }, // RUNESTAFF       ,  
-{  0, 33, "the Orb of Zot" }, // ORB_OF_ZOT       ,  
-{  8, 39, "player" }  // PLAYER         ,  
+{ 19, 25, _T("the RuneStaff" ) }, // RUNESTAFF       ,  
+{  0, 33, _T("the Orb of Zot") }, // ORB_OF_ZOT       ,  
+{  8, 39, _T("player") }  // PLAYER         ,  
 } ;
 
 //**************************************************************
@@ -86,15 +88,15 @@ object_data_t object_data[LAST_OBJECT] = {
 //**************************************************************
 //  misc string arrays
 //**************************************************************
-char *names[10] = {
-   "THE REALM OF BYDL", "GRIMMERDHORE",  "DRAGON'S EGG",    "RYJECK THOME",
-   "SABTO'S DEMISE",    "LYDEN VELDT",   "DERELICT'S DOOM", 
-   "MAXWELL'S FIELD",   "SEER'S SOJOURN", "TREACHER'S GORGE"
+TCHAR *names[10] = {
+   _T("THE REALM OF BYDL"), _T("GRIMMERDHORE"),  _T("DRAGON'S EGG"),    _T("RYJECK THOME"),
+   _T("SABTO'S DEMISE"),    _T("LYDEN VELDT"),   _T("DERELICT'S DOOM"), 
+   _T("MAXWELL'S FIELD"),   _T("SEER'S SOJOURN"), _T("TREACHER'S GORGE")
 };
 
-char *race_str[4]   = { "Human ","Dwarf ","Hobbit","Elf   " } ;
-char *weapon_str[5] = { "Hands ", "Dagger", "Mace  ", "Sword ", "A Book" } ;
-char *armour_str[4] = { "Prayers","Leather","Chainmail","Plate" } ;
-char *meal[8] = { "sandwich", "stew", "soup","burger","roast", "filet","taco","pie" } ;
-char *curse_str[3]  = { "CURSE OF LETHARGY","CURSE OF THE LEECH","CURSE OF AMNESIA" } ;
+TCHAR *race_str[4]   = { _T("Human "),  _T("Dwarf "),  _T("Hobbit"), _T("Elf   ") } ;
+TCHAR *weapon_str[5] = { _T("Hands "),  _T("Dagger"),  _T("Mace  "), _T("Sword "), _T("A Book") } ;
+TCHAR *armour_str[4] = { _T("Prayers"), _T("Leather"), _T("Chainmail"), _T("Plate") } ;
+TCHAR *meal[8]       = { _T("sandwich"),_T("stew"), _T("soup"), _T("burger"), _T("roast"), _T("filet"), _T("taco"), _T("pie") } ;
+TCHAR *curse_str[3]  = { _T("CURSE OF LETHARGY"), _T("CURSE OF THE LEECH"), _T("CURSE OF AMNESIA") } ;
 

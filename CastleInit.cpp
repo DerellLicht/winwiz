@@ -1,5 +1,6 @@
 #include <windows.h>
 #include <stdlib.h>  //  srand() 
+#include <tchar.h>
 
 #include "common.h"
 #include "wizard.h"
@@ -210,7 +211,7 @@ void init_player(void)
    player.iq = 8 ;
    player.dex = 16 ;
    adjust_hit_points() ;
-   race_str[3] = "DERELICT"; 
+   race_str[3] = _T("DERELICT"); 
    player.armour = 1 ; 
    player.armour_points = 7 ;
    player.weapon = 3 ;

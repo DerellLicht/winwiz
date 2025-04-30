@@ -1,6 +1,16 @@
 USE_DEBUG = NO
-USE_BMP = YES
-USE_PNG = YES
+USE_BMP = NO
+USE_PNG = NO
+USE_UNICODE = YES
+USE_64BIT = NO
+
+ifeq ($(USE_64BIT),YES)
+TOOLS=d:\tdm64\bin
+else
+#TOOLS=c:\mingw\bin
+#TOOLS=c:\TDM-GCC-64\bin
+TOOLS=c:\tdm32\bin
+endif
 
 #*****************************************************************************
 # notes on compiler quirks, using MinGW/G++ V4.3.3
@@ -24,6 +34,11 @@ CFLAGS += -Wno-write-strings
 CFLAGS += -Wno-stringop-truncation
 CFLAGS += -Wno-conversion-null
 
+ifeq ($(USE_UNICODE),YES)
+CFLAGS += -DUNICODE -D_UNICODE
+LFLAGS += -dUNICODE -d_UNICODE
+endif
+
 # link library files
 LiFLAGS = -Ider_libs
 CFLAGS += -Ider_libs
@@ -46,6 +61,10 @@ OBJS = $(CSRC:.cpp=.o) rc.o
 BASE=winwiz
 BIN=$(BASE).exe
 
+# none of the BMP/JPG code is relevant, if UNICODE is defined
+ifeq ($(USE_UNICODE), YES)
+CSRC+=gdi_plus.cpp
+else
 ifeq ($(USE_BMP),YES)
 CFLAGS += -DUSE_BMP
 LiFLAGS += -DUSE_BMP
@@ -58,6 +77,7 @@ IMAGES=*.png
 else
 CSRC+=jpeg_read.cpp
 IMAGES=*.jpg
+endif
 endif
 
 #************************************************************
@@ -88,7 +108,7 @@ lodepng.o: lodepng.cpp
 	g++ $(CFLAGS) -c $< -o $@
 
 winwiz.exe: $(OBJS)
-	g++ $(CFLAGS) $(LFLAGS) $(OBJS) -o $@ -lgdi32 -lcomctl32 -lhtmlhelp -lolepro32 -lole32 -luuid
+	g++ $(CFLAGS) $(LFLAGS) $(OBJS) -o $@ -lgdiplus -lgdi32 -lcomctl32 -lhtmlhelp -lolepro32 -lole32 -luuid
 
 rc.o: winwiz.rc 
 	windres $< -O coff -o $@
@@ -100,10 +120,9 @@ der_libs/common_win.o: der_libs/common.h der_libs/commonw.h
 der_libs/statbar.o: der_libs/common.h der_libs/commonw.h der_libs/statbar.h
 der_libs/cterminal.o: der_libs/common.h der_libs/commonw.h
 der_libs/cterminal.o: der_libs/cterminal.h der_libs/vlistview.h
-der_libs/terminal.o: resource.h der_libs/common.h der_libs/commonw.h wizard.h
-der_libs/terminal.o: der_libs/statbar.h der_libs/cterminal.h
-der_libs/terminal.o: der_libs/vlistview.h der_libs/terminal.h
-der_libs/terminal.o: der_libs/winmsgs.h
+der_libs/terminal.o: der_libs/common.h der_libs/commonw.h
+der_libs/terminal.o: der_libs/cterminal.h der_libs/vlistview.h
+der_libs/terminal.o: der_libs/terminal.h der_libs/winmsgs.h
 der_libs/tooltips.o: der_libs/iface_32_64.h der_libs/common.h
 der_libs/tooltips.o: der_libs/tooltips.h
 der_libs/vlistview.o: der_libs/common.h der_libs/commonw.h
@@ -114,11 +133,10 @@ winwiz.o: der_libs/winmsgs.h wizard.h keywin32.h der_libs/tooltips.h
 globals.o: der_libs/common.h wizard.h
 keyboard.o: der_libs/common.h wizard.h keywin32.h
 wfuncs.o: resource.h der_libs/common.h der_libs/commonw.h wizard.h keywin32.h
-wfuncs.o: der_libs/terminal.h lode_png.h
+wfuncs.o: der_libs/terminal.h gdi_plus.h
 CastleInit.o: der_libs/common.h wizard.h
 initscrn.o: resource.h der_libs/common.h wizard.h
 combat.o: der_libs/common.h wizard.h keywin32.h
 vendor.o: resource.h der_libs/common.h wizard.h
-loadhelp.o: der_libs/common.h wizard.h
-lodepng.o: lodepng.h
-lode_png.o: der_libs/common.h lode_png.h lodepng.h
+loadhelp.o: der_libs/common.h
+gdi_plus.o: der_libs/common.h gdi_plus.h

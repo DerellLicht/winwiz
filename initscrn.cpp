@@ -1,4 +1,5 @@
 #include <windows.h>
+#include <tchar.h>
 
 #include "resource.h"
 #include "common.h"
@@ -17,16 +18,16 @@ static unsigned costs[4] = { 0, 10, 20, 30 } ;
 //****************************************************************************
 static void update_statics(void)
 {
-   char stext[20] ;
-   wsprintf(stext, " %u", player.gold) ;
+   TCHAR stext[20] ;
+   _stprintf(stext, _T(" %u"), player.gold) ;
    SetWindowText(hwndCCdlgStatic1, stext) ;
-   wsprintf(stext, " %u", xpoints) ;
+   _stprintf(stext, _T(" %u"), xpoints) ;
    SetWindowText(hwndCCdlgStatic2, stext) ;
-   wsprintf(stext, " %u", player.str) ;
+   _stprintf(stext, _T(" %u"), player.str) ;
    SetWindowText(hwndCCdlgStatic3, stext) ;
-   wsprintf(stext, " %u", player.dex) ;
+   _stprintf(stext, _T(" %u"), player.dex) ;
    SetWindowText(hwndCCdlgStatic4, stext) ;
-   wsprintf(stext, " %u", player.iq) ;
+   _stprintf(stext, _T(" %u"), player.iq) ;
    SetWindowText(hwndCCdlgStatic5, stext) ;
 }
 
@@ -35,7 +36,7 @@ static BOOL CALLBACK CreateDlgProc (HWND hDlg, UINT message, WPARAM wParam, LPAR
 {
    // static HWND hCtrlBlock ;
    static int temp, iTemp, iRace, iArmour, iWeapon ;
-   char stext[30] ;
+   TCHAR stext[30] ;
    
    switch (message) {
    case WM_INITDIALOG:
@@ -165,13 +166,13 @@ static BOOL CALLBACK CreateDlgProc (HWND hDlg, UINT message, WPARAM wParam, LPAR
       case IDC_LAMP:
          if (player.has_lamp) {
             player.gold += 20 ;
-            wsprintf(stext, " %u", player.gold) ;
+            _stprintf(stext, _T(" %u"), player.gold) ;
             SetWindowText(hwndCCdlgStatic1, stext) ;
             player.has_lamp = false ;
             SendMessage((HWND) lParam, BM_SETCHECK, 0, 0) ;
          } else if (player.gold >= 20) {
             player.gold -= 20 ;
-            wsprintf(stext, " %u", player.gold) ;
+            _stprintf(stext, _T(" %u"), player.gold) ;
             SetWindowText(hwndCCdlgStatic1, stext) ;
             player.has_lamp = true ;
             SendMessage((HWND) lParam, BM_SETCHECK, 1, 0) ;
@@ -259,7 +260,7 @@ void draw_init_screen(HWND hwnd)
    // if (DialogBox (g_hinst, TEXT ("CreateBox"), hwnd, CreateDlgProc))
    int result = DialogBox (g_hinst, MAKEINTRESOURCE(IDD_CREATEBOX), NULL, CreateDlgProc) ;
    if (result < 0) {
-      syslog("Init: DialogBox: %s\n", get_system_message()) ;
+      syslog(_T("Init: DialogBox: %s\n"), get_system_message()) ;
    } 
 }
 

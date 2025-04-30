@@ -1,5 +1,5 @@
 //*******************************************************************
-//  Copyright (c) 1985-2014  Daniel D Miller
+//  Copyright (c) 1985-2025  Daniel D Miller
 //  combat.cpp - combat code for Wizard's Castle game
 //  
 //  Written by:   Daniel D. Miller
@@ -50,6 +50,7 @@
 //  
 //*******************************************************************
 #include <windows.h>
+#include <tchar.h>
 
 #include "common.h"
 #include "wizard.h"
@@ -57,7 +58,7 @@
 
 typedef struct monster_info_s {
    int index ;
-   char *desc ;
+   TCHAR *desc ;
    unsigned hitpoints ;
    unsigned level ;
    unsigned treasures[8] ;
@@ -83,17 +84,17 @@ static void EndEncounter(void)
 
    if (monster_info.index == VENDOR) {
       if (monster_info.hitpoints == 0) {
-         put_message(" ") ;
-         wsprintf(tempstr, "%s %s lies dead at your feet.", 
-            starts_with_vowel(monster_info.desc) ? "an" : "a",
+         put_message(_T(" ")) ;
+         _stprintf(tempstr, _T("%s %s lies dead at your feet."), 
+            starts_with_vowel(monster_info.desc) ? _T("an") : _T("a"),
             monster_info.desc);
          put_message(tempstr) ;
-         put_message(" ") ;
-         put_message("YOU GET ALL HIS WARES: ");
-         put_message("ARMOR PLATE, A SWORD, AND A LAMP.");
-         put_message("ONE POTION OF STRENGTH");
-         put_message("ONE POTION OF INTELLIGENCE");
-         put_message("ONE POTION OF DEXTERITY");
+         put_message(_T(" ")) ;
+         put_message(_T("YOU GET ALL HIS WARES: "));
+         put_message(_T("ARMOR PLATE, A SWORD, AND A LAMP."));
+         put_message(_T("ONE POTION OF STRENGTH"));
+         put_message(_T("ONE POTION OF INTELLIGENCE"));
+         put_message(_T("ONE POTION OF DEXTERITY"));
 
          player.weapon = 3; 
          player.armour = 3; 
@@ -117,10 +118,10 @@ static void EndEncounter(void)
          //    if (treasure[I,1]=X) AND (treasure[I,2]=Y) AND (treasure[I,3]=Z)
          //       then {  treasure[I,4] = 1; INC(treasure_count); J = 1; } }
          // if J = 1 then writeln('YOU ALSO RECEIVE ALL OF HIS TREASURES ! !");
-         put_message(" ") ;
+         put_message(_T(" ")) ;
 
          Q = random(1000); 
-         wsprintf(tempstr, "You now get his hoard of %u gold_pieces's", Q);
+         _stprintf(tempstr, _T("You now get his hoard of %u gold_pieces's"), Q);
          player.gold += Q ;
          show_gold() ;
       }
@@ -129,16 +130,16 @@ static void EndEncounter(void)
       Q = random(1000); 
       player.gold += Q ;
       // draw_main_screen();
-      wsprintf(tempstr, "%s %s lies dead at your feet.", 
+      _stprintf(tempstr, _T("%s %s lies dead at your feet."), 
          starts_with_vowel(monster_info.desc) ? "an" : "a",
          monster_info.desc);
       put_message(tempstr) ;
-      wsprintf(tempstr, "You now get his hoard of %u GP's", Q);
+      _stprintf(tempstr, _T("You now get his hoard of %u GP's"), Q);
       put_message(tempstr) ;
       show_gold() ;
 
       if (random(20) < 3) {
-         wsprintf(tempstr, "You stop for a snack of %s %s",
+         _stprintf(tempstr, _T("You stop for a snack of %s %s"),
             monster_info.desc, meal[random(DIMEN_COUNT)]);
          put_message(tempstr) ;
       }
@@ -147,7 +148,7 @@ static void EndEncounter(void)
           player.y == runestaff_room.y  &&
           player.level == runestaff_room.level) {
          player.has_runestaff = true ;
-         put_color_msg(TERM_RUNESTAFF, "GREAT ZOT!! You've found the RUNESTAFF!!");
+         put_color_msg(TERM_RUNESTAFF, _T("GREAT ZOT!! You've found the RUNESTAFF!!"));
          show_treasures() ;
       }
    }
@@ -171,8 +172,7 @@ static int monsters_turn(HWND hwnd)
 
       if (monster_attack > player_resist) {
          // wsprintf(tempstr, 
-         put_color_msg(TERM_MONSTER_HIT, 
-            "OUCH!!  It hit you!! [ %u points, A%u, D%u ]", 
+         put_color_msg(TERM_MONSTER_HIT, _T("OUCH!!  It hit you!! [ %u points, A%u, D%u ]"), 
             damage, monster_attack, player_resist) ;
          // put_message(tempstr, attr_mon_hit); 
 
@@ -188,7 +188,7 @@ static int monsters_turn(HWND hwnd)
          if (player.armour > 0) {
             apts = random(3);
             if (apts >= player.armour_points) {
-               put_message("Your armor has been destroyed.  Good Luck!!");
+               put_message(_T("Your armor has been destroyed.  Good Luck!!"));
                player.armour = 0; 
                player.armour_points = 0; 
             } else {
@@ -197,19 +197,19 @@ static int monsters_turn(HWND hwnd)
             show_armour() ;
          }
       } else {
-         wsprintf(tempstr, "What luck - he missed you... [ A%u, D%u ]", 
+         _stprintf(tempstr, _T("What luck - he missed you... [ A%u, D%u ]"), 
             monster_attack, player_resist) ;
          put_message(tempstr); 
       } 
       break;
 
    case 1:
-      put_message("The web just broke!!  LOOK OUT!!") ;
+      put_message(_T("The web just broke!!  LOOK OUT!!")) ;
       web_turns-- ;
       break;
 
    default:
-      wsprintf(tempstr, "The %s is stuck and can't attack now!", monster_info.desc);
+      _stprintf(tempstr, _T("The %s is stuck and can't attack now!"), monster_info.desc);
       put_message(tempstr) ;
       web_turns-- ;
       break;
@@ -226,12 +226,12 @@ static int monsters_turn(HWND hwnd)
 static int attack_monster(HWND hwnd)
 {
    if (player.weapon == 0) { 
-      put_message("The monster giggles as you pound it with your fists...") ;
-      put_message("*Now* look what you did... it has the hiccups!!") ;
+      put_message(_T("The monster giggles as you pound it with your fists...")) ;
+      put_message(_T("*Now* look what you did... it has the hiccups!!")) ;
       return monsters_turn(hwnd);   //  monster attacks at same time
    } 
    if (player.has_book) {
-      put_message("You can't beat it to death with a book!!") ;
+      put_message(_T("You can't beat it to death with a book!!")) ;
       return monsters_turn(hwnd);   //  monster attacks at same time
    } 
    //  note that this is independent of monster strength!!
@@ -240,7 +240,7 @@ static int attack_monster(HWND hwnd)
                            + random(6 * monster_info.level) ;
 
    if (player_attack < monster_resist) {
-      wsprintf(tempstr, "You missed, too bad... [ A%u, D%u ]", player_attack, monster_resist); 
+      _stprintf(tempstr, _T("You missed, too bad... [ A%u, D%u ]"), player_attack, monster_resist); 
       put_message(tempstr); 
       return monsters_turn(hwnd);   //  monster attacks at same time
    } 
@@ -249,7 +249,7 @@ static int attack_monster(HWND hwnd)
       monster_info.hitpoints = 0 ;
       // wsprintf(tempstr, 
       put_color_msg(TERM_PLAYER_HIT, 
-         "You hit the %s for %u points, killing it. [ A%u, D%u ]", 
+         _T("You hit the %s for %u points, killing it. [ A%u, D%u ]"), 
          monster_info.desc, player_damage, player_attack, monster_resist) ;
       // put_message(tempstr, attr_player_hit) ;
       return 0;
@@ -257,14 +257,14 @@ static int attack_monster(HWND hwnd)
    monster_info.hitpoints -= player_damage ;
    // wsprintf(tempstr, 
    put_color_msg(TERM_PLAYER_HIT, 
-      "You hit the %s. [ %u points, A%u, D%u, hp=%u ]", 
+      _T("You hit the %s. [ %u points, A%u, D%u, hp=%u ]"), 
       monster_info.desc, player_damage, player_attack, 
       monster_resist, monster_info.hitpoints) ;
    // put_message(tempstr, attr_player_hit) ;
 
    if (monster_info.index == GARGOYLE  ||  monster_info.index == DRAGON) {
       if (random(DIMEN_COUNT) == 4) { 
-         put_message("OH NO!!  Your weapon broke!!") ;
+         put_message(_T("OH NO!!  Your weapon broke!!")) ;
          player.weapon=0;
          // show_status(hwnd) ;
          show_weapon() ;
@@ -280,7 +280,7 @@ static int runaway_runaway(HWND hwnd)
    if (result >= 0) {
       draw_main_screen(NULL);
       show_player();
-      put_message("You have escaped !") ;
+      put_message(_T("You have escaped !")) ;
       pop_keymap() ;
    }
    return result ;
@@ -297,7 +297,7 @@ static int bribe_monster(HWND hwnd)
    unsigned contents, j ;
 
    if (player.treasure_count == 0) {
-      put_message("All I want from you is your life!!") ;
+      put_message(_T("All I want from you is your life!!")) ;
       return monsters_turn(hwnd) ;
    } 
 
@@ -312,7 +312,7 @@ static int bribe_monster(HWND hwnd)
    }
 
    //  ask for it
-   wsprintf(tempstr, "I'll take the %s...", get_object_name(contents)) ;
+   _stprintf(tempstr, _T("I'll take the %s..."), get_object_name(contents)) ;
    put_message(tempstr) ;
    monster_info.treasures[j] = 1 ;
    monster_info.treasure_count++ ;
@@ -325,8 +325,8 @@ static int bribe_monster(HWND hwnd)
    if (monster_info.index == VENDOR) {
       vendor_angry = 0 ;
    }
-   put_message("OK, I'll let you off this time.");
-   put_message("Just watch your step!");
+   put_message(_T("OK, I'll let you off this time."));
+   put_message(_T("Just watch your step!"));
    return 0;
 }
 
@@ -339,7 +339,7 @@ int cast_spell(HWND hwnd, unsigned inchr)
    switch (inchr) {
    case kw:
       if (player.iq < 10) {
-         put_message("You're too dumb to cast a Web spell") ;
+         put_message(_T("You're too dumb to cast a Web spell")) ;
          monsters_turn(hwnd) ;
          break;
       }
@@ -347,21 +347,21 @@ int cast_spell(HWND hwnd, unsigned inchr)
       show_int() ;
 
       web_turns = random(9); 
-      put_message("You wave your arm quickly...") ;
-      wsprintf(tempstr, "The %s is firmly encased in a strong web", 
+      put_message(_T("You wave your arm quickly...")) ;
+      _stprintf(tempstr, _T("The %s is firmly encased in a strong web"), 
             monster_info.desc) ;
       put_message(tempstr) ;
       break;
 
    case kf:
       if (player.iq < 12) {
-         put_message("You're too dumb to cast a Fireball spell") ;
+         put_message(_T("You're too dumb to cast a Fireball spell")) ;
          monsters_turn(hwnd) ;
          break;
       }
       player.iq-- ;
       if (player.dex <= 1) {
-         put_message("You fumble the spell and destroy yourself!!") ;
+         put_message(_T("You fumble the spell and destroy yourself!!")) ;
          player.dex = 0 ;
          player_dies(hwnd) ;
          return -1;
@@ -370,28 +370,28 @@ int cast_spell(HWND hwnd, unsigned inchr)
       show_int() ;
       show_dex() ;
 
-      put_message("You wave your arm, and a glowing ball flies from it.");
+      put_message(_T("You wave your arm, and a glowing ball flies from it."));
       iTemp = (1 + random(monster_info.hitpoints)) ;
       if (iTemp < 5)
           iTemp = 5 ;
       if (iTemp >= monster_info.hitpoints) {
          monster_info.hitpoints = 0 ;
-         wsprintf(tempstr, "The %s is annihilated by the blast.", monster_info.desc) ;
+         _stprintf(tempstr, _T("The %s is annihilated by the blast."), monster_info.desc) ;
          put_message(tempstr) ;
-         put_message("You are covered with charred flesh.");
+         put_message(_T("You are covered with charred flesh."));
          break;
       }
       monster_info.hitpoints -= iTemp ;
-      wsprintf(tempstr, "The %s is injured by the blast [ hp=%u ].", 
+      _stprintf(tempstr, _T("The %s is injured by the blast [ hp=%u ]."), 
          monster_info.desc, monster_info.hitpoints) ;
       put_message(tempstr) ;
-      put_message("You are covered with charred  flesh.");
+      put_message(_T("You are covered with charred  flesh."));
       result = monsters_turn(hwnd) ;
       break;
 
    case kd:
       if (player.iq < 15) {
-         put_message("The Deathspell backfires!!!") ;
+         put_message(_T("The Deathspell backfires!!!")) ;
          player.iq = 0 ;
          player_dies(hwnd) ;
          return -1;
@@ -399,7 +399,7 @@ int cast_spell(HWND hwnd, unsigned inchr)
          // break;
       }
       if ((unsigned) player.iq < monster_info.hitpoints) {
-         wsprintf(tempstr, "The %s's magic was stronger than yours...", 
+         _stprintf(tempstr, _T("The %s's magic was stronger than yours..."), 
                monster_info.desc) ;
          put_message(tempstr) ;
          // delay(1200) ;
@@ -410,15 +410,15 @@ int cast_spell(HWND hwnd, unsigned inchr)
          // break;
       }
       monster_info.hitpoints = 0;
-      put_message(" ") ;
-      wsprintf(tempstr, "The %s glows brightly, ", monster_info.desc) ;
+      put_message(_T(" ")) ;
+      _stprintf(tempstr, _T("The %s glows brightly, "), monster_info.desc) ;
       put_message(tempstr) ;
-      put_message("then disappears before your eyes!");
-      put_message(" ") ;
+      put_message(_T("then disappears before your eyes!"));
+      put_message(_T(" ")) ;
       break;
 
    default:
-      put_message("PEONS CAN'T USE THAT SPELL!!") ;
+      put_message(_T("PEONS CAN'T USE THAT SPELL!!")) ;
       result = monsters_turn(hwnd) ;
       break;
    }
@@ -488,16 +488,16 @@ static void show_combat_info(void)
    // sprintf(tempstr, "YOU: str=%2d, int=%d, dex=%d, armour=%d", 
    //    player.str, player.iq, player.dex, player.armour_points) ;
    // put_message(tempstr) ;
-   infoout("round %u: You're facing %s %s [ L%u, hp=%u ]", 
+   infoout(_T("round %u: You're facing %s %s [ L%u, hp=%u ]"), 
       combat_round++, 
-      starts_with_vowel(monster_info.desc) ? "an" : "a",
+      starts_with_vowel(monster_info.desc) ? _T("an") : _T("a"),
       monster_info.desc, monster_info.level, monster_info.hitpoints) ;
    // put_message(tempstr, attr_new_round) ;
-   put_message("You may: [A]ttack, [R]etreat, [C]ast a spell.") ;
+   put_message(_T("You may: [A]ttack, [R]etreat, [C]ast a spell.")) ;
    if (player.treasure_count > 0) {
-      put_message("You may also attempt a bribe.") ;
+      put_message(_T("You may also attempt a bribe.")) ;
    }
-   put_message("Your choice?? ") ;
+   put_message(_T("Your choice?? ")) ;
 }
 
 //*************************************************************
@@ -511,12 +511,12 @@ int run_one_encounter_round(HWND hwnd, unsigned inchr)
    int result ;
    switch (inchr) {
    case ka:  
-      term_append("Attack") ;
+      term_append(_T("Attack")) ;
       result = attack_monster(hwnd) ;  
       break ;
 
    case kr:  
-      term_append("Run For My Life !!") ;
+      term_append(_T("Run For My Life !!")) ;
       result = runaway_runaway(hwnd) ;  
       if (result >= 0) {
          move_one_square(hwnd) ;
@@ -525,7 +525,7 @@ int run_one_encounter_round(HWND hwnd, unsigned inchr)
       break ;
 
    case kb:  
-      term_append("Bribe") ;
+      term_append(_T("Bribe")) ;
       result = bribe_monster(hwnd) ;  
       if (result == 0) 
          goto quiet_exit;
@@ -538,15 +538,15 @@ int run_one_encounter_round(HWND hwnd, unsigned inchr)
    //  but if the monster is killed, they need to pop
    //  back to the KEYMAP_DEFAULT state.
    case kc:  
-      term_append("Cast Spell") ;
-      put_message("Which spell? <Web, Fireball, Deathspell> ") ;
+      term_append(_T("Cast Spell")) ;
+      put_message(_T("Which spell? <Web, Fireball, Deathspell> ")) ;
       push_keymap(KEYMAP_SPELL_SELECTION) ;
       result = 1 ;
       goto quiet_exit;
 
    default:
-      term_append("odd gesture [%u]", inchr) ;
-      wsprintf(tempstr, "The %s is not impressed...", monster_info.desc);
+      term_append(_T("odd gesture [%u]"), inchr) ;
+      _stprintf(tempstr, _T("The %s is not impressed..."), monster_info.desc);
       put_message(tempstr);
       result = monsters_turn(hwnd) ;
       if (result >= 0) {

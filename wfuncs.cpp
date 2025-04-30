@@ -1,5 +1,5 @@
 //****************************************************************************
-//  Copyright (c) 1985-2014  Daniel D Miller
+//  Copyright (c) 1985-2025  Daniel D Miller
 //  winwiz.exe - Win32 version of Wizard's Castle
 //  wfuncs.cpp - handle data update and rendering functions
 //
@@ -7,18 +7,23 @@
 //****************************************************************************
 #include <windows.h>
 #include <stdlib.h>  //  rand() 
+#include <tchar.h>
 
 #include "resource.h"
 #include "common.h"
 #include "commonw.h"
 #include "wizard.h"
 #include "keywin32.h"
-// #include "cterminal.h" 
 #include "terminal.h" 
+#ifdef UNICODE
+#include "gdi_plus.h"
+#else
 #include "lode_png.h"
+#endif
 
-// extern LodePng pngVictory ;
-// extern LodePng pngDeath ;
+#ifdef UNICODE
+using namespace Gdiplus;
+#endif
 
 //@@@  why do I need this here??   
 //@@@  It *should* be defined in windef.h
@@ -42,8 +47,21 @@ TILE_DEATH
 } ;
 
 //***********************************************************************
-static LodePng pngSprites("tiles32.png", SPRITE_HEIGHT, SPRITE_WIDTH) ;
-static LodePng pngTiles  ("images.png",  IMAGE_WIDTH,   IMAGE_HEIGHT) ;
+//  sprite handler constants
+//***********************************************************************
+#define  SPRITE_WIDTH      32
+#define  SPRITE_HEIGHT     32
+
+#define  IMAGE_WIDTH       359
+#define  IMAGE_HEIGHT      362
+
+#ifdef UNICODE
+static gdi_plus pngSprites(_T("tiles32.png"), SPRITE_HEIGHT, SPRITE_WIDTH) ;
+static gdi_plus pngTiles  (_T("images.png"),  IMAGE_WIDTH,   IMAGE_HEIGHT) ;
+#else
+static LodePng pngSprites(_T("tiles32.png"), SPRITE_HEIGHT, SPRITE_WIDTH) ;
+static LodePng pngTiles  (_T("images.png"),  IMAGE_WIDTH,   IMAGE_HEIGHT) ;
+#endif
 
 //*************************************************************
 #define  X_OFFSET    16
@@ -84,7 +102,7 @@ static bool is_location_forgotten(void)
 /************************************************************************/
 void dump_level_knowledge(void)
 {
-   syslog("0%c 1%c 2%c 3%c 4%c 5%c 6%c 7%c, level=%u\n",
+   syslog(_T("0%c 1%c 2%c 3%c 4%c 5%c 6%c 7%c, level=%u\n"),
       (level_known[0]) ? 'T' : 'F',
       (level_known[1]) ? 'T' : 'F',
       (level_known[2]) ? 'T' : 'F',
@@ -108,19 +126,19 @@ unsigned get_room_contents(void)
 }
 
 //*************************************************************
-char *get_room_contents_str(void)
+TCHAR *get_room_contents_str(void)
 {  
    return object_data[get_room_contents()].desc ;
 }
 
 //*************************************************************
-static char *get_object_in_room(int x, int y, int level)
+static TCHAR *get_object_in_room(int x, int y, int level)
 {  
    return object_data[get_room_contents(x, y, level)].desc ;
 }
 
 //*************************************************************
-char *get_object_name(int index)
+TCHAR *get_object_name(int index)
 {
    return object_data[index].desc ;
 }         
@@ -154,7 +172,7 @@ static void draw_sprite_treasure(unsigned scol, unsigned srow, unsigned idx)
 static void draw_sprite(HDC hdc, unsigned scol, unsigned srow, unsigned xidest, unsigned yidest)
 {
    if (xidest >= 8  ||  yidest >= 8) {
-      syslog("draw_sprite: invalid pos: col=%u, row=%u\n", xidest, yidest) ;
+      syslog(_T("draw_sprite: invalid pos: col=%u, row=%u\n"), xidest, yidest) ;
       return ;
    }
    unsigned xdest = X_OFFSET + (xidest * (SPRITE_WIDTH  + X_GAP)) ;  //  draw_sprite()
@@ -230,15 +248,15 @@ void clear_room(HDC hdcUnused)
 static void update_position(void)
 {
    if (player.is_blind  ||  is_location_forgotten()) 
-      wsprintf (tempstr, " X=?, Y=?");
+      _stprintf (tempstr, _T(" X=?, Y=?"));
    else
-      wsprintf (tempstr, " X=%u, Y=%u", player.x, player.y);
+      _stprintf (tempstr, _T(" X=%u, Y=%u"), player.x, player.y);
    status_message(1, tempstr);
    
    if (player.is_blind  ||  is_location_forgotten()) 
-      wsprintf (tempstr, " level=?");
+      _stprintf (tempstr, _T(" level=?"));
    else
-      wsprintf (tempstr, " level=%u", player.level);
+      _stprintf (tempstr, _T(" level=%u"), player.level);
    status_message(2, tempstr);
 }
 
@@ -345,7 +363,7 @@ void show_player(void)
 }
 
 //*************************************************************
-bool starts_with_vowel(char *monster)
+bool starts_with_vowel(TCHAR *monster)
 {
    switch (*monster) {
    case 'a':
@@ -523,7 +541,7 @@ skipping:
             continue;
       }
       if (!touched) {
-         wsprintf(tempstr, "no touch: str=%u, dex=%u, int=%u\n", j, k, l) ;
+         _stprintf(tempstr, "no touch: str=%u, dex=%u, int=%u\n", j, k, l) ;
          status_message(tempstr);
          break;
       }
@@ -549,10 +567,10 @@ void win_game(HWND hwnd)
    pngTiles.render_bitmap(hdc, 0, 0, TILE_VICTORY) ;
    ReleaseDC(hwndMapArea, hdc) ;
    term_clear_message_area();
-   put_message("You find yourself standing beside a sweet, cool") ;
-   put_message("stream in the shade of a glowing, verdant forest...") ;
-   put_message(" ") ;
-   wsprintf(tempstr, "You emerge Victorious from %s !!!", names[player.castle_nbr]) ;
+   put_message(_T("You find yourself standing beside a sweet, cool")) ;
+   put_message(_T("stream in the shade of a glowing, verdant forest...")) ;
+   put_message(_T(" ")) ;
+   _stprintf(tempstr, _T("You emerge Victorious from %s !!!"), names[player.castle_nbr]) ;
    put_message(tempstr) ;
 }
 
@@ -560,25 +578,25 @@ void win_game(HWND hwnd)
 static void display_atmosphere(HDC hdcUnused)
 {
    if (player.has_orb_of_Zot) {
-      put_color_msg(TERM_DEATH, "In a burst of intense agony, you feel your very soul ripped from") ;
-      put_color_msg(TERM_DEATH, "your body, and sucked into the Orb of Zot, which drops to the ground") ;
-      put_color_msg(TERM_DEATH, "with a soft 'tink', and sinks softly below the surface.") ;
-      put_color_msg(TERM_DEATH, "Oddly, you find you are not alone within the Orb... in fact, your existance") ;
-      put_color_msg(TERM_DEATH, "promises to become quite interesting now - but that's another story.") ;
+      put_color_msg(TERM_DEATH, _T("In a burst of intense agony, you feel your very soul ripped from")) ;
+      put_color_msg(TERM_DEATH, _T("your body, and sucked into the Orb of Zot, which drops to the ground")) ;
+      put_color_msg(TERM_DEATH, _T("with a soft 'tink', and sinks softly below the surface.")) ;
+      put_color_msg(TERM_DEATH, _T("Oddly, you find you are not alone within the Orb... in fact, your existance")) ;
+      put_color_msg(TERM_DEATH, _T("promises to become quite interesting now - but that's another story.")) ;
    } else
    if (player.has_runestaff) {
-      put_color_msg(TERM_DEATH, "With your last fading breath, you gasp a curse upon %s!!",
+      put_color_msg(TERM_DEATH, _T("With your last fading breath, you gasp a curse upon %s!!"),
          names[player.castle_nbr]) ;
-      put_color_msg(TERM_DEATH, "The power of your curse causes the Runestaff to shatter with") ;
-      put_color_msg(TERM_DEATH, "a catastrophic blast, collapsing the castle upon itself...") ;
-      put_color_msg(TERM_DEATH, "Surely the Wizard of Zot would be gratified.") ;
+      put_color_msg(TERM_DEATH, _T("The power of your curse causes the Runestaff to shatter with")) ;
+      put_color_msg(TERM_DEATH, _T("a catastrophic blast, collapsing the castle upon itself...")) ;
+      put_color_msg(TERM_DEATH, _T("Surely the Wizard of Zot would be gratified.")) ;
    } else 
    {
-      put_color_msg(TERM_DEATH, "You died while exploring %s", names[player.castle_nbr]) ;
+      put_color_msg(TERM_DEATH, _T("You died while exploring %s"), names[player.castle_nbr]) ;
       // char *sptr = get_object_in_room(player.x, player.y, player.level) ;
-      char *sptr = get_object_in_room(runestaff_room.x, runestaff_room.y, runestaff_room.level) ;
-      put_color_msg(TERM_DEATH, "%s %s declares itself Master of the Castle!!",
-         starts_with_vowel(sptr) ? "An" : "A", sptr) ;
+      TCHAR *sptr = get_object_in_room(runestaff_room.x, runestaff_room.y, runestaff_room.level) ;
+      put_color_msg(TERM_DEATH, _T("%s %s declares itself Master of the Castle!!"),
+         starts_with_vowel(sptr) ? _T("An") : _T("A"), sptr) ;
    }
 }
 
@@ -596,12 +614,12 @@ void player_dies(HWND hwnd)
 }
 
 //*************************************************************
-static char *zot_chest_end_msg[] = {
-"The wizard continues speaking as you respond, but his voice",
-"grows ever fainter, until it fades from hearing...",
-" ",
-"You grow colder and colder as your vision fades.......",
-" ",
+static TCHAR *zot_chest_end_msg[] = {
+_T("The wizard continues speaking as you respond, but his voice"),
+_T("grows ever fainter, until it fades from hearing..."),
+_T(" "),
+_T("You grow colder and colder as your vision fades......."),
+_T(" "),
 0 } ;
    
 static void wrong_castle_death(HWND hwnd)
@@ -622,35 +640,35 @@ static void wrong_castle_death(HWND hwnd)
    pngTiles.render_bitmap(hdc, 0, 0, TILE_DEATH) ;
    ReleaseDC(hwndMapArea, hdc) ;
    map_image = MI_DEATH ;
-   infoout("You died while exploring %s", names[player.castle_nbr]) ;
+   infoout(_T("You died while exploring %s"), names[player.castle_nbr]) ;
 }
 
 //*************************************************************
-static char *first_zot_chest_msg[] = {
-"The room fills with smoke that has an odd odor.",
-"The smoke seems to bite into your skin.",
-"Anxiety thrills through your body....",
-" ",
-"You are blinded for a moment, but then",
-"the image of a man appears before you.",  
-"He is old and wizened, but seems strong despite his age.",
+static TCHAR *first_zot_chest_msg[] = {
+_T("The room fills with smoke that has an odd odor."),
+_T("The smoke seems to bite into your skin."),
+_T("Anxiety thrills through your body...."),
+_T(" "),
+_T("You are blinded for a moment, but then"),
+_T("the image of a man appears before you."),
+_T("He is old and wizened, but seems strong despite his age."),
 0 } ;
 
-static char *second_zot_chest_msg[] = {
-"This smoke is strong with the power of ZOT......",
-"You are too weak to resist its effects, and you ",
-"are now floating far, far away into the smoke...",
-"                                                   ",
-"I may be able to save you if you can tell me",
-"WHICH CASTLE you are from .....",
-"Please speak quickly before you are out of reach!!",
+static TCHAR *second_zot_chest_msg[] = {
+_T("This smoke is strong with the power of ZOT......"),
+_T("You are too weak to resist its effects, and you "),
+_T("are now floating far, far away into the smoke..."),
+_T("                                                   "),
+_T("I may be able to save you if you can tell me"),
+_T("WHICH CASTLE you are from ....."),
+_T("Please speak quickly before you are out of reach!!"),
 0 } ;
 
 //*************************************************************
 // #define  USE_MESSAGE_WINDOW   1
 
 #define  MAX_CASTLE_NAME   20
-static char castle_name[MAX_CASTLE_NAME+1] ;
+static TCHAR castle_name[MAX_CASTLE_NAME+1] ;
 static unsigned cn_len ;
 #ifdef  USE_MESSAGE_WINDOW
 static unsigned zot_name_row = 0 ;
@@ -659,10 +677,10 @@ static unsigned zot_name_row = 0 ;
 //*************************************************************
 static int process_zot_keystroke (HWND hwnd, unsigned inchr)
 {
-   // wsprintf(tempstr, "%X ", inchr) ;
+   // _stprintf(tempstr, "%X ", inchr) ;
    // OutputDebugString(tempstr) ;
    if (inchr & 0xFF00) {
-      wsprintf (tempstr, "PRESS=0x%04X", inchr);
+      _stprintf (tempstr, _T("PRESS=0x%04X"), inchr);
       status_message(tempstr);
    } 
    //  process normal keys
@@ -690,7 +708,7 @@ static int process_zot_keystroke (HWND hwnd, unsigned inchr)
    }   
    else {
       if (cn_len < MAX_CASTLE_NAME) {
-         // wsprintf(tempstr, "%u ", inchr) ;
+         // _stprintf(tempstr, "%u ", inchr) ;
          // OutputDebugString(tempstr) ;
          //  for some reason, single-quotes are coming in as 0xDE ...
          if ((u8) inchr == 0xDE) {
@@ -721,10 +739,10 @@ int manage_zot_input(HWND hwnd, unsigned inchr)
    }
    else if (result > 0) {
       //  compare entered data vs castle name
-      if (strnicmp(castle_name, names[player.castle_nbr], 
-                         strlen(names[player.castle_nbr])) == 0) {
+      if (_tcsnicmp(castle_name, names[player.castle_nbr], 
+                         _tcslen(names[player.castle_nbr])) == 0) {
          result = 1 ;
-         infoout("Whew!!!") ;
+         infoout(_T("Whew!!!")) ;
          // hide_status_area() ;
          // clear_dialog_area(hdcMain, GetSysColor(COLOR_3DFACE));
          // enable_player_info(false) ;
@@ -751,8 +769,8 @@ static void draw_zot_window(HWND hwnd)
    unsigned theight ;
    static unsigned y = 0 ;
    HDC hdc = hdcMain ;  //  ifdef USE_MESSAGE_WINDOW
-   myTerminal->set_terminal_font("Bodacious-Normal", 110, EZ_ATTR_NORMAL) ;
-   set_text_font("Bodacious-Normal", 110) ;
+   myTerminal->set_terminal_font(_T("Bodacious-Normal"), 110, EZ_ATTR_NORMAL) ;
+   set_text_font(_T("Bodacious-Normal"), 110) ;
    theight = textheight(hdc, 0) ;
    y = 2 * theight ;
    for (j=0; first_zot_chest_msg[j] != 0; j++) {
@@ -760,7 +778,7 @@ static void draw_zot_window(HWND hwnd)
       y += theight ;
    }
    y += theight ;
-   dprints_centered_x(hdc, y, WIN_BMAGENTA, " He speaks: ") ;
+   dprints_centered_x(hdc, y, WIN_BMAGENTA, _T(" He speaks: ")) ;
    y += theight ;
    y += theight ;
    for (j=0; second_zot_chest_msg[j] != 0; j++) {
@@ -773,7 +791,7 @@ static void draw_zot_window(HWND hwnd)
    for (j=0; first_zot_chest_msg[j] != 0; j++) {
       put_color_msg(TERM_PLAYER_HIT, first_zot_chest_msg[j]) ;
    }
-   put_message(WIN_BMAGENTA, WIN_BLACK, " He speaks: ") ;
+   put_message(WIN_BMAGENTA, WIN_BLACK, _T(" He speaks: ")) ;
    for (j=0; second_zot_chest_msg[j] != 0; j++) {
       put_color_msg(TERM_PLAYER_HIT, second_zot_chest_msg[j]) ;
    }
@@ -793,7 +811,7 @@ static void CheckCurses(HDC hdc) //  derived from hwndMapArea
    if (player.curse_flags & CR_LETHARGY) {
       if (player.treasures[TR_RUBY_RED]) {
          player.curse_flags &= ~CR_LETHARGY ;
-         put_message("The Ruby Red cures the Curse of Lethargy...") ;
+         put_message(_T("The Ruby Red cures the Curse of Lethargy...")) ;
       } else {
          
       }
@@ -804,7 +822,7 @@ static void CheckCurses(HDC hdc) //  derived from hwndMapArea
    if (player.curse_flags & CR_LEECH) {
       if (player.treasures[TR_PALE_PEARL]) {
          player.curse_flags &= ~CR_LEECH ;
-         put_message("The Pale Pearl cures the Curse of the Leech...") ;
+         put_message(_T("The Pale Pearl cures the Curse of the Leech...")) ;
       } else {
          itemp = random(5);
          if (itemp >= player.gold) {
@@ -821,7 +839,7 @@ static void CheckCurses(HDC hdc) //  derived from hwndMapArea
    if (player.curse_flags & CR_FORGET) {
       if (player.treasures[TR_GREEN_GEM]) {
          player.curse_flags &= ~CR_FORGET ;
-         put_message("The Green Gem cures the Curse of Forgetfulness...") ;
+         put_message(_T("The Green Gem cures the Curse of Forgetfulness...")) ;
       } else {
          x = random(DIMEN_COUNT); y = random(DIMEN_COUNT); level = random(DIMEN_COUNT);
          hide_room(x, y, level) ;
@@ -840,7 +858,7 @@ static void CheckCurses(HDC hdc) //  derived from hwndMapArea
       curse_rooms[CURSE_OF_LETHARGY].is_known = 1 ;
       if (!(player.treasures[TR_RUBY_RED])) {
          player.curse_flags |= CR_LETHARGY ;
-         put_message("***  You have been afflicted with the Curse of Lethargy !!") ;
+         put_message(_T("***  You have been afflicted with the Curse of Lethargy !!")) ;
       }
    }
    if (curse_rooms[CURSE_OF_LEECH].is_known == 0  &&
@@ -851,7 +869,7 @@ static void CheckCurses(HDC hdc) //  derived from hwndMapArea
       curse_rooms[CURSE_OF_LEECH].is_known = 1 ;
       if (!(player.treasures[TR_PALE_PEARL])) {
          player.curse_flags |= CR_LEECH ;
-         put_message("***  You have been afflicted with the Curse of the Leech !!") ;
+         put_message(_T("***  You have been afflicted with the Curse of the Leech !!")) ;
       }
    }
    if (curse_rooms[CURSE_OF_FORGET].is_known == 0  &&
@@ -862,22 +880,22 @@ static void CheckCurses(HDC hdc) //  derived from hwndMapArea
       curse_rooms[CURSE_OF_FORGET].is_known = 1 ;
       if (!(player.treasures[TR_GREEN_GEM])) {
          player.curse_flags |= CR_FORGET ;
-         put_message("***  You have been afflicted with the Curse of Amnesia !!") ;
+         put_message(_T("***  You have been afflicted with the Curse of Amnesia !!")) ;
       }
    }
 }  
 
 //*********************************************************
-static char *comment_str[9] = {
-"You stepped on a toad...",
-"You hear a scream!!",
-"You hear someone breathing!!",
-"You hear a Limnphedon!",
-"You hear thunder in the distance.",
-"You feel bugs on your face !",
-"You smell a fried monster",
-"You see something glowing in the distance !",
-"You hear faint rustling noises..."   
+static TCHAR *comment_str[9] = {
+_T("You stepped on a toad..."),
+_T("You hear a scream!!"),
+_T("You hear someone breathing!!"),
+_T("You hear a Limnphedon!"),
+_T("You hear thunder in the distance."),
+_T("You feel bugs on your face !"),
+_T("You smell a fried monster"),
+_T("You see something glowing in the distance !"),
+_T("You hear faint rustling noises..."   )
 } ;
 
 static void Comments(void)
@@ -928,12 +946,12 @@ static void update_room(void)
    if (idx != EMPTY_ROOM) {
       // if (idx >= MONSTER_BASE  &&  idx <= MONSTER_END) {
       if (is_monster_index(idx)) {
-         char *sptr = get_object_in_room(player.x, player.y, player.level) ;
-         wsprintf(tempstr, "Here you find %s %s.", 
+         TCHAR *sptr = get_object_in_room(player.x, player.y, player.level) ;
+         _stprintf(tempstr, _T("Here you find %s %s."), 
             starts_with_vowel(sptr) ? "an" : "a", sptr) ;
             // get_object_in_room(player.x, player.y, player.level)) ;
       } else {
-         wsprintf(tempstr, "Here you find %s.", 
+         _stprintf(tempstr, _T("Here you find %s."), 
             get_object_in_room(player.x, player.y, player.level)) ;
       }
       put_message(tempstr) ;
@@ -1006,7 +1024,7 @@ int move_down(HWND hwnd)
 {
    int room_chr = get_room_contents();
    if (room_chr != STAIRS_DOWN) {
-      put_message("It's hard to climb the walls...FIND SOME STAIRS!!");
+      put_message(_T("It's hard to climb the walls...FIND SOME STAIRS!!"));
       return 1 ;
    }
 
@@ -1019,12 +1037,13 @@ int move_down(HWND hwnd)
       // } else {
       //    level_known[player.level] = true ;
       // }
-      if (prev_level_known)
+      if (prev_level_known) {
          level_known[player.level] = true ;
+      }
       draw_all_room_sprites() ;  //  formerly Map()/show_location()
       update_room() ;
       react_to_room(NULL) ;
-      put_message("Here you find stairs going up."); 
+      put_message(_T("Here you find stairs going up.")); 
    }
    Comments() ;
    return 0;
@@ -1035,12 +1054,11 @@ int move_up(HWND hwnd)
 {
    int room_chr = get_room_contents();
    if (room_chr != STAIRS_UP) {
-      put_message("It's hard to climb the walls...FIND SOME STAIRS!!");
+      put_message(_T("It's hard to climb the walls...FIND SOME STAIRS!!"));
       return 1 ;
    }
 
    if (player.level > 0) {
-      // HDC hdc = hdcMain ;
       player.level-- ;
       //  move-UP should not update the "level known" flag,
       //  only move-DOWN should do so!!
@@ -1053,7 +1071,7 @@ int move_up(HWND hwnd)
       draw_all_room_sprites() ;  //  formerly Map()/show_location()
       update_room() ;
       react_to_room(NULL) ;
-      put_message("Here you find stairs going down."); 
+      put_message(_T("Here you find stairs going down.")); 
    }
    Comments() ;
    return 0;
@@ -1063,25 +1081,25 @@ int move_up(HWND hwnd)
 int look_in_direction(HWND hwnd, unsigned key)
 {
    int contents ;
-   char *sptr ;
+   TCHAR *sptr ;
 
    switch (key) {
    case kw:
    case kLEFT:
       if (player.x == 0) {
-         put_message("you see a wall to the west") ;
+         put_message(_T("you see a wall to the west")) ;
       } else {
          mark_room_as_known(player.x-1, player.y, player.level) ;
          contents = get_room_contents(player.x-1, player.y, player.level) ;
          // if (contents >= MONSTER_BASE  &&  contents <= MONSTER_END) {
          if (is_monster_index(contents)) {
             sptr = get_object_name(contents) ;
-            wsprintf(tempstr, "The Lamp shines west.  There you see %s %s [ L%u ]", 
+            _stprintf(tempstr, _T("The Lamp shines west.  There you see %s %s [ L%u ]"), 
                starts_with_vowel(sptr) ? "an" : "a", sptr,
                // get_object_name(contents), 
                contents - MONSTER_BASE + 1) ;
          } else {
-            wsprintf(tempstr, "The Lamp shines west.  There you see %s", 
+            _stprintf(tempstr, _T("The Lamp shines west.  There you see %s"), 
                get_object_name(contents)) ;
          }
          put_message(tempstr) ;
@@ -1091,18 +1109,18 @@ int look_in_direction(HWND hwnd, unsigned key)
    case kn:
    case kUP:
       if (player.y == 0) {
-         put_message("you see a wall to the north") ;
+         put_message(_T("you see a wall to the north")) ;
       } else {
          mark_room_as_known(player.x, player.y-1, player.level) ;
          contents = get_room_contents(player.x, player.y-1, player.level) ;
          // if (contents >= MONSTER_BASE  &&  contents <= MONSTER_END) {
          if (is_monster_index(contents)) {
             sptr = get_object_name(contents) ;
-            wsprintf(tempstr, "The Lamp shines north.  There you see %s %s [ L%u ]", 
+            _stprintf(tempstr, _T("The Lamp shines north.  There you see %s %s [ L%u ]"), 
                starts_with_vowel(sptr) ? "an" : "a", sptr,
                contents - MONSTER_BASE + 1) ;
          } else {
-            wsprintf(tempstr, "The Lamp shines north.  There you see %s", 
+            _stprintf(tempstr, _T("The Lamp shines north.  There you see %s"), 
                get_object_name(contents)) ;
          }
          put_message(tempstr) ;
@@ -1112,18 +1130,18 @@ int look_in_direction(HWND hwnd, unsigned key)
    case ke:
    case kRIGHT: 
       if (player.x == 7) {
-         put_message("you see a wall to the east") ;
+         put_message(_T("you see a wall to the east"))  ;
       } else {
          mark_room_as_known(player.x+1, player.y, player.level) ;
          contents = get_room_contents(player.x+1, player.y, player.level) ;
          // if (contents >= MONSTER_BASE  &&  contents <= MONSTER_END) {
          if (is_monster_index(contents)) {
             sptr = get_object_name(contents) ;
-            wsprintf(tempstr, "The Lamp shines east.  There you see %s %s [ L%u ]", 
+            _stprintf(tempstr, _T("The Lamp shines east.  There you see %s %s [ L%u ]") , 
                starts_with_vowel(sptr) ? "an" : "a", sptr,
                contents - MONSTER_BASE + 1) ;
          } else {
-            wsprintf(tempstr, "The Lamp shines east.  There you see %s", 
+            _stprintf(tempstr, _T("The Lamp shines east.  There you see %s") , 
                get_object_name(contents)) ;
          }
          put_message(tempstr) ;
@@ -1133,18 +1151,18 @@ int look_in_direction(HWND hwnd, unsigned key)
    case ks:
    case kDOWN: //  look south
       if (player.y == 7) {
-         put_message("you see a wall to the south") ;
+         put_message(_T("you see a wall to the south") ) ;
       } else {
          mark_room_as_known(player.x, player.y+1, player.level) ;
          contents = get_room_contents(player.x, player.y+1, player.level) ;
          // if (contents >= MONSTER_BASE  &&  contents <= MONSTER_END) {
          if (is_monster_index(contents)) {
             sptr = get_object_name(contents) ;
-            wsprintf(tempstr, "The Lamp shines south.  There you see %s %s [ L%u ]", 
+            _stprintf(tempstr, _T("The Lamp shines south.  There you see %s %s [ L%u ]") , 
                starts_with_vowel(sptr) ? "an" : "a", sptr,
                contents - MONSTER_BASE + 1) ;
          } else {
-            wsprintf(tempstr, "The Lamp shines south.  There you see %s", 
+            _stprintf(tempstr, _T("The Lamp shines south.  There you see %s") , 
                get_object_name(contents)) ;
          }
          put_message(tempstr) ;
@@ -1152,7 +1170,7 @@ int look_in_direction(HWND hwnd, unsigned key)
       break;
 
    default:
-      put_message("The Lamp shines in your eyes.  You are blinded!!") ;
+      put_message(_T("The Lamp shines in your eyes.  You are blinded!!") ) ;
       // player.is_blind = random(5) ;
       player.blind_count = 1 + random(5); 
       player.is_blind = 1 ;
@@ -1165,13 +1183,13 @@ int look_in_direction(HWND hwnd, unsigned key)
 int light_a_flare(HWND hwnd)
 {
    if (player.flares == 0) {
-      put_message("Hey, Bright One, you're out of flares!!") ;
+      put_message(_T("Hey, Bright One, you're out of flares!!")) ;
       return 1;
    }
    player.flares-- ;
 
    if (player.is_blind) {
-      put_message("Fat lotta good THAT did you, blind one...") ;
+      put_message(_T("Fat lotta good THAT did you, blind one...")) ;
       return 1 ;
    }
 
@@ -1194,7 +1212,7 @@ int light_a_flare(HWND hwnd)
       }
    }
    ReleaseDC(hwndMapArea, hdc) ;
-   put_message("Ahhhh... that's better...") ;
+   put_message(_T("Ahhhh... that's better...")) ;
    return 0;   
 }
 
@@ -1204,14 +1222,14 @@ static int gaze_into_orb(HWND hwnd)
    unsigned A, B, C ;
 
    if (player.is_blind) {
-      wsprintf(tempstr, "You can't SEE, you foolish %s...", race_str[player.race]) ;
+      _stprintf(tempstr, _T("You can't SEE, you foolish %s..."), race_str[player.race]) ;
       put_message(tempstr) ;
       return 1;
    }
 
    switch (random(6)) {
    case 0:
-      put_message("You see yourself in a bloody heap.");
+      put_message(_T("You see yourself in a bloody heap."));
       if (player.has_runestaff) 
          A = 1 + random(9);
       else if (player.has_orb_of_Zot)  
@@ -1229,31 +1247,31 @@ static int gaze_into_orb(HWND hwnd)
       break;
 
    case 1: 
-      wsprintf(tempstr, "You see yourself drinking from a pool and becoming a %s",
+      _stprintf(tempstr, _T("You see yourself drinking from a pool and becoming a %s"),
             get_object_name(MONSTER_BASE + random(12))) ;
       put_message(tempstr) ;
       break;
 
    case 2: 
-      wsprintf(tempstr, "You see a %s looking at you speculatively.",
+      _stprintf(tempstr, _T("You see a %s looking at you speculatively."),
          get_object_name(MONSTER_BASE + random(12))) ;
       put_message(tempstr) ;
       break;
 
    case 3: 
-      put_message(WIN_GREEN, "You see your girlfriend with a green squirrel.");
+      put_message(WIN_GREEN, _T("You see your girlfriend with a green squirrel."));
       break;
 
    case 4: 
       A = random(DIMEN_COUNT); B = random(DIMEN_COUNT); C = random(DIMEN_COUNT); mark_room_as_known(A, B, C);
-      wsprintf(tempstr, "You see %s at (%d,%d), level %d.",
+      _stprintf(tempstr, _T("You see %s at (%d,%d), level %d."),
          get_object_in_room(A, B, C), A, B, C) ;
       put_message(tempstr) ;
       break;
 
    case 5: 
       if (player.has_orb_of_Zot) {
-         wsprintf(tempstr, "You see your image looking back at you quizically...") ;
+         _stprintf(tempstr, _T("You see your image looking back at you quizically...")) ;
       } else 
       if (player.has_runestaff) {
          if (random(10) < 5) {
@@ -1261,11 +1279,11 @@ static int gaze_into_orb(HWND hwnd)
          } else {
             A = random(DIMEN_COUNT); B = random(DIMEN_COUNT); C = random(DIMEN_COUNT);
          }
-         wsprintf(tempstr, "You see the ** ORB OF ZOT ** at (%d,%d), Level %d!!",
+         _stprintf(tempstr, _T("You see the ** ORB OF ZOT ** at (%d,%d), Level %d!!"),
             A, B, C);
       } else 
       {
-         wsprintf(tempstr, "You see %s carrying a large, ornate staff.",
+         _stprintf(tempstr, _T("You see %s carrying a large, ornate staff."),
             get_object_in_room(runestaff_room.x, runestaff_room.y, runestaff_room.level)) ;
       }
       put_message(tempstr) ;
@@ -1284,7 +1302,7 @@ static int open_book_or_chest(HWND hwnd, int contents)
    //*****************************************************
    if (contents == BOOK) {
       if (player.is_blind) {
-         put_message("The book laughs, and jumps from your hands") ;
+         put_message(_T("The book laughs, and jumps from your hands")) ;
          return 1;
       }
 
@@ -1294,47 +1312,47 @@ static int open_book_or_chest(HWND hwnd, int contents)
       switch (random(7)) {
       case 0:
          if (player.treasures[TR_OPAL_EYE]) {
-            put_message("You open the book and   *** FLASH!! ***");
-            put_message(" ") ;
-            put_message("You are blinded for a few moments...") ;
-            put_message("then the aura of the Opal Eye flows over you") ;
-            put_message("and your sight is restored!!  (Whew)") ;
+            put_message(_T("You open the book and   *** FLASH!! ***"));
+            put_message(_T(" ")) ;
+            put_message(_T("You are blinded for a few moments...")) ;
+            put_message(_T("then the aura of the Opal Eye flows over you")) ;
+            put_message(_T("and your sight is restored!!  (Whew)")) ;
             
          } else {
             player.blind_count = 1 + random(15); 
             player.is_blind = 1 ;
             draw_main_screen(NULL);
             // clear_message_area(term) ;
-            put_message("You open the book and   *** FLASH!! ***");
-            wsprintf(tempstr, "OH NO! YOU ARE NOW A BLIND %s !!", race_str[player.race]);
+            put_message(_T("You open the book and   *** FLASH!! ***"));
+            _stprintf(tempstr, _T("OH NO! YOU ARE NOW A BLIND %s !!"), race_str[player.race]);
             put_message(tempstr) ;
          }
          break;
 
       case 1:
-         put_message("You open the book and find that");
-         put_message("IT'S ANOTHER VOLUME OF ZOT'S POETRY! - YECH!!");
+         put_message(_T("You open the book and find that"));
+         put_message(_T("IT'S ANOTHER VOLUME OF ZOT'S POETRY! - YECH!!"));
          break;
 
       case 2:
-         wsprintf(tempstr, "You open the book and find an old copy of Play%s!", race_str[random(4)]);
+         _stprintf(tempstr, _T("You open the book and find an old copy of Play%s!"), race_str[random(4)]);
          put_message(tempstr) ;
          break;
 
       case 3:
-         put_message("You open a MANUAL OF INTELLIGENCE!"); 
+         put_message(_T("You open a MANUAL OF INTELLIGENCE!")); 
          player.iq = 18 ;
          show_int() ;
          break;
 
       case 4:
-         put_message("You open a MANUAL OF DEXTERITY!"); 
+         put_message(_T("You open a MANUAL OF DEXTERITY!")); 
          player.dex = 18 ;
          show_dex() ;
          break;
 
       case 5:
-         put_message("You open a MANUAL OF STRENGTH! "); 
+         put_message(_T("You open a MANUAL OF STRENGTH! ")); 
          player.str = 18 ;
          adjust_hit_points() ;
          show_str() ;
@@ -1343,11 +1361,11 @@ static int open_book_or_chest(HWND hwnd, int contents)
 
       case 6:
          if (player.treasures[TR_BLUE_FLAME]) {
-            put_message("THE BOOK STICKS TO YOUR HANDS -");
-            put_message("but the BLUE FLAME dissolves the glue... Whew!!") ;
+            put_message(_T("THE BOOK STICKS TO YOUR HANDS -"));
+            put_message(_T("but the BLUE FLAME dissolves the glue... Whew!!")) ;
          } else {
-            put_message("THE BOOK STICKS TO YOUR HANDS -");
-            put_message("NOW YOU ARE UNABLE TO DRAW YOUR WEAPON!");
+            put_message(_T("THE BOOK STICKS TO YOUR HANDS -"));
+            put_message(_T("NOW YOU ARE UNABLE TO DRAW YOUR WEAPON!"));
             // player.weapon = 4 ;
             player.book_count = 1 + random(15); 
             player.has_book = true ;
@@ -1373,22 +1391,22 @@ static int open_book_or_chest(HWND hwnd, int contents)
       room = random(10) ;
       if (room < 4) {
          Q=random(1000);
-         wsprintf(tempstr, "YOU OPEN THE CHEST AND  FIND %d GOLD PIECES!", Q) ; 
+         _stprintf(tempstr, _T("YOU OPEN THE CHEST AND  FIND %d GOLD PIECES!"), Q) ; 
          put_message(tempstr) ;
          player.gold += Q; 
          show_gold() ;
          clear_room(NULL); 
       } else if (room < 7) {
-         put_message("You open the chest and find  **GAS** !!") ;
-         put_message("YOU STAGGER FROM THE ROOM IN CONFUSION!!") ; 
+         put_message(_T("You open the chest and find  **GAS** !!")) ;
+         put_message(_T("YOU STAGGER FROM THE ROOM IN CONFUSION!!")) ; 
          ScrambleAttr() ; 
          move_one_square(hwnd) ;
          //  don't remove chest in this case
          // clear_room(hdcMain); 
       } else if (room < 9) {
-         put_message("KABOOM!  THE CHEST EXPLODES!!");
+         put_message(_T("KABOOM!  THE CHEST EXPLODES!!"));
          Q = random(6); 
-         put_color_msg(TERM_MONSTER_HIT, "You took %u points damage", Q) ;
+         put_color_msg(TERM_MONSTER_HIT, _T("You took %u points damage"), Q) ;
          if (Q >= player.hit_points) {
             player_dies(hwnd) ;
             return -1;
@@ -1402,7 +1420,7 @@ static int open_book_or_chest(HWND hwnd, int contents)
          clear_room(NULL); 
       }
    } else {
-      put_message("You can call your pen, but it won't answer...") ;
+      put_message(_T("You can call your pen, but it won't answer...")) ;
       return 1;
    }
    return 0;
@@ -1420,7 +1438,7 @@ static int drink_from_pool(HWND hwnd)
 
    switch (random(8)) {
    case 0:
-      put_message("You take a drink and feel stronger");
+      put_message(_T("You take a drink and feel stronger"));
       j = 1 + random(3) ;
       player.str = min(player.str + j, 18) ;
       adjust_hit_points() ;
@@ -1429,7 +1447,7 @@ static int drink_from_pool(HWND hwnd)
       break;
 
    case 1:
-      put_message("You take a drink and feel weaker");
+      put_message(_T("You take a drink and feel weaker"));
       j = 1 + random(3) ;
       player.str -= j ;
       if (player.str <= j) {
@@ -1443,14 +1461,14 @@ static int drink_from_pool(HWND hwnd)
       break;
 
    case 2: 
-      put_message("You take a drink and feel smarter");
+      put_message(_T("You take a drink and feel smarter"));
       j = 1 + random(3) ;
       player.iq = min(player.iq + j, 18) ;
       show_int() ;
       break;
 
    case 3: 
-      put_message("You take a drink and feel dumber");
+      put_message(_T("You take a drink and feel dumber"));
       j = 1 + random(3) ;
       player.iq -= j ;
       if (player.iq <= j) {
@@ -1462,14 +1480,14 @@ static int drink_from_pool(HWND hwnd)
       break;
 
    case 4: 
-      put_message("You take a drink and feel nimbler");
+      put_message(_T("You take a drink and feel nimbler"));
       j = 1 + random(3) ;
       player.dex = min(player.dex + j, 18) ;
       show_dex() ;
       break;
 
    case 5: 
-      put_message("You take a drink and feel clumsier");
+      put_message(_T("You take a drink and feel clumsier"));
       j = 1 + random(3) ;
       if (player.dex <= j) {
          player.dex = 0 ;
@@ -1485,7 +1503,7 @@ static int drink_from_pool(HWND hwnd)
          j = random(4); 
          if (j != player.race) {
             player.race = j ;
-            wsprintf(tempstr, "With a scream of agony, you turn into a %s", race_str[j]) ;
+            _stprintf(tempstr, _T("With a scream of agony, you turn into a %s"), race_str[j]) ;
             put_message(tempstr) ;
             //  alter stats when this happens??
             break;
@@ -1495,17 +1513,17 @@ static int drink_from_pool(HWND hwnd)
 
    case 7: 
       if (!player.has_orb_of_Zot) {
-         put_message("An image forms in the pool..... At first it looks");
-         put_message("like a door into a forest, but quickly fades into");
-         put_message("a reflection of your face.");
+         put_message(_T("An image forms in the pool..... At first it looks"));
+         put_message(_T("like a door into a forest, but quickly fades into"));
+         put_message(_T("a reflection of your face."));
          break;
       } 
-      put_message(" ");
-      put_message(" ");
-      put_message("An image of a door shimmers in the water.");
-      put_message("through the door, you see a forest with a cool stream");
-      put_message("flowing through it...");
-      put_message("WHICH DIRECTION WILL YOU GO? ? ");
+      put_message(_T(" "));
+      put_message(_T(" "));
+      put_message(_T("An image of a door shimmers in the water."));
+      put_message(_T("through the door, you see a forest with a cool stream"));
+      put_message(_T("flowing through it..."));
+      put_message(_T("WHICH DIRECTION WILL YOU GO? ? "));
       return 1 ; //  decision to be made
       // break;
    }  //lint !e744  no default
@@ -1556,48 +1574,48 @@ int teleport(HWND hwnd, unsigned inchr)
    switch (state) {
    case 0:
       if (!player.has_runestaff) {
-         put_message("If you need to pee, look for a bush!!");
+         put_message(_T("If you need to pee, look for a bush!!"));
          return 1;
       }
       push_keymap(KEYMAP_TELEPORT) ;
-      put_message("[ ?, ?, ? ]: Enter X coord:") ;
+      put_message(_T("[ ?, ?, ? ]: Enter X coord:")) ;
       state = 1 ;
       break;
 
    case 1:
       if (inchr < k0  ||  inchr > k7) {
-         put_message("yeah, right...") ;
-         put_message("[ ?, ?, ? ]: Enter X coord:") ;
+         put_message(_T("yeah, right...")) ;
+         put_message(_T("[ ?, ?, ? ]: Enter X coord:")) ;
          // state = 0 ;
          // push_keymap(KEYMAP_DEFAULT) ;
          // pop_keymap() ;
          break;
       }
       x = inchr - 0x30 ;
-      wsprintf(tempstr, "[ %u, ?, ? ]: Enter Y coord:", x) ;
+      _stprintf(tempstr, _T("[ %u, ?, ? ]: Enter Y coord:"), x) ;
       put_message(tempstr) ;
       state = 2 ;
       break;
 
    case 2:
       if (inchr < k0  ||  inchr > k7) {
-         put_message("yeah, right...") ;
-         wsprintf(tempstr, "[ %u, ?, ? ]: Enter Y coord:", x) ;
+         put_message(_T("yeah, right...")) ;
+         _stprintf(tempstr, _T("[ %u, ?, ? ]: Enter Y coord:"), x) ;
          put_message(tempstr) ;
          // state = 0 ;
          // pop_keymap() ;
          break;
       }
       y = inchr - 0x30 ;
-      wsprintf(tempstr, "[ %u, %u, ? ]: Enter Z coord:", x, y) ;
+      _stprintf(tempstr, _T("[ %u, %u, ? ]: Enter Z coord:"), x, y) ;
       put_message(tempstr) ;
       state = 3 ;
       break;
 
    case 3:
       if (inchr < k0  ||  inchr > k7) {
-         put_message("yeah, right...") ;
-         wsprintf(tempstr, "[ %u, %u, ? ]: Enter Z coord:", x, y) ;
+         put_message(_T("yeah, right...")) ;
+         _stprintf(tempstr, _T("[ %u, %u, ? ]: Enter Z coord:"), x, y) ;
          put_message(tempstr) ;
          // state = 0 ;
          // pop_keymap() ;
@@ -1626,11 +1644,11 @@ int teleport(HWND hwnd, unsigned inchr)
       if (player.x     == orb_room.x  &&
           player.y     == orb_room.y  &&
           player.level == orb_room.level) {
-         put_color_msg(TERM_RUNESTAFF, "GREAT UNMITIGATED ZOT!");
-         put_color_msg(TERM_RUNESTAFF, " ");
-         put_color_msg(TERM_RUNESTAFF, "You just found  *** THE ORB OF ZOT *** !");
-         put_color_msg(TERM_RUNESTAFF, " ");
-         put_color_msg(TERM_RUNESTAFF, "The RuneStaff has disappeared...");
+         put_color_msg(TERM_RUNESTAFF, _T("GREAT UNMITIGATED ZOT!"));
+         put_color_msg(TERM_RUNESTAFF, _T(" "));
+         put_color_msg(TERM_RUNESTAFF, _T("You just found  *** THE ORB OF ZOT *** !"));
+         put_color_msg(TERM_RUNESTAFF, _T(" "));
+         put_color_msg(TERM_RUNESTAFF, _T("The RuneStaff has disappeared..."));
          player.has_runestaff = false ;
          player.has_orb_of_Zot = true ;
          show_treasures() ;
@@ -1657,7 +1675,7 @@ int attack_vendor(HWND hwnd)
 {
    int contents = get_room_contents() ;
    if (contents != VENDOR) {
-      put_message("***  You're sure attacky person! (no monster found)") ;
+      put_message(_T("***  You're sure attacky person! (no monster found)")) ;
       return 0;
    }
    // HDC hdc = hdcMain ;
@@ -1678,13 +1696,13 @@ void view_special_items(void)
 {
    unsigned j ;
 
-   infoout("you are currently exploring %s", names[player.castle_nbr]) ;
+   infoout(_T("you are currently exploring %s"), names[player.castle_nbr]) ;
 
-   infoout("you possess:") ;
+   infoout(_T("you possess:")) ;
    set_term_attr_default() ;
    if (player.treasure_count == 0) {
       // SendMessage(special_fields[idx], WM_SETFONT, (WPARAM) hfont_comic_sans_bold, MAKELPARAM(FALSE, 0)); 
-      put_message("Your miserable life") ;
+      put_message(_T("Your miserable life")) ;
    } else {
       for (j=0; j<8; j++) {
          if (player.treasures[j]) {
@@ -1694,17 +1712,17 @@ void view_special_items(void)
       }
    }
    if (player.has_runestaff) {
-      put_message(" ") ;
-      put_message(WIN_GREEN, "the RuneStaff") ;
+      put_message(_T(" ")) ;
+      put_message(WIN_GREEN, _T("the RuneStaff")) ;
    } else 
    if (player.has_orb_of_Zot) {
-      put_message(" ") ;
-      put_message(WIN_MAGENTA, "the Orb of Zot !!") ;
+      put_message(_T(" ")) ;
+      put_message(WIN_MAGENTA, _T("the Orb of Zot !!")) ;
    }
 
    if (player.curse_flags) {
-      put_message(" ") ;
-      infoout("you are afflicted by:") ;
+      put_message(_T(" ")) ;
+      infoout(_T("you are afflicted by:")) ;
       unsigned tmask = 1 ;
       for (j=0; j<3; j++) {
          if (player.curse_flags & tmask) {
@@ -1716,61 +1734,61 @@ void view_special_items(void)
    }
 
    if (player.book_count > 0) 
-      queryout("book count=%d", player.book_count) ;
+      queryout(_T("book count=%d"), player.book_count) ;
    if (player.blind_count > 0) 
-      queryout("blind count=%d", player.blind_count) ;
+      queryout(_T("blind count=%d"), player.blind_count) ;
    set_term_attr_default() ;
 }
 
 //*************************************************************
-static char status_update_text[40] ;
+static TCHAR status_update_text[40] ;
 
 static void show_str(void)
 {
-   wsprintf(status_update_text, " %u", player.str) ; 
+   _stprintf(status_update_text, _T(" %u"), player.str) ; 
    SetWindowText(status_windows[0], status_update_text) ;
 }
 
 void show_dex(void)
 {
-   wsprintf(status_update_text, " %u", player.dex) ; 
+   _stprintf(status_update_text, _T(" %u"), player.dex) ; 
    SetWindowText(status_windows[1], status_update_text) ;
 }
    
 void show_int(void)
 {
-   wsprintf(status_update_text, " %u", player.iq ) ; 
+   _stprintf(status_update_text, _T(" %u"), player.iq ) ; 
    SetWindowText(status_windows[2], status_update_text) ;
 }
    
 void show_hit_points(void)
 {
-   wsprintf(status_update_text, " %u", player.hit_points) ; 
+   _stprintf(status_update_text, _T(" %u"), player.hit_points) ; 
    SetWindowText(status_windows[3], status_update_text) ;
 }
    
 void show_weapon(void)
 {
-   wsprintf(status_update_text, " %s", 
-      (player.has_book) ? "A Book" : weapon_str[player.weapon]) ; 
+   _stprintf(status_update_text, _T(" %s"), 
+      (player.has_book) ? _T("A Book") : weapon_str[player.weapon]) ; 
    SetWindowText(status_windows[4], status_update_text) ;
 }
    
 void show_armour(void)
 {
-   wsprintf(status_update_text, " %s (%u)", armour_str[player.armour], player.armour_points) ; 
+   _stprintf(status_update_text, _T(" %s (%u)"), armour_str[player.armour], player.armour_points) ; 
    SetWindowText(status_windows[5], status_update_text) ;
 }
    
 static void show_flares(void)
 {
-   wsprintf(status_update_text, " %u", player.flares) ; 
+   _stprintf(status_update_text, _T(" %u"), player.flares) ; 
    SetWindowText(status_windows[6], status_update_text) ;
 }
    
 void show_gold(void)
 {
-   wsprintf(status_update_text, " %u", player.gold) ; 
+   _stprintf(status_update_text, _T(" %u"), player.gold) ; 
    SetWindowText(status_windows[7], status_update_text) ;
 }
    
@@ -1839,7 +1857,7 @@ static void react_to_room(HWND hwndUnused)
       clear_room(NULL); 
       Q = 1 + random(200); 
       player.gold += Q ;
-      wsprintf(tempstr, "You count %u coins in the pile!", Q) ;
+      _stprintf(tempstr, _T("You count %u coins in the pile!"), Q) ;
       put_message(tempstr) ;
       show_gold() ;
       break;
@@ -1848,7 +1866,7 @@ static void react_to_room(HWND hwndUnused)
       clear_room(NULL); 
       Q = 1 + random(5) ;
       player.flares += Q ;
-      wsprintf(tempstr, "You find %u flares lying here!", Q) ;
+      _stprintf(tempstr, _T("You find %u flares lying here!"), Q) ;
       show_flares() ;
       break;
 
@@ -1910,7 +1928,7 @@ static void react_to_room(HWND hwndUnused)
       clear_room(hdc); 
       // tmask = 1 << (contents - RUBY_RED) ;
       tmask = contents - TREASURE_BASE ;
-      wsprintf(tempstr, "You find %s [%u]... It's now yours!!", 
+      _stprintf(tempstr, _T("You find %s [%u]... It's now yours!!"), 
          get_object_name(contents), contents) ;
       put_message(tempstr) ;
       player.treasure_count++ ;
@@ -1925,7 +1943,7 @@ static void react_to_room(HWND hwndUnused)
       switch (contents) {
       case BLUE_FLAME:
          if (player.has_book) {
-            put_message("The Blue Flame dissolves the book in your hands!!") ;
+            put_message(_T("The Blue Flame dissolves the book in your hands!!")) ;
             player.book_count = 0 ;
             player.has_book = false ;
             show_weapon() ;
@@ -1934,7 +1952,7 @@ static void react_to_room(HWND hwndUnused)
 
       case OPAL_EYE:
          if (player.is_blind) {
-            put_message("The Opal Eye cures your blindness!!") ;
+            put_message(_T("The Opal Eye cures your blindness!!")) ;
             player.blind_count = 0 ;
             player.is_blind = false ;
             draw_main_screen(NULL) ;
@@ -1945,21 +1963,21 @@ static void react_to_room(HWND hwndUnused)
       case RUBY_RED:
          if (player.curse_flags & CR_LETHARGY) {
             player.curse_flags &= ~CR_LETHARGY ;
-            put_message("The Ruby Red cures the Curse of Lethargy...") ;
+            put_message(_T("The Ruby Red cures the Curse of Lethargy...")) ;
          }
          break;
 
       case PALE_PEARL:
          if (player.curse_flags & CR_LEECH) {
             player.curse_flags &= ~CR_LEECH ;
-            put_message("The Pale Pearl cures the Curse of the Leech...") ;
+            put_message(_T("The Pale Pearl cures the Curse of the Leech...")) ;
          }
          break;
 
       case GREEN_GEM:
          if (player.curse_flags & CR_FORGET) {
             player.curse_flags &= ~CR_FORGET ;
-            put_message("The Green Gem cures the Curse of Forgetfulness...") ;
+            put_message(_T("The Green Gem cures the Curse of Forgetfulness...")) ;
          }
          break;
       }  //lint !e744  no default
@@ -2005,7 +2023,7 @@ void draw_beginning_screen(void)
 {
    // clear_dialog_area(hdcMain, GetSysColor(COLOR_3DFACE));
    draw_main_screen(NULL) ;
-   term_set_font("Bodacious-Normal", 120, EZ_ATTR_NORMAL) ;
+   term_set_font(_T("Bodacious-Normal"), 120, EZ_ATTR_NORMAL) ;
    set_term_attr_default();
    update_room() ;
    level_known[0] = true ;
@@ -2046,27 +2064,27 @@ void set_up_working_spaces(HWND hwnd)
 }
 
 //****************************************************************************
-static char *intro_msg[] = {
-"MANY CYCLES AGO, IN THE KINGDOM OF N'DIC,  THE GNOMIC",
-"WIZARD ZOT FORGED HIS GREAT *ORB OF POWER*.  HE SOON",
-"VANISHED, LEAVING BEHIND HIS VAST SUBTERRANEAN CASTLE",
-"FILLED WITH ESURIENT MONSTERS, FABULOUS TREASURES,",
-"AND THE INCREDIBLE *ORB OF ZOT*.  FROM THAT TIME HENCE,",
-"MANY A BOLD YOUTH HAS VENTURED INTO THE WIZARD'S CASTLE.",
-"AS OF NOW, *NONE* HAS EVER EMERGED VICTORIOUSLY!  BEWARE!!",
+static TCHAR *intro_msg[] = {
+_T("MANY CYCLES AGO, IN THE KINGDOM OF N'DIC,  THE GNOMIC"),
+_T("WIZARD ZOT FORGED HIS GREAT *ORB OF POWER*.  HE SOON"),
+_T("VANISHED, LEAVING BEHIND HIS VAST SUBTERRANEAN CASTLE"),
+_T("FILLED WITH ESURIENT MONSTERS, FABULOUS TREASURES,"),
+_T("AND THE INCREDIBLE *ORB OF ZOT*.  FROM THAT TIME HENCE,"),
+_T("MANY A BOLD YOUTH HAS VENTURED INTO THE WIZARD'S CASTLE."),
+_T("AS OF NOW, *NONE* HAS EVER EMERGED VICTORIOUSLY!  BEWARE!!"),
 0 };
 
 // HWND hwndIntroRegion = NULL ;
 void draw_intro_screen(HWND hwnd)
 {
    uint j ;
-   put_message(WIN_MAGENTA, "* * * THE WIZARD'S CASTLE * * *") ;
+   put_message(WIN_MAGENTA, _T("* * * THE WIZARD'S CASTLE * * *")) ;
    for (j=0; intro_msg[j] != 0; j++) {
       // dprints_centered_x(hdc, y, WIN_BLUE, intro_msg[j]) ; y += dy ;
       put_message(WIN_BLUE, intro_msg[j]) ;
    }
-   infoout("You are now entering %s", names[player.castle_nbr]) ;
-   queryout("Do you wish to select your own attributes  (Type 's'),") ;
-   queryout("or use the ones that the derelict prefers? (Type 'd')") ;
+   infoout(_T("You are now entering %s"), names[player.castle_nbr]) ;
+   queryout(_T("Do you wish to select your own attributes  (Type 's'),")) ;
+   queryout(_T("or use the ones that the derelict prefers? (Type 'd')")) ;
 }
 
