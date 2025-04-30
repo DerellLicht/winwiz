@@ -725,7 +725,8 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine
    //     another mutex using szAppName,
    //  then this would not have the results intended!!
    //***************************************************************
-   syslog(_T("enter WinMain\n")) ;
+   OutputDebugString(_T("enter WinMain\n")) ;
+   MessageBox(NULL, L"enter program", L"winwiz", MB_OK);
 #ifdef  CHECK_MULTIPLE_COPIES
    if (!WeAreAlone (szAppName)) {
       //  The old technique:
@@ -773,19 +774,12 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine
    init_player() ;
    syslog(_T("game inits done\n")) ;
 
-   // hdlTopLevel = OpenProcess(PROCESS_ALL_ACCESS, false, _getpid()) ;
    HWND hwnd = CreateDialog(g_hinst, MAKEINTRESOURCE(IDD_MAIN_DIALOG), NULL, (DLGPROC) TermProc) ;
    if (hwnd == NULL) {
       syslog(_T("CreateDialog: %s\n"), get_system_message()) ;
       return 0;
    }
    HACCEL hAccel = LoadAccelerators(g_hinst, MAKEINTRESOURCE(IDR_ACCELERATOR1));  
-   // [2920] hInstance=4194304, 4194304, 4194304
-   // syslog("hInstance=%u, %u, %u\n", 
-   //    hInstance, 
-   //    GetWindowLong(hwnd, GWL_HINSTANCE),
-   //    GetModuleHandle(NULL)
-   //    );
 
    MSG Msg;
    while(GetMessage(&Msg, NULL,0,0)) {

@@ -10,6 +10,8 @@
 //lint -elib(1087)
 //lint -esym(1065, _iob)
 
+//lint -e592  Non-literal format specifier used without arguments
+
 //lint -esym(715, hdcUnused)  // (line 572) not referenced
 //lint -esym(769, SHOW_ARROW::SHOW_NO_ARROW)
 
