@@ -114,7 +114,8 @@ void init_gdiplus_data(void)
    GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
    
    // tiles32.png: image: 1280x960, tiles: 40x27, sprites: 32x32
-   pngSprites = new gdi_plus(_T("tiles32.png"), 40, 27, 32, 32) ;
+   pngSprites = new gdi_plus(_T("tiles32.png"), 40, 27, SPRITE_WIDTH, SPRITE_HEIGHT) ;
+
    // syslog(_T("tiles32.png: image: %ux%u, tiles: %ux%u, sprites: %ux%u\n"),
    //    pngSprites->img_width(), pngSprites->img_height(), 
    //    pngSprites->horiz_tiles(), pngSprites->vert_tiles(),
