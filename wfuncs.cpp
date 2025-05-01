@@ -28,7 +28,9 @@
 
 //@@@  why do I need this here??   
 //@@@  It *should* be defined in windef.h
+#ifndef _lint
 #define min(a, b)  (((a) < (b)) ? (a) : (b)) 
+#endif
 
 //lint -esym(714, clear_room)
 //lint -esym(759, clear_room)
@@ -102,12 +104,34 @@ static bool is_location_forgotten(void)
 }
 
 /************************************************************************/
+static ULONG_PTR gdiplusToken;
+
 void init_gdiplus_data(void)
 {
-   // [84296] open: tiles32.png, width: 1280, height: 960, sprite size: 32 x 36
-   pngSprites = new gdi_plus(_T("tiles32.png"), 40, 26) ;
-   // [84296] open: images.png, width: 1077, height: 362, sprite size: 359 x 362
+   GdiplusStartupInput gdiplusStartupInput;
+   
+   // Initialize GDI+.
+   GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
+   
+   // tiles32.png: image: 1280x960, tiles: 40x27, sprites: 32x32
+   pngSprites = new gdi_plus(_T("tiles32.png"), 40, 27, 32, 32) ;
+   // syslog(_T("tiles32.png: image: %ux%u, tiles: %ux%u, sprites: %ux%u\n"),
+   //    pngSprites->img_width(), pngSprites->img_height(), 
+   //    pngSprites->horiz_tiles(), pngSprites->vert_tiles(),
+   //    pngSprites->get_sprite_dx(), pngSprites->get_sprite_dy());
+   
+   // images.png: image: 1077x362, tiles: 3x1, sprites: 359x362
    pngTiles = new gdi_plus(_T("images.png"), 3, 1) ;
+   // syslog(_T("images.png: image: %ux%u, tiles: %ux%u, sprites: %ux%u\n"),
+   //    pngTiles->img_width(), pngTiles->img_height(), 
+   //    pngTiles->horiz_tiles(), pngTiles->vert_tiles(),
+   //    pngTiles->get_sprite_dx(), pngTiles->get_sprite_dy());
+}
+
+/************************************************************************/
+void release_gdiplus_data(void)
+{
+   GdiplusShutdown(gdiplusToken);
 }
 
 /************************************************************************/

@@ -29,8 +29,13 @@
 #include <stdio.h>   //  vsprintf, sprintf, which supports %f
 #include <time.h>
 #include <tchar.h>
-#ifdef UNICODE
-#include <gdiplus.h>
+
+#ifdef _lint
+//  for some reason, lint requires stdlib.h in order for this to be defined.
+//  yet g++ itself does not.
+/* RAND_MAX is the maximum value that may be returned by rand.
+ * The minimum is zero.  */
+#define RAND_MAX  0x7FFF
 #endif
 
 #include "resource.h"
@@ -46,19 +51,13 @@
 
 static const TCHAR *Version = _T("Wizard's Castle, Version 1.44") ;
 
-#ifdef UNICODE
-using namespace Gdiplus;
-#endif
-
-//lint -esym(714, dbg_flags)
-//lint -esym(759, dbg_flags)
-//lint -esym(765, dbg_flags)
-
-//***********************************************************************
 HINSTANCE g_hinst = 0;
 
 HWND hwndMain ;
 
+//lint -esym(714, dbg_flags)
+//lint -esym(759, dbg_flags)
+//lint -esym(765, dbg_flags)
 uint dbg_flags = 0
    // | DBG_WINMSGS
    ;
@@ -69,14 +68,9 @@ uint cxClient = 0 ;
 uint cyClient = 0 ;
 
 static CStatusBar *MainStatusBar = NULL;
-// CTerminal *myTerminal = NULL;
-// static HWND hToolTip ;  /* Tooltip handle */
 
 static bool redraw_in_progress = false ;
 bool prog_init_done = false ;
-
-//  user-defined Windows messages
-static const UINT WM_ARE_YOU_ME = (WM_USER + 106) ;
 
 //*******************************************************************
 void status_message(TCHAR *msgstr)
@@ -675,14 +669,6 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine
    // sprintf(tempstr, "ti=%u, rand=%u", ti, rand()) ;
    // OutputDebugString(tempstr) ;
 
-#ifdef  UNICODE
-   GdiplusStartupInput gdiplusStartupInput;
-   ULONG_PTR           gdiplusToken;
-   
-   // Initialize GDI+.
-   GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
-#endif   
-   
    load_exec_filename() ;  //  get our executable name
    //  set up initial data structs
    // read_config_data() ;
@@ -706,9 +692,8 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine
       }
    }
 
-#ifdef  UNICODE
-   GdiplusShutdown(gdiplusToken);
-#endif   
+   release_gdiplus_data();
+   
    return (int) Msg.wParam ;
 }  //lint !e715
 

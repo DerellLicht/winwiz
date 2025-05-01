@@ -7,7 +7,11 @@
 #include "common.h"
 #include "wizard.h"
 
+//@@@  why do I need this here??   
+//@@@  It *should* be defined in windef.h
+#ifndef _lint
 #define min(a, b)  (((a) < (b)) ? (a) : (b)) 
+#endif
 
 static unsigned item_prices[4] = { 0, 1250, 1500, 2000 } ;
 
@@ -53,8 +57,7 @@ static void update_equip_avail(HWND hDlg)
 }
 
 //****************************************************************************
-static BOOL CALLBACK VendorDlgProc (
-   HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+static BOOL CALLBACK VendorDlgProc (HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
    HWND hwndChk ;
    // HWND hwndArmour, hwndWeapon ;

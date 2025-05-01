@@ -247,6 +247,7 @@ int process_keystroke(HWND hwnd, unsigned inchr);
 
 //  from wfuncs.cpp
 void init_gdiplus_data(void);
+void release_gdiplus_data(void);
 void set_up_working_spaces(HWND hwnd);
 void draw_intro_screen(HWND hwnd);
 int  move_south(HWND hwnd);
@@ -283,13 +284,6 @@ void draw_current_screen(void);
 
 //  vendor.cpp
 int  trade_with_vendor(HWND hwnd);
-
-//  iface_lib.cpp
-// int  textheight(HDC hdc, unsigned selected);
-// void set_text_attributes(unsigned new_attribs);
-// int  set_text_font(char *fontname, int psize);
-// void dprints_centered_x(HDC hdc, int y, unsigned attr, char *str);
-// void dprints_centered_x(HWND hwnd, int y, unsigned fg, unsigned bg, char *str);
 
 //  from combat.cpp
 void react_to_monsters(HDC hdcUnused);

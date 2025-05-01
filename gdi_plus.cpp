@@ -122,6 +122,29 @@ gdi_plus::gdi_plus(TCHAR *new_img_name, uint icons_per_column, uint icon_rows) :
 }
 
 //********************************************************************
+gdi_plus::gdi_plus(TCHAR *new_img_name, uint icons_per_column, uint icon_rows, uint sprite_width, uint sprite_height) :
+   img_name(NULL),
+   gbitmap(NULL),
+   nWidth(0),
+   nHeight(0),
+   sprite_dx(sprite_width),
+   sprite_dy(sprite_height),
+   tiles_x(icons_per_column),
+   tiles_y(icon_rows)
+{
+   img_name = new TCHAR[_tcslen(new_img_name) +1] ;
+   _tcscpy(img_name, new_img_name) ;
+   
+   gbitmap = new Bitmap(new_img_name);
+   nWidth  = gbitmap->GetWidth();
+   nHeight = gbitmap->GetHeight();
+   // sprite_dx = nWidth / tiles_x ;
+   // sprite_dy = nHeight / tiles_y ;
+   // syslog(_T("open: %s, width: %u, height: %u, sprite size: %u x %u\n"), 
+   //    new_img_name, nWidth, nHeight, sprite_dx, sprite_dy) ;
+}
+
+//********************************************************************
 gdi_plus::~gdi_plus()
 {
    if (img_name != NULL) {
