@@ -12,13 +12,14 @@
 //***********************************************************************************
 void gdi_plus::copy_imagelist_item(Graphics& graphics, int xsrc, int ysrc, int dx, int dy, int xdest, int ydest)
 {
-// cii: src: 0x0, dxy: 359x362, dest: 0x0
-// actually drawn 116x116
-   syslog(_T("cii: src: %ux%u, dxy: %ux%u, dest: %ux%u\n"),
-      xsrc, ysrc, dx, dy, xdest, ydest);
-   Bitmap* clone = gbitmap->Clone(Rect(xsrc, ysrc, dx, dy), PixelFormat24bppRGB);
-   graphics.DrawImage(clone, xdest, ydest);
-   delete clone ;
+   // cii: src: 0x0, dxy: 359x362, dest: 0x0
+   // actually drawn 116x116
+   // syslog(_T("cii: src: %ux%u, dxy: %ux%u, dest: %ux%u\n"),
+   //    xsrc, ysrc, dx, dy, xdest, ydest);
+   graphics.DrawImage(gbitmap, xdest, ydest, xsrc, ysrc, dx, dy, UnitPixel);
+   // Bitmap* clone = gbitmap->Clone(xsrc, ysrc, dx, dy, PixelFormatDontCare);
+   // graphics.DrawImage(clone, xdest, ydest);
+   // delete clone ;
 }  //lint !e818
 
 //********************************************************************
@@ -26,25 +27,12 @@ void gdi_plus::copy_imagelist_item(Graphics& graphics, int xsrc, int ysrc, int d
 //********************************************************************
 void gdi_plus::render_bitmap(HDC hdc, uint xdest, uint ydest, uint sprite_col, uint sprite_row)
 {
-#ifdef  UNICODE
    Graphics graphics(hdc);
    // sprite_dx = nWidth / tiles_x ;
    // sprite_dy = nHeight / tiles_y ;
-   uint iconx = sprite_col * sprite_dx ;
-   uint icony = sprite_row * sprite_dy ;
-   copy_imagelist_item(graphics, iconx, icony, sprite_dx, sprite_dy, xdest, ydest);
-#else
-   HDC hdcMem = CreateCompatibleDC (hdc);
-   // SelectObject (hdcMem, (HGDIOBJ) hBitmap);
-   SelectObject (hdcMem, (HGDIOBJ) gbitmap);
-   
-   uint xsrc = sprite_col * sprite_dx  ;
-   uint ysrc = sprite_row * sprite_dy ;
-   if (!BitBlt (hdc, xdest, ydest, sprite_dx, sprite_dy, hdcMem, xsrc, ysrc, SRCCOPY)) {  //lint !e713
-      syslog(_T("BitBlt: %s"), get_system_message()) ;
-   }
-   DeleteDC (hdcMem);
-#endif
+   uint srcx = sprite_col * sprite_dx ;
+   uint srcy = sprite_row * sprite_dy ;
+   copy_imagelist_item(graphics, srcx, srcy, sprite_dx, sprite_dy, xdest, ydest);
 }
 
 //***********************************************************************
