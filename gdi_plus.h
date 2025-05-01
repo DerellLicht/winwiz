@@ -2,17 +2,29 @@
 //  Copyright (c) 2025  Daniel D Miller
 //  This class encapsulates the interface to the LodePNG library.
 //********************************************************************
+//  NOTE about instantiating this class:
+//  It *cannot* be statically created like this:
+//  The problem is that the gdiplus startup functions have not yet
+//  been executed at this point, so the new() operations in this class will fail.
+// static gdi_plus pngSprites(_T("tiles32.png"), 40, 26) ;
+// static gdi_plus pngTiles  (_T("images.png"), 3, 1) ;
+//  
+//  Instead, the classes need to be created as pointers:
+// static gdi_plus *pngSprites = NULL ;
+// static gdi_plus *pngTiles = NULL;
+//  Then, at runtime, after the gdiplus startup functions have been executed,
+//  then these classes can be dynamically allocated:
+//    pngSprites = new gdi_plus(_T("tiles32.png"), 40, 26) ;
+//    pngTiles = new gdi_plus(_T("images.png"), 3, 1) ;
+//********************************************************************
 
-// #include <vector>
+
 #include <gdiplus.h>
 
 using namespace Gdiplus;
 
 class gdi_plus {
 private:   
-   // std::vector<unsigned char> bmp ;
-   // std::vector<unsigned char> img ;
-   
    TCHAR *img_name ;
    // HBITMAP hBitmap ;
    Bitmap *gbitmap ;
@@ -53,5 +65,9 @@ public:
       { return tiles_x ; } ;
    uint vert_tiles(void) const
       { return tiles_y ; } ;
+   uint get_sprite_dx(void) const
+      { return sprite_dx ; } ;
+   uint get_sprite_dy(void) const
+      { return sprite_dy ; } ;
 } ;
 

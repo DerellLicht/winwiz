@@ -132,7 +132,7 @@ static void EndEncounter(void)
       player.gold += Q ;
       // draw_main_screen();
       _stprintf(tempstr, _T("%s %s lies dead at your feet."), 
-         starts_with_vowel(monster_info.desc) ? "an" : "a",
+         starts_with_vowel(monster_info.desc) ? _T("an") : _T("a"),
          monster_info.desc);
       put_message(tempstr) ;
       _stprintf(tempstr, _T("You now get his hoard of %u GP's"), Q);

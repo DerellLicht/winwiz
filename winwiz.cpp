@@ -25,15 +25,10 @@
 //  based on the Virtual ListView control                            
 //****************************************************************************
 
-//lint -esym(767, _WIN32_WINNT)
-#define  _WIN32_WINNT   0x0501
 #include <windows.h>
 #include <stdio.h>   //  vsprintf, sprintf, which supports %f
 #include <time.h>
 #include <tchar.h>
-#ifdef _lint
-#include <stdlib.h>  //  RAND_MAX
-#endif
 #ifdef UNICODE
 #include <gdiplus.h>
 #endif
@@ -53,12 +48,6 @@ static const TCHAR *Version = _T("Wizard's Castle, Version 1.44") ;
 
 #ifdef UNICODE
 using namespace Gdiplus;
-#endif
-#undef CHECK_MULTIPLE_COPIES
-// #define CHECK_MULTIPLE_COPIES
-
-#ifdef  CHECK_MULTIPLE_COPIES
-static TCHAR szAppName[] = _T("winwiz") ;
 #endif
 
 //lint -esym(714, dbg_flags)
@@ -319,45 +308,6 @@ unsigned random(unsigned Q)
    return j;
 }         
 
-//***********************************************************************
-#ifdef  CHECK_MULTIPLE_COPIES
-static BOOL WeAreAlone(TCHAR *szName)
-{
-   HANDLE hMutex = CreateMutex(NULL, true, szName);
-   if (GetLastError() == ERROR_ALREADY_EXISTS) {
-      CloseHandle(hMutex);
-      return false;
-   }
-   return true;
-}
-
-//***********************************************************************
-//  http://www.flounder.com/nomultiples.htm
-//  
-//  This technique sends a user-defined message to each enumerated
-//  top-level window on the current desktop.
-//  It expects the sought window to respond with the same
-//  user-defined message.
-//***********************************************************************
-static BOOL CALLBACK searcher(HWND hWnd, LPARAM lParam)
-{
-   DWORD result;
-   LRESULT ok = SendMessageTimeoutA(hWnd,
-                                   WM_ARE_YOU_ME,
-                                   0, 0, 
-                                   SMTO_BLOCK | SMTO_ABORTIFHUNG,
-                                   200, &result);
-   if (ok == 0)
-      return true; // ignore this and continue
-   if (result == WM_ARE_YOU_ME) { /* found it */
-      HWND *target = (HWND *) lParam;
-      *target = hWnd;
-      return false; // stop search
-   } /* found it */
-   return true; // continue search
-} // CMyApp::searcher
-#endif
-
 //******************************************************************
 // Subclass procedure for the Terminal Virtual ListView control
 // http://msdn.microsoft.com/en-us/library/ms633570%28VS.85%29.aspx#subclassing_window
@@ -599,9 +549,7 @@ static LRESULT CALLBACK TermProc (HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lP
 
    switch(iMsg) {
    case WM_INITDIALOG:
-      syslog(_T("WM_INITDIALOG\n")) ;
       do_init_dialog(hwnd) ;
-      syslog(_T("WM_INITDIALOG done\n")) ;
       // wpOrigMainProc = (WNDPROC) SetWindowLongPtr(hwnd, GWL_WNDPROC, (LONG) MainSubclassProc); 
       return TRUE;
 
@@ -718,38 +666,7 @@ static LRESULT CALLBACK TermProc (HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lP
 //lint -esym(1784, WinMain)
 int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine, int iCmdShow)
    {
-   //***************************************************************
-   //  note that szAppName is not a very unique name; if either:
-   //  1. someone else created a mutex with this name, or
-   //  2. Elsewhere in this, or some other program, we created
-   //     another mutex using szAppName,
-   //  then this would not have the results intended!!
-   //***************************************************************
-   OutputDebugString(_T("enter WinMain\n")) ;
-   MessageBox(NULL, L"enter program", L"winwiz", MB_OK);
-#ifdef  CHECK_MULTIPLE_COPIES
-   if (!WeAreAlone (szAppName)) {
-      //  The old technique:
-      //  We are already running, display message and quit
-      
-      //  The new technique:
-      //  We are already running, switch to first instance
-      HWND hOther = NULL;
-      EnumWindows(searcher, (LPARAM) &hOther);
-
-      if ( hOther != NULL ) { //lint !e774
-         SetForegroundWindow( hOther );
-
-         if ( IsIconic( hOther ) )  { /* restore */
-            ShowWindow( hOther, SW_RESTORE );
-         } /* restore */
-      } /* pop up */
-      return 0;
-   }
-#endif   
-
    g_hinst = hInstance;
-   syslog(_T("begin\n")) ;
 
    //Plant seed for random number generator with system time
    time_t ti ;
@@ -764,15 +681,14 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine
    
    // Initialize GDI+.
    GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
-   syslog(_T("GDI+ startup done\n")) ;
 #endif   
    
    load_exec_filename() ;  //  get our executable name
    //  set up initial data structs
    // read_config_data() ;
+   init_gdiplus_data() ;
    init_castle_contents() ;
    init_player() ;
-   syslog(_T("game inits done\n")) ;
 
    HWND hwnd = CreateDialog(g_hinst, MAKEINTRESOURCE(IDD_MAIN_DIALOG), NULL, (DLGPROC) TermProc) ;
    if (hwnd == NULL) {

@@ -26,7 +26,7 @@ ifeq ($(USE_DEBUG),YES)
 CFLAGS=-Wall -O -g -mwindows 
 LFLAGS=
 else
-CFLAGS=-Wall -O2 -mwindows 
+CFLAGS=-Wall -O2 -mwindows -Weffc++ 
 LFLAGS=-s
 endif
 CFLAGS += -Wno-write-strings
@@ -86,7 +86,7 @@ endif
 
 #************************************************************
 %.o: %.cpp
-	g++ $(CFLAGS) -Weffc++ -c $< -o $@
+	$(TOOLS)\g++ $(CFLAGS) -c $< -o $@
 
 #************************************************************
 all: $(BIN)
@@ -112,10 +112,10 @@ lodepng.o: lodepng.cpp
 	g++ $(CFLAGS) -c $< -o $@
 
 winwiz.exe: $(OBJS)
-	g++ $(CFLAGS) $(LFLAGS) $(OBJS) -o $@ $(LIBS)
+	$(TOOLS)\g++ $(CFLAGS) $(LFLAGS) $(OBJS) -o $@ $(LIBS)
 
 rc.o: winwiz.rc 
-	windres $< -O coff -o $@
+	$(TOOLS)\windres $< -O coff -o $@
 
 # DO NOT DELETE
 

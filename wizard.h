@@ -246,6 +246,7 @@ void keymap_show_state(void);
 int process_keystroke(HWND hwnd, unsigned inchr);
 
 //  from wfuncs.cpp
+void init_gdiplus_data(void);
 void set_up_working_spaces(HWND hwnd);
 void draw_intro_screen(HWND hwnd);
 int  move_south(HWND hwnd);

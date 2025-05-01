@@ -10,6 +10,12 @@
 //lint -elib(1087)
 //lint -esym(1065, _iob)
 
+// new errors from gdiplus library
+//lint -e78    Symbol typedef'ed at location unknown used in expression
+//lint -e1098  Function template specialization does not match any function template
+
+//lint -esym(578, y0, y1, Color)
+
 //lint -e592  Non-literal format specifier used without arguments
 
 //lint -esym(715, hdcUnused)  // (line 572) not referenced

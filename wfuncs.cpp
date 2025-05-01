@@ -22,9 +22,9 @@
 #include "lode_png.h"
 #endif
 
-#ifdef UNICODE
-using namespace Gdiplus;
-#endif
+// #ifdef UNICODE
+// using namespace Gdiplus;
+// #endif
 
 //@@@  why do I need this here??   
 //@@@  It *should* be defined in windef.h
@@ -35,9 +35,6 @@ using namespace Gdiplus;
 //lint -esym(765, clear_room)
 
 //lint -esym(715, hdc, hwnd)
-
-//  winwiz.cpp
-// extern CTerminal *myTerminal ;
 
 extern bool prog_init_done ;
 
@@ -58,9 +55,11 @@ TILE_DEATH
 
 #ifdef UNICODE
 //  tiles32.png: 1280x960, 40x26 images, 1017 total
-static gdi_plus pngSprites(_T("tiles32.png"), 40, 26) ;
+// static gdi_plus pngSprites(_T("tiles32.png"), 40, 26) ;
+static gdi_plus *pngSprites = NULL ;
 //  images.png:  1077x362, 3x1 images, 3 total
-static gdi_plus pngTiles  (_T("images.png"), 3, 1) ;
+// static gdi_plus pngTiles  (_T("images.png"), 3, 1) ;
+static gdi_plus *pngTiles = NULL;
 #else
 static LodePng pngSprites(_T("tiles32.png"), SPRITE_HEIGHT, SPRITE_WIDTH) ;
 static LodePng pngTiles  (_T("images.png"),  IMAGE_WIDTH,   IMAGE_HEIGHT) ;
@@ -100,6 +99,15 @@ static void draw_char_cursor(HDC hdc, unsigned on_or_off);
 static bool is_location_forgotten(void)
 {
    return !level_known[player.level] ;
+}
+
+/************************************************************************/
+void init_gdiplus_data(void)
+{
+   // [84296] open: tiles32.png, width: 1280, height: 960, sprite size: 32 x 36
+   pngSprites = new gdi_plus(_T("tiles32.png"), 40, 26) ;
+   // [84296] open: images.png, width: 1077, height: 362, sprite size: 359 x 362
+   pngTiles = new gdi_plus(_T("images.png"), 3, 1) ;
 }
 
 /************************************************************************/
@@ -166,7 +174,7 @@ static void draw_sprite_treasure(unsigned scol, unsigned srow, unsigned idx)
 {
    HWND hwnd = hwndTreasures[idx] ;
    HDC hdc = GetDC(hwnd) ;
-   pngSprites.render_bitmap(hdc, 0, 0, scol, srow) ;
+   pngSprites->render_bitmap(hdc, 0, 0, scol, srow) ;
    ReleaseDC(hwnd, hdc) ;
 }
 
@@ -180,7 +188,7 @@ static void draw_sprite(HDC hdc, unsigned scol, unsigned srow, unsigned xidest, 
    }
    unsigned xdest = X_OFFSET + (xidest * (SPRITE_WIDTH  + X_GAP)) ;  //  draw_sprite()
    unsigned ydest = Y_OFFSET + (yidest * (SPRITE_HEIGHT + Y_GAP)) ;  //  draw_sprite()
-   pngSprites.render_bitmap(hdc, xdest, ydest, scol, srow) ;
+   pngSprites->render_bitmap(hdc, xdest, ydest, scol, srow) ;
 }
 
 //***********************************************************************
@@ -323,17 +331,17 @@ void draw_current_screen(void)
    switch (map_image) {
    case MI_COMBAT:
       hdc = GetDC(hwndMapArea) ;
-      pngTiles.render_bitmap(hdc, 0, 0, TILE_COMBAT, 0) ;
+      pngTiles->render_bitmap(hdc, 0, 0, TILE_COMBAT, 0) ;
       ReleaseDC(hwndMapArea, hdc) ;
       break;
    case MI_VICTORY:
       hdc = GetDC(hwndMapArea) ;
-      pngTiles.render_bitmap(hdc, 0, 0, TILE_VICTORY, 0) ;
+      pngTiles->render_bitmap(hdc, 0, 0, TILE_VICTORY, 0) ;
       ReleaseDC(hwndMapArea, hdc) ;
       break;
    case MI_DEATH:  
       hdc = GetDC(hwndMapArea) ;
-      pngTiles.render_bitmap(hdc, 0, 0, TILE_DEATH, 0) ;
+      pngTiles->render_bitmap(hdc, 0, 0, TILE_DEATH, 0) ;
       ReleaseDC(hwndMapArea, hdc) ;
       break;
       
@@ -479,7 +487,7 @@ void render_combat_bitmap(void)
 {
    HDC hdc = GetDC(hwndMapArea) ;
    map_image = MI_COMBAT ;
-   pngTiles.render_bitmap(hdc, 0, 0, TILE_COMBAT, 0) ;
+   pngTiles->render_bitmap(hdc, 0, 0, TILE_COMBAT, 0) ;
    ReleaseDC(hwndMapArea, hdc) ;
 }
 
@@ -567,7 +575,7 @@ void win_game(HWND hwnd)
    HDC hdc = GetDC(hwndMapArea) ;
    clear_map_area(hdc, WIN_BLACK) ;
    map_image = MI_VICTORY ;
-   pngTiles.render_bitmap(hdc, 0, 0, TILE_VICTORY, 0) ;
+   pngTiles->render_bitmap(hdc, 0, 0, TILE_VICTORY, 0) ;
    ReleaseDC(hwndMapArea, hdc) ;
    term_clear_message_area();
    put_message(_T("You find yourself standing beside a sweet, cool")) ;
@@ -611,7 +619,7 @@ void player_dies(HWND hwnd)
    update_status() ;
    // pngDeath.render_bitmap(hdc, 0, 0);
    map_image = MI_DEATH ;
-   pngTiles.render_bitmap(hdc, 0, 0, TILE_DEATH, 0) ;
+   pngTiles->render_bitmap(hdc, 0, 0, TILE_DEATH, 0) ;
    display_atmosphere(hdc) ;
    ReleaseDC(hwndMapArea, hdc) ;
 }
@@ -640,7 +648,7 @@ static void wrong_castle_death(HWND hwnd)
       put_color_msg(TERM_DEATH, zot_chest_end_msg[j]) ;
    // pngDeath.render_bitmap(hdc, 0, 0);
    HDC hdc = GetDC(hwndMapArea) ;
-   pngTiles.render_bitmap(hdc, 0, 0, TILE_DEATH, 0) ;
+   pngTiles->render_bitmap(hdc, 0, 0, TILE_DEATH, 0) ;
    ReleaseDC(hwndMapArea, hdc) ;
    map_image = MI_DEATH ;
    infoout(_T("You died while exploring %s"), names[player.castle_nbr]) ;
@@ -951,7 +959,7 @@ static void update_room(void)
       if (is_monster_index(idx)) {
          TCHAR *sptr = get_object_in_room(player.x, player.y, player.level) ;
          _stprintf(tempstr, _T("Here you find %s %s."), 
-            starts_with_vowel(sptr) ? "an" : "a", sptr) ;
+            starts_with_vowel(sptr) ? _T("an") : _T("a"), sptr) ;
             // get_object_in_room(player.x, player.y, player.level)) ;
       } else {
          _stprintf(tempstr, _T("Here you find %s."), 
