@@ -98,11 +98,11 @@ void show_help_menu(void)
 {
    queryout(_T("Terminal keyboard shortcuts")) ;
    infoout(_T("Alt-b = Show About dialog")) ;
-   infoout(_T("Alt-d = Toggle debug flag")) ;
-   infoout(_T("Alt-j = Debug: force runestaff")) ;
-   infoout(_T("Alt-k = Debug: show 'known levels' flags")) ;
    infoout(_T("Alt-h = Show Help dialog")) ;
    infoout(_T("Alt-q = Close this program")) ;
+   termout(_T("Alt-d = Debug; Toggle debug flag")) ;
+   termout(_T("Alt-j = Debug: force runestaff")) ;
+   termout(_T("Alt-k = Debug: show 'known levels' flags")) ;
 }
 
 //*******************************************************************
