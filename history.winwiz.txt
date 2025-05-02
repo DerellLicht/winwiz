@@ -87,4 +87,5 @@ vers    date        actions taken
 1.44 - 04/29/25  - Converting to Unicode, to support gdiplus library
                  - Completed gdiplus conversion, eliminating loadpng library
 
-1.45 - 05/02/25  Fix bugs, code cleanup
+1.45 - 05/02/25  - Fix bugs, code cleanup
+                 - added debug command and functions

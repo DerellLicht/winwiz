@@ -74,6 +74,15 @@ static bool redraw_in_progress = false ;
 bool prog_init_done = false ;
 
 //*******************************************************************
+static void toggle_debug_flag(void)
+{
+   dbg_flags ^= DBG_WINMSGS ;
+   TCHAR msg[80] ;
+   _stprintf(msg, _T("debug flag is %s"), (dbg_flags & DBG_WINMSGS) ? _T("ENABLED") : _T("disabled"));
+   infoout(msg);
+}
+            
+//*******************************************************************
 void status_message(TCHAR *msgstr)
 {
    MainStatusBar->show_message(msgstr);
@@ -318,6 +327,23 @@ static LRESULT APIENTRY TermSubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, LP
    if (uMsg == WM_GETDLGCODE) 
       return DLGC_WANTALLKEYS; 
  
+   //***************************************************
+   //  debug: log all windows messages
+   //***************************************************
+   if (dbg_flags & DBG_WINMSGS) {
+      switch (uMsg) {
+      //  list messages to be ignored
+      case WM_KEYUP:
+      case WM_SYSKEYUP:
+      case WM_KEYDOWN:
+      case WM_SYSKEYDOWN:
+      case WM_CHAR:
+         break;
+      default:
+         syslog(_T("SubC [%s]\n"), lookup_winmsg_name(uMsg)) ;
+         break;
+      }
+   }
    switch (uMsg) {
    case WM_KEYUP:
    case WM_SYSKEYUP:
@@ -339,7 +365,7 @@ static LRESULT APIENTRY TermSubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, LP
 
    case WM_KEYDOWN:
    case WM_SYSKEYDOWN:
-      syslog(_T("WM_KEYDOWN: WPARAM=0x%04X, LPARAM=%u\n"), wParam, lParam) ;
+      // syslog(_T("WM_KEYDOWN: WPARAM=0x%04X, LPARAM=%u\n"), wParam, lParam) ;
       // inchr = (char) wParam ;
       // if (inchr == CtrlC) {
       //    // term_info_p tiSelf = find_term_from_hwnd(hwnd) ;
@@ -359,7 +385,7 @@ static LRESULT APIENTRY TermSubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, LP
       case VK_UP:
       case VK_RIGHT:
       case VK_DOWN:
-         syslog(_T("WM_KEYDOWN: process_keystroke\n")) ;
+         // syslog(_T("WM_KEYDOWN: process_keystroke\n")) ;
          process_keystroke (hwnd, wParam) ;
          return 0;
       default:
@@ -626,12 +652,16 @@ static LRESULT CALLBACK TermProc (HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lP
          syslog(_T("cmd: %u, target: %u\n"), cmd, target);
          switch(target) {
             
-         case IDB_HELP:
-            view_help_screen(hwnd);  
-            break;
-            
          case IDB_ABOUT:
             CmdAbout(hwnd);
+            break;
+            
+         case IDB_DEBUG:
+            toggle_debug_flag();  
+            break;
+            
+         case IDB_HELP:
+            view_help_screen(hwnd);  
             break;
             
          case IDB_CLOSE:

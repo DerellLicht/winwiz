@@ -17,6 +17,7 @@
 #define  IDB_ABOUT            403
 #define  IDB_CLOSE            404
 #define  IDS_HELP             405
+#define  IDB_DEBUG            406
 
 //  main-dialog controls
 #define  IDC_MAP_AREA         600
@@ -24,9 +25,9 @@
 #define  IDC_INTRO            602
 
 //  about.cpp constants          
-#define  IDC_VERNUM              701
-#define  IDC_WEBLINK             702
-#define  IDC_WEBLINK2            703
+#define  IDC_VERNUM           701
+#define  IDC_WEBLINK          702
+#define  IDC_WEBLINK2         703
 
 /////////////////////////////////////////////////////////////////////////////
 //

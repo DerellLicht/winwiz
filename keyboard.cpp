@@ -259,6 +259,7 @@ static int default_kbd_handler(HWND hwnd, unsigned inchr)
       queryout(_T("Terminal keyboard shortcuts")) ;
       // infoout(_T("Alt-s = send command (i.e., print command in terminal)")) ;
       infoout(_T("Alt-b = Show About dialog")) ;
+      infoout(_T("Alt-d = Toggle debug flag")) ;
       infoout(_T("Alt-h = Show Help dialog")) ;
       infoout(_T("Alt-q = Close this program")) ;
       break;

@@ -1,3 +1,0 @@
-I do not run lint on this project, because I get hundreds of errors/warnings about lodepng.
-Also, since upgrading toolchain to V10.3.0, I also get spurious errors regarding 
-C++ header files.
