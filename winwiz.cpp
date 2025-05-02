@@ -459,9 +459,6 @@ static tooltip_data_t main_tooltips[] = {
 { IDC_T6,    _T(" the Palantir "  ) },  
 { IDC_T7,    _T(" the Silmaril "  ) },  
 { IDC_OZ,    _T(" the Orb of Zot ") },
-{ IDB_HELP,  _T(" show Help file ") },
-{ IDB_ABOUT, _T(" show About dialog ") },
-{ IDB_CLOSE, _T(" Close WinWiz ") },
 { 0, NULL }} ;
 
 //***********************************************************************

@@ -1,6 +1,7 @@
 USE_DEBUG = NO
-USE_BMP = YES
-USE_PNG = YES
+# USE_BMP and USE_PNG are superceded by USE_UNICODE, which selects GDI+
+USE_BMP = NO
+USE_PNG = NO
 USE_UNICODE = YES
 USE_64BIT = NO
 
@@ -52,9 +53,12 @@ der_libs/terminal.cpp \
 der_libs/tooltips.cpp \
 der_libs/vlistview.cpp 
 
-CSRC+=winwiz.cpp globals.cpp keyboard.cpp wfuncs.cpp \
+# separate local source files from library files,
+# so that wc operation is more appropriate.
+CBASE=winwiz.cpp globals.cpp keyboard.cpp wfuncs.cpp \
 CastleInit.cpp initscrn.cpp combat.cpp vendor.cpp loadhelp.cpp \
 about.cpp hyperlinks.cpp
+CSRC += $(CBASE)
 
 # iface_lib.cpp 
 
@@ -63,12 +67,12 @@ OBJS = $(CSRC:.cpp=.o) rc.o
 BASE=winwiz
 BIN=$(BASE).exe
 
-LIBS= -lgdi32 -lgdiplus -lcomctl32 -lhtmlhelp -lolepro32 -lole32 -luuid
+LIBS= -lgdi32 -lcomctl32 -lhtmlhelp -lolepro32 -lole32 -luuid
 
 # none of the BMP/JPG code is relevant, if UNICODE is defined
 ifeq ($(USE_UNICODE), YES)
 CSRC+=gdi_plus.cpp
-# LIBS += -lgdiplus 
+LIBS += -lgdiplus 
 IMAGES=tiles32.png images.png
 else
 ifeq ($(USE_BMP),YES)
@@ -101,7 +105,7 @@ dist:
 	zip $(BASE).zip *.exe winwiz.chm $(IMAGES) history.winwiz.txt LICENSE
 
 wc:
-	wc -l $(CSRC) *.rc
+	wc -l $(CBASE) *.rc
 
 lint:
 	cmd /C "c:\lint9\lint-nt +v -width(160,4) $(LiFLAGS) -ic:\lint9 mingw.lnt -os(_lint.tmp) lintdefs.cpp $(CSRC)"
