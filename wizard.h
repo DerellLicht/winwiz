@@ -245,6 +245,9 @@ void reset_keymap(keymap_states_t new_keymap_state);
 void keymap_show_state(void);
 int process_keystroke(HWND hwnd, unsigned inchr);
 
+//  about.cpp
+BOOL CmdAbout(HWND hwnd);
+
 //  from wfuncs.cpp
 void init_gdiplus_data(void);
 void release_gdiplus_data(void);
@@ -287,3 +290,7 @@ int  trade_with_vendor(HWND hwnd);
 
 //  from combat.cpp
 void react_to_monsters(HDC hdcUnused);
+
+//  loadhelp.cpp
+void view_help_screen(HWND hwnd);
+

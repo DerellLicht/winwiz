@@ -53,7 +53,8 @@ der_libs/tooltips.cpp \
 der_libs/vlistview.cpp 
 
 CSRC+=winwiz.cpp globals.cpp keyboard.cpp wfuncs.cpp \
-CastleInit.cpp initscrn.cpp combat.cpp vendor.cpp loadhelp.cpp 
+CastleInit.cpp initscrn.cpp combat.cpp vendor.cpp loadhelp.cpp \
+about.cpp hyperlinks.cpp
 
 # iface_lib.cpp 
 
@@ -68,6 +69,7 @@ LIBS= -lgdi32 -lgdiplus -lcomctl32 -lhtmlhelp -lolepro32 -lole32 -luuid
 ifeq ($(USE_UNICODE), YES)
 CSRC+=gdi_plus.cpp
 # LIBS += -lgdiplus 
+IMAGES=tiles32.png images.png
 else
 ifeq ($(USE_BMP),YES)
 CFLAGS += -DUSE_BMP
@@ -96,7 +98,7 @@ clean:
 
 dist:
 	rm -f $(BASE).zip
-	zip $(BASE).zip *.exe winwiz.chm $(IMAGES) history.winwiz.txt
+	zip $(BASE).zip *.exe winwiz.chm $(IMAGES) history.winwiz.txt LICENSE
 
 wc:
 	wc -l $(CSRC) *.rc
@@ -131,9 +133,10 @@ der_libs/tooltips.o: der_libs/iface_32_64.h der_libs/common.h
 der_libs/tooltips.o: der_libs/tooltips.h
 der_libs/vlistview.o: der_libs/common.h der_libs/commonw.h
 der_libs/vlistview.o: der_libs/vlistview.h
-winwiz.o: resource.h der_libs/common.h der_libs/commonw.h der_libs/statbar.h
-winwiz.o: der_libs/cterminal.h der_libs/vlistview.h der_libs/terminal.h
-winwiz.o: der_libs/winmsgs.h wizard.h keywin32.h der_libs/tooltips.h
+winwiz.o: resource.h version.h der_libs/common.h der_libs/commonw.h
+winwiz.o: der_libs/statbar.h der_libs/cterminal.h der_libs/vlistview.h
+winwiz.o: der_libs/terminal.h der_libs/winmsgs.h wizard.h keywin32.h
+winwiz.o: der_libs/tooltips.h
 globals.o: der_libs/common.h wizard.h
 keyboard.o: der_libs/common.h wizard.h keywin32.h
 wfuncs.o: resource.h der_libs/common.h der_libs/commonw.h wizard.h keywin32.h
@@ -143,4 +146,6 @@ initscrn.o: resource.h der_libs/common.h wizard.h
 combat.o: der_libs/common.h wizard.h keywin32.h
 vendor.o: resource.h der_libs/common.h wizard.h
 loadhelp.o: der_libs/common.h
+about.o: resource.h version.h der_libs/common.h wizard.h hyperlinks.h
+hyperlinks.o: der_libs/iface_32_64.h hyperlinks.h
 gdi_plus.o: der_libs/common.h gdi_plus.h

@@ -7,18 +7,26 @@
 #define  IDD_MAIN_DIALOG      301
 #define  IDD_CREATEBOX        302
 #define  IDD_VENDORBOX        303
-#define  IDR_ACCELERATOR1     304
-#define  IDT_TIMER_MAIN       305
+#define  IDD_ABOUT            304
+#define  IDR_ACCELERATOR1     305
+#define  IDT_TIMER_MAIN       306
 
 #define  IDC_TERMINAL         400
 #define  IDC_COMMAND          401
 #define  IDB_HELP             402
-#define  IDB_CLOSE            403
+#define  IDB_ABOUT            403
+#define  IDB_CLOSE            404
+#define  IDS_HELP             405
 
 //  main-dialog controls
 #define  IDC_MAP_AREA         600
 #define  IDC_CONTROLS         601
 #define  IDC_INTRO            602
+
+//  about.cpp constants          
+#define  IDC_VERNUM              701
+#define  IDC_WEBLINK             702
+#define  IDC_WEBLINK2            703
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -125,7 +133,7 @@
 #define IDC_GP          2016
 // #define IDS_GEMS        2017
 // #define IDC_GEMS        2018
-#define IDS_HELP        2019
+// #define IDS_HELP        2019
 #define IDC_TRGROUP     2020
 
 //***************************************************************

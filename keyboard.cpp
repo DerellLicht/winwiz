@@ -36,9 +36,6 @@ extern int  attack_vendor(HWND hwnd);
 extern int  light_a_flare(HWND hwnd);
 extern void view_special_items(void);
 
-//  loadhelp.cpp
-extern void view_help_screen(HWND hwnd);
-
 //  initscrn.cpp
 extern void draw_init_screen(HWND hwnd);
 
@@ -258,6 +255,14 @@ static int default_kbd_handler(HWND hwnd, unsigned inchr)
       push_keymap(KEYMAP_LOOKDIR) ;
       break;
 
+   case kh:  
+      queryout(_T("Terminal keyboard shortcuts")) ;
+      // infoout(_T("Alt-s = send command (i.e., print command in terminal)")) ;
+      infoout(_T("Alt-b = Show About dialog")) ;
+      infoout(_T("Alt-h = Show Help dialog")) ;
+      infoout(_T("Alt-q = Close this program")) ;
+      break;
+      
    case kf:  light_a_flare(hwnd); break;
    
    //  10/26/23 - Change all 'use object at this location' operations
@@ -287,7 +292,7 @@ static int default_kbd_handler(HWND hwnd, unsigned inchr)
 
    case kp: teleport(hwnd, inchr); break;
    case kj: view_special_items(); break;
-   case kh: view_help_screen(hwnd);  break ;
+   // case kh: view_help_screen(hwnd);  break ;
    case ka: attack_vendor(hwnd);  break ;
 
    case kCc:

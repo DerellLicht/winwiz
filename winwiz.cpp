@@ -39,6 +39,7 @@
 #endif
 
 #include "resource.h"
+#include "version.h"
 #include "common.h"
 #include "commonw.h"
 #include "statbar.h"
@@ -49,7 +50,7 @@
 #include "keywin32.h"
 #include "tooltips.h"
 
-static const TCHAR *Version = _T("Wizard's Castle, Version 1.44") ;
+static TCHAR const * const Version = _T("Wizard's Castle, Version " VerNum " ") ;   //lint !e707
 
 HINSTANCE g_hinst = 0;
 
@@ -338,7 +339,7 @@ static LRESULT APIENTRY TermSubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, LP
 
    case WM_KEYDOWN:
    case WM_SYSKEYDOWN:
-      // syslog("WM_KEYDOWN: WPARAM=0x%04X, LPARAM=%u\n", wParam, lParam) ;
+      syslog(_T("WM_KEYDOWN: WPARAM=0x%04X, LPARAM=%u\n"), wParam, lParam) ;
       // inchr = (char) wParam ;
       // if (inchr == CtrlC) {
       //    // term_info_p tiSelf = find_term_from_hwnd(hwnd) ;
@@ -358,7 +359,7 @@ static LRESULT APIENTRY TermSubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, LP
       case VK_UP:
       case VK_RIGHT:
       case VK_DOWN:
-         // syslog("WM_KEYDOWN: process_keystroke\n") ;
+         syslog(_T("WM_KEYDOWN: process_keystroke\n")) ;
          process_keystroke (hwnd, wParam) ;
          return 0;
       default:
@@ -432,7 +433,9 @@ static tooltip_data_t main_tooltips[] = {
 { IDC_T6,    _T(" the Palantir "  ) },  
 { IDC_T7,    _T(" the Silmaril "  ) },  
 { IDC_OZ,    _T(" the Orb of Zot ") },
-{ IDS_HELP,  _T(" show Help file ") },
+{ IDB_HELP,  _T(" show Help file ") },
+{ IDB_ABOUT, _T(" show About dialog ") },
+{ IDB_CLOSE, _T(" Close WinWiz ") },
 { 0, NULL }} ;
 
 //***********************************************************************
@@ -620,13 +623,15 @@ static LRESULT CALLBACK TermProc (HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lP
       case FVIRTKEY:  //  keyboard accelerators: WARNING: same code as CBN_SELCHANGE !!
          //  fall through to BM_CLICKED, which uses same targets
       case BN_CLICKED:
+         syslog(_T("cmd: %u, target: %u\n"), cmd, target);
          switch(target) {
             
          case IDB_HELP:
-            queryout(_T("Terminal keyboard shortcuts")) ;
-            infoout(_T("Alt-s = send command (i.e., print command in terminal)")) ;
-            infoout(_T("Alt-h = show this help screen")) ;
-            infoout(_T("Alt-c = Close this program")) ;
+            view_help_screen(hwnd);  
+            break;
+            
+         case IDB_ABOUT:
+            CmdAbout(hwnd);
             break;
             
          case IDB_CLOSE:

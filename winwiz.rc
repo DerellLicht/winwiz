@@ -1,4 +1,5 @@
 #include <windows.h>
+#include "version.h"
 #include "resource.h"
 
 WINWIZICO       ICON    "pendant.ico"
@@ -32,19 +33,20 @@ BEGIN
     // VK_UP,          IDC_VK_UP,               VIRTKEY, NOINVERT
     // VK_RIGHT,       IDC_VK_RIGHT,            VIRTKEY, NOINVERT
     // VK_DOWN,        IDC_VK_DOWN,             VIRTKEY, NOINVERT
-    "h",	    IDB_HELP,		     ASCII, ALT, NOINVERT
-    "q",	    IDB_CLOSE,	     	     ASCII, ALT, NOINVERT
+    "h",     IDB_HELP,          ASCII, ALT, NOINVERT
+    "b",     IDB_ABOUT,         ASCII, ALT, NOINVERT
+    "q",     IDB_CLOSE,         ASCII, ALT, NOINVERT
 END
 
 //*******************************************************************
 //  ElCal calibration dialog
 //*******************************************************************
-#define  PI_X	215
-#define  PI_Y	  4
-#define  PI_FX	(PI_X + 5)
+#define  PI_X  215
+#define  PI_Y    4
+#define  PI_FX (PI_X + 5)
 
-#define	 TREASURE_EDGE     WS_EX_CLIENTEDGE
-// #define	 TREASURE_EDGE     WS_EX_STATICEDGE
+#define   TREASURE_EDGE     WS_EX_CLIENTEDGE
+// #define   TREASURE_EDGE     WS_EX_STATICEDGE
 
 // IDD_MAIN_DIALOG DIALOG DISCARDABLE  160, 40, 350, 370
 IDD_MAIN_DIALOG DIALOGEX  160, 40, 350, 370
@@ -71,6 +73,10 @@ BEGIN
    LTEXT           "Gold Pieces",    IDS_GP    ,   PI_FX,    PI_Y+94,  49,  10 
    LTEXT           " ",              IDC_GP    ,   PI_FX+50, PI_Y+94,  50,  10, SS_SUNKEN
    CTEXT           "Press [H] for Help", IDS_HELP,PI_X,     PI_Y+111, 130,  10, SS_SUNKEN | SS_NOTIFY
+   //  just *defining* these buttons, disables my keyboard interface!!
+   // PUSHBUTTON      "Help",           IDB_HELP,     PI_X,     PI_Y+111, 40,  10
+   // PUSHBUTTON      "About",          IDB_ABOUT,    PI_X+45,  PI_Y+111, 40,  10
+   // PUSHBUTTON      "Close",          IDB_CLOSE,    PI_X+90,  PI_Y+111, 40,  10
 
    GROUPBOX        " Treasures ",    IDC_TRGROUP, PI_X,     PI_Y+130, 130,  55
    //  consider putting frame around the treasures, as I did in led.scroll
@@ -178,18 +184,18 @@ BEGIN
 
    LTEXT           "Str:",        IDC_STATIC, CW_LEFT,    CT3, 20, 10
    LTEXT           " ",           IDC_CCDATA3,CW_LEFT+70, CT3, 15, 10, SS_SUNKEN
-   PUSHBUTTON      "+",      	  IDC_STRUP,  CW_LEFT+59, CT3+1, 8, 8
-   PUSHBUTTON      "-",      	  IDC_STRDN,  CW_LEFT+88, CT3+1, 8, 8
+   PUSHBUTTON      "+",         IDC_STRUP,  CW_LEFT+59, CT3+1, 8, 8
+   PUSHBUTTON      "-",         IDC_STRDN,  CW_LEFT+88, CT3+1, 8, 8
 
    LTEXT           "Dex:",        IDC_STATIC, CW_LEFT,    CT4, 20, 10
    LTEXT           " ",           IDC_CCDATA4,CW_LEFT+70, CT4, 15, 10, SS_SUNKEN
-   PUSHBUTTON      "+",      	  IDC_DEXUP,  CW_LEFT+59, CT4+1, 8, 8
-   PUSHBUTTON      "-",      	  IDC_DEXDN,  CW_LEFT+88, CT4+1, 8, 8
+   PUSHBUTTON      "+",         IDC_DEXUP,  CW_LEFT+59, CT4+1, 8, 8
+   PUSHBUTTON      "-",         IDC_DEXDN,  CW_LEFT+88, CT4+1, 8, 8
 
    LTEXT           "Int:",        IDC_STATIC, CW_LEFT,    CT5, 20, 10
    LTEXT           " ",           IDC_CCDATA5,CW_LEFT+70, CT5, 15, 10, SS_SUNKEN
-   PUSHBUTTON      "+",      	  IDC_INTUP,  CW_LEFT+59, CT5+1, 8, 8
-   PUSHBUTTON      "-",      	  IDC_INTDN,  CW_LEFT+88, CT5+1, 8, 8
+   PUSHBUTTON      "+",         IDC_INTUP,  CW_LEFT+59, CT5+1, 8, 8
+   PUSHBUTTON      "-",         IDC_INTDN,  CW_LEFT+88, CT5+1, 8, 8
 
    DEFPUSHBUTTON   "Done",IDOK,DONE_LEFT,DONE_TOP,DONE_WIDTH,DONE_HEIGHT,WS_GROUP
 
@@ -332,5 +338,63 @@ BEGIN
     PUSHBUTTON     "Sell Gems",IDC_SELLGEMS,SG_LEFT,SG_TOP,SG_WIDTH,DONE_HEIGHT,WS_GROUP
     DEFPUSHBUTTON  "Pay and Exit",IDVOK,VDONE_LEFT,DONE_TOP,VDONE_WIDTH,DONE_HEIGHT,WS_GROUP
 
+END
+
+//*********************************************************************************************
+IDD_ABOUT DIALOG DISCARDABLE  400, 150, 220, 90
+// STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "About Wizard's Castle"
+// FONT 8, "MS Sans Serif"
+FONT 10, "Times New Roman"
+BEGIN
+    ICON            IDI_PLUS42IM,            IDC_STATIC,    9, 14
+    LTEXT           "Wizard's Castle",       IDC_STATIC,   36, 15,  49, 10
+    LTEXT           VerNumA,                 IDC_VERNUM,   86, 15,  50, 10
+    LTEXT           "Copyright (c) 2025 ",   IDC_STATIC,   36, 28,  58, 10
+    LTEXT           "Derell Licht",          IDC_STATIC,   95, 28,  80, 10
+    LTEXT           "http://derelllicht.42web.io/winwiz.html",     
+                                             IDC_WEBLINK,  36, 42, 180, 10
+    LTEXT           "https://github.com/DerellLicht/winwiz", 
+                                             IDC_WEBLINK2, 36, 54, 180, 10
+    DEFPUSHBUTTON   "Close",                 IDOK,         36, 69, 100, 14
+END
+
+/////////////////////////////////////////////////////////////////////////////
+// 
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,0
+ PRODUCTVERSION 1,0,0,0
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "Comments", "Wizard's Castle"
+            VALUE "CompanyName", "Cathartes aura"
+            VALUE "FileDescription", "winwiz"
+            VALUE "FileVersion", VerNumA
+            VALUE "InternalName", "Wizard's Castle"
+            VALUE "LegalCopyright", "Copyright © 2025 Derell Licht"
+            VALUE "OriginalFilename", "winwiz.exe"
+            VALUE "ProductName", "Wizard's Castle"
+            VALUE "ProductVersion", VerNumA
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
 END
 
