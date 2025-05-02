@@ -92,6 +92,19 @@ MI_DEATH
 static map_image_t map_image = MI_UNDEFINED ;
 
 //***********************************************************************
+//  string constants
+//***********************************************************************
+static TCHAR *names[10] = {
+   _T("THE REALM OF BYDL"), _T("GRIMMERDHORE"),  _T("DRAGON'S EGG"),    _T("RYJECK THOME"),
+   _T("SABTO'S DEMISE"),    _T("LYDEN VELDT"),   _T("DERELICT'S DOOM"), 
+   _T("MAXWELL'S FIELD"),   _T("SEER'S SOJOURN"), _T("TREACHER'S GORGE")
+};
+
+static TCHAR *weapon_str[5] = { _T("Hands "),  _T("Dagger"),  _T("Mace  "), _T("Sword "), _T("A Book") } ;
+static TCHAR *armour_str[4] = { _T("Prayers"), _T("Leather"), _T("Chainmail"), _T("Plate") } ;
+static TCHAR *curse_str[3]  = { _T("CURSE OF LETHARGY"), _T("CURSE OF THE LEECH"), _T("CURSE OF AMNESIA") } ;
+
+//***********************************************************************
 static void react_to_room(HWND hwndUnused);
 static void show_flares(void);
 static void show_str(void);

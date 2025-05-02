@@ -698,8 +698,6 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine
    time_t ti ;
    time(&ti) ;
    srand2((unsigned) ti);
-   // sprintf(tempstr, "ti=%u, rand=%u", ti, rand()) ;
-   // OutputDebugString(tempstr) ;
 
    load_exec_filename() ;  //  get our executable name
    //  set up initial data structs

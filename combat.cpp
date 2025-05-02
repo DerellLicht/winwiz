@@ -78,6 +78,7 @@ int vendor_angry = 0 ;
 static unsigned weapon_damage[4] = { 0, 6,  8, 10 } ;
 static unsigned armour_resist[4] = { 0, 4, 10, 20 } ;
 
+static TCHAR *meal[8] = { _T("sandwich"),_T("stew"), _T("soup"), _T("burger"), _T("roast"), _T("filet"), _T("taco"), _T("pie") } ;
 //*************************************************************
 static void EndEncounter(void)
 {

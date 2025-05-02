@@ -25,6 +25,8 @@ castle_room_t runestaff_room, orb_room ;
 castle_room_t curse_rooms[3] ;
 
 //**************************************************************
+//  this is only referenced by wfuncs.cpp
+//**************************************************************
 // typedef struct object_data_s {
 //    unsigned sprite_row ;
 //    unsigned sprite_col ;
@@ -81,22 +83,7 @@ object_data_t object_data[LAST_OBJECT] = {
 } ;
 
 //**************************************************************
-//  misc variables
-//**************************************************************
-// int vendor_repeat_visit_unwelcome = 0 ;
-
-//**************************************************************
 //  misc string arrays
 //**************************************************************
-TCHAR *names[10] = {
-   _T("THE REALM OF BYDL"), _T("GRIMMERDHORE"),  _T("DRAGON'S EGG"),    _T("RYJECK THOME"),
-   _T("SABTO'S DEMISE"),    _T("LYDEN VELDT"),   _T("DERELICT'S DOOM"), 
-   _T("MAXWELL'S FIELD"),   _T("SEER'S SOJOURN"), _T("TREACHER'S GORGE")
-};
-
 TCHAR *race_str[4]   = { _T("Human "),  _T("Dwarf "),  _T("Hobbit"), _T("Elf   ") } ;
-TCHAR *weapon_str[5] = { _T("Hands "),  _T("Dagger"),  _T("Mace  "), _T("Sword "), _T("A Book") } ;
-TCHAR *armour_str[4] = { _T("Prayers"), _T("Leather"), _T("Chainmail"), _T("Plate") } ;
-TCHAR *meal[8]       = { _T("sandwich"),_T("stew"), _T("soup"), _T("burger"), _T("roast"), _T("filet"), _T("taco"), _T("pie") } ;
-TCHAR *curse_str[3]  = { _T("CURSE OF LETHARGY"), _T("CURSE OF THE LEECH"), _T("CURSE OF AMNESIA") } ;
 

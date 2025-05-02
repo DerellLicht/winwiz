@@ -154,12 +154,7 @@ extern object_data_t object_data[LAST_OBJECT] ;
 //**************************************************************
 //  misc string arrays
 //**************************************************************
-extern TCHAR *names[10] ;
 extern TCHAR *race_str[4] ;
-extern TCHAR *weapon_str[5] ;
-extern TCHAR *armour_str[4] ;
-extern TCHAR *meal[8] ;
-extern TCHAR *curse_str[3] ;
 
 extern TCHAR tempstr[128] ;
 
