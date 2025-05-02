@@ -23,11 +23,6 @@
 
 extern uint dbg_flags ;
 
-extern HWND hwndMain ;
-
-//***********************************************************************
-extern HINSTANCE g_hinst ; //  top-level hinstance
-
 //************************************************************
 //  player attributes
 //************************************************************
@@ -244,6 +239,7 @@ int pop_keymap(void);
 void reset_keymap(keymap_states_t new_keymap_state);
 void keymap_show_state(void);
 int process_keystroke(HWND hwnd, unsigned inchr);
+TCHAR *get_monster_prefix(TCHAR *monster_name);
 
 //  about.cpp
 BOOL CmdAbout(HWND hwnd);
@@ -280,7 +276,6 @@ void show_gold(void);
 void draw_beginning_screen(void);
 void update_status(void);
 void show_treasures(void);
-bool starts_with_vowel(TCHAR *monster);
 void update_cursor(void);
 void render_combat_bitmap(void);
 void draw_current_screen(void);

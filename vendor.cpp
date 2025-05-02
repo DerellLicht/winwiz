@@ -319,7 +319,7 @@ static BOOL CALLBACK VendorDlgProc (HWND hDlg, UINT message, WPARAM wParam, LPAR
 //****************************************************************************
 int trade_with_vendor(HWND hwnd)
 {
-   int result = DialogBox (g_hinst, MAKEINTRESOURCE(IDD_VENDORBOX), hwnd, VendorDlgProc);
+   int result = DialogBox (GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_VENDORBOX), hwnd, VendorDlgProc);
    if (result < 0) {
       syslog(_T("Vendor: DialogBox: %s\n"), get_system_message()) ;
    } 

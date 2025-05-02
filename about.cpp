@@ -85,6 +85,9 @@ BOOL CmdAbout(HWND hwnd)
 {
     // syslog("WM_COMMAND: IDD_ABOUT\n");
     // DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUT), hwnd, AboutDlgProc);
-    DialogBox(g_hinst, MAKEINTRESOURCE(IDD_ABOUT), 0, AboutDlgProc);
+    // DialogBox(g_hinst, MAKEINTRESOURCE(IDD_ABOUT), 0, AboutDlgProc);
+    DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_ABOUT), 0, AboutDlgProc);
     return 0;
 }  //lint !e715  hwnd
+
+

@@ -259,7 +259,7 @@ static BOOL CALLBACK CreateDlgProc (HWND hDlg, UINT message, WPARAM wParam, LPAR
 void draw_init_screen(HWND hwnd)
 {
    // if (DialogBox (g_hinst, TEXT ("CreateBox"), hwnd, CreateDlgProc))
-   int result = DialogBox (g_hinst, MAKEINTRESOURCE(IDD_CREATEBOX), NULL, CreateDlgProc) ;
+   int result = DialogBox (GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_CREATEBOX), NULL, CreateDlgProc) ;
    if (result < 0) {
       syslog(_T("Init: DialogBox: %s\n"), get_system_message()) ;
    } 

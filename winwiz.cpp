@@ -52,9 +52,9 @@
 
 static TCHAR const * const Version = _T("Wizard's Castle, Version " VerNum " ") ;   //lint !e707
 
-HINSTANCE g_hinst = 0;
+static HINSTANCE g_hinst = 0;
 
-HWND hwndMain ;
+static HWND hwndMain ;
 
 //lint -esym(714, dbg_flags)
 //lint -esym(759, dbg_flags)

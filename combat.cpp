@@ -87,7 +87,8 @@ static void EndEncounter(void)
       if (monster_info.hitpoints == 0) {
          put_message(_T(" ")) ;
          _stprintf(tempstr, _T("%s %s lies dead at your feet."), 
-            starts_with_vowel(monster_info.desc) ? _T("an") : _T("a"),
+            // starts_with_vowel(monster_info.desc) ? _T("an") : _T("a"),
+            get_monster_prefix(monster_info.desc), 
             monster_info.desc);
          put_message(tempstr) ;
          put_message(_T(" ")) ;
@@ -132,7 +133,8 @@ static void EndEncounter(void)
       player.gold += Q ;
       // draw_main_screen();
       _stprintf(tempstr, _T("%s %s lies dead at your feet."), 
-         starts_with_vowel(monster_info.desc) ? _T("an") : _T("a"),
+         // starts_with_vowel(monster_info.desc) ? _T("an") : _T("a"),
+         get_monster_prefix(monster_info.desc), 
          monster_info.desc);
       put_message(tempstr) ;
       _stprintf(tempstr, _T("You now get his hoard of %u GP's"), Q);
@@ -491,7 +493,8 @@ static void show_combat_info(void)
    // put_message(tempstr) ;
    infoout(_T("round %u: You're facing %s %s [ L%u, hp=%u ]"), 
       combat_round++, 
-      starts_with_vowel(monster_info.desc) ? _T("an") : _T("a"),
+      // starts_with_vowel(monster_info.desc) ? _T("an") : _T("a"),
+      get_monster_prefix(monster_info.desc), 
       monster_info.desc, monster_info.level, monster_info.hitpoints) ;
    // put_message(tempstr, attr_new_round) ;
    put_message(_T("You may: [A]ttack, [R]etreat, [C]ast a spell.")) ;

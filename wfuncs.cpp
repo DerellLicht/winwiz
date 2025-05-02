@@ -398,22 +398,6 @@ void show_player(void)
    update_position() ;
 }
 
-//*************************************************************
-bool starts_with_vowel(TCHAR *monster)
-{
-   switch (*monster) {
-   case 'a':
-   case 'e':
-   case 'i':
-   case 'o':
-   case 'u':
-      return true;
-
-   default:
-      return false;
-   }
-}
-
 /************************************************************************/
 // ;* Description: Draw line from (x0,y0) to (x1,y1) using color 'Color'   *
 /************************************************************************/
@@ -611,7 +595,30 @@ void win_game(HWND hwnd)
 }
 
 //*************************************************************
-static void display_atmosphere(HDC hdcUnused)
+static bool starts_with_vowel(TCHAR *monster)
+{
+   switch (*monster) {
+   case 'a':
+   case 'e':
+   case 'i':
+   case 'o':
+   case 'u':
+      return true;
+
+   default:
+      return false;
+   }
+}
+
+//*************************************************************
+TCHAR *get_monster_prefix(TCHAR *monster_name)
+{
+   static TCHAR *an_str = _T("an") ;
+   static TCHAR *a_str = _T("a") ;
+   return starts_with_vowel(monster_name) ? an_str : a_str ;
+}
+//*************************************************************
+static void display_atmosphere(void)
 {
    if (player.has_orb_of_Zot) {
       put_color_msg(TERM_DEATH, _T("In a burst of intense agony, you feel your very soul ripped from")) ;
@@ -632,7 +639,7 @@ static void display_atmosphere(HDC hdcUnused)
       // char *sptr = get_object_in_room(player.x, player.y, player.level) ;
       TCHAR *sptr = get_object_in_room(runestaff_room.x, runestaff_room.y, runestaff_room.level) ;
       put_color_msg(TERM_DEATH, _T("%s %s declares itself Master of the Castle!!"),
-         starts_with_vowel(sptr) ? _T("An") : _T("A"), sptr) ;
+         get_monster_prefix(sptr), sptr) ;
    }
 }
 
@@ -640,13 +647,10 @@ static void display_atmosphere(HDC hdcUnused)
 void player_dies(HWND hwnd)
 {
    push_keymap(KEYMAP_WAIT_END) ;
-   HDC hdc = GetDC(hwndMain) ;
    update_status() ;
-   // pngDeath.render_bitmap(hdc, 0, 0);
+   display_atmosphere() ;
    map_image = MI_DEATH ;
-   pngTiles->render_bitmap(hdc, 0, 0, TILE_DEATH, 0) ;
-   display_atmosphere(hdc) ;
-   ReleaseDC(hwndMapArea, hdc) ;
+   draw_current_screen();
 }
 
 //*************************************************************
@@ -660,23 +664,14 @@ _T(" "),
    
 static void wrong_castle_death(HWND hwnd)
 {
-   // hide_status_area() ;
-   // enable_player_info(false) ;
-   // HDC hdc = hdcMain ;
-   // draw_main_screen(NULL) ;
    term_clear_message_area() ;
-   // redraw_game_screen(hdc) ;  // wrong_castle_death()
-   // show_status_area() ;
-   // enable_player_info(true) ;
-   for (unsigned j=0; zot_chest_end_msg[j] != 0; j++) 
+   for (unsigned j=0; zot_chest_end_msg[j] != 0; j++) {
       // put_color_msg(TERM_DEATH, zot_chest_end_msg[j]) ;
       put_color_msg(TERM_DEATH, zot_chest_end_msg[j]) ;
-   // pngDeath.render_bitmap(hdc, 0, 0);
-   HDC hdc = GetDC(hwndMapArea) ;
-   pngTiles->render_bitmap(hdc, 0, 0, TILE_DEATH, 0) ;
-   ReleaseDC(hwndMapArea, hdc) ;
-   map_image = MI_DEATH ;
+   }
    infoout(_T("You died while exploring %s"), names[player.castle_nbr]) ;
+   map_image = MI_DEATH ;
+   draw_current_screen();
 }
 
 //*************************************************************
@@ -984,7 +979,8 @@ static void update_room(void)
       if (is_monster_index(idx)) {
          TCHAR *sptr = get_object_in_room(player.x, player.y, player.level) ;
          _stprintf(tempstr, _T("Here you find %s %s."), 
-            starts_with_vowel(sptr) ? _T("an") : _T("a"), sptr) ;
+            // starts_with_vowel(sptr) ? _T("an") : _T("a"), sptr) ;
+               get_monster_prefix(sptr), sptr) ;
             // get_object_in_room(player.x, player.y, player.level)) ;
       } else {
          _stprintf(tempstr, _T("Here you find %s."), 
@@ -1131,7 +1127,8 @@ int look_in_direction(HWND hwnd, unsigned key)
          if (is_monster_index(contents)) {
             sptr = get_object_name(contents) ;
             _stprintf(tempstr, _T("The Lamp shines west.  There you see %s %s [ L%u ]"), 
-               starts_with_vowel(sptr) ? _T("an") : _T("a"), sptr,
+               // starts_with_vowel(sptr) ? _T("an") : _T("a"), sptr,
+               get_monster_prefix(sptr), sptr,
                // get_object_name(contents), 
                contents - MONSTER_BASE + 1) ;
          } else {
@@ -1153,7 +1150,8 @@ int look_in_direction(HWND hwnd, unsigned key)
          if (is_monster_index(contents)) {
             sptr = get_object_name(contents) ;
             _stprintf(tempstr, _T("The Lamp shines north.  There you see %s %s [ L%u ]"), 
-               starts_with_vowel(sptr) ? _T("an") : _T("a"), sptr,
+               // starts_with_vowel(sptr) ? _T("an") : _T("a"), sptr,
+               get_monster_prefix(sptr), sptr,
                contents - MONSTER_BASE + 1) ;
          } else {
             _stprintf(tempstr, _T("The Lamp shines north.  There you see %s"), 
@@ -1174,7 +1172,8 @@ int look_in_direction(HWND hwnd, unsigned key)
          if (is_monster_index(contents)) {
             sptr = get_object_name(contents) ;
             _stprintf(tempstr, _T("The Lamp shines east.  There you see %s %s [ L%u ]") , 
-               starts_with_vowel(sptr) ? _T("an") : _T("a"), sptr,
+               // starts_with_vowel(sptr) ? _T("an") : _T("a"), sptr,
+               get_monster_prefix(sptr), sptr,
                contents - MONSTER_BASE + 1) ;
          } else {
             _stprintf(tempstr, _T("The Lamp shines east.  There you see %s") , 
@@ -1195,7 +1194,8 @@ int look_in_direction(HWND hwnd, unsigned key)
          if (is_monster_index(contents)) {
             sptr = get_object_name(contents) ;
             _stprintf(tempstr, _T("The Lamp shines south.  There you see %s %s [ L%u ]") , 
-               starts_with_vowel(sptr) ? _T("an") : _T("a"), sptr,
+               // starts_with_vowel(sptr) ? _T("an") : _T("a"), sptr,
+               get_monster_prefix(sptr), sptr,
                contents - MONSTER_BASE + 1) ;
          } else {
             _stprintf(tempstr, _T("The Lamp shines south.  There you see %s") , 

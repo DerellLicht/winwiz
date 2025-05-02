@@ -84,4 +84,7 @@ vers    date        actions taken
 
 1.43 - 04/29/25  Executing Chest did not remove the chest afterwards, in some cases.
 
-1.44 - 04/29/25  Converting to Unicode, to support gdiplus library
+1.44 - 04/29/25  - Converting to Unicode, to support gdiplus library
+                 - Completed gdiplus conversion, eliminating loadpng library
+
+1.45 - 05/02/25  Fix bugs, code cleanup
