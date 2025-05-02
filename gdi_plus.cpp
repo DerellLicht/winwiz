@@ -35,38 +35,6 @@ void gdi_plus::render_bitmap(HDC hdc, uint xdest, uint ydest, uint sprite_col, u
    copy_imagelist_item(graphics, srcx, srcy, sprite_dx, sprite_dy, xdest, ydest);
 }
 
-//***********************************************************************
-//  this form of the renderer is for drawing single images
-//***********************************************************************
-// void gdi_plus::render_bitmap(HDC hdc, unsigned xdest, unsigned ydest)
-// {
-//    HDC hdcMem = CreateCompatibleDC (hdc);
-//    SelectObject (hdcMem, (HGDIOBJ) hBitmap);
-// 
-//    if (!BitBlt (hdc, xdest, ydest, sprite_dx, sprite_dy, hdcMem, 0, 0, SRCCOPY)) {  //lint !e713
-//       syslog(_T("BitBlt: %s") get_system_message()) ;
-//    }
-// 
-//    DeleteDC (hdcMem);
-// }
-
-//********************************************************************
-// void gdi_plus::render_bitmap(HDC hdc, uint xdest, uint ydest, uint tile_index)
-// {
-//    HDC hdcMem = CreateCompatibleDC (hdc);
-//    SelectObject (hdcMem, (HGDIOBJ) hBitmap);
-//    uint x_idx = tile_index % tiles_x ;
-//    uint y_idx = tile_index / tiles_x ;
-//    uint xsrc = x_idx * sprite_dx ;
-//    uint ysrc = y_idx * sprite_dy ;
-//    
-//    if (!BitBlt (hdc, xdest, ydest, sprite_dx, sprite_dy, hdcMem, xsrc, ysrc, SRCCOPY)) {  //lint !e713
-//       syslog(_T("BitBlt: %s") get_system_message()) ;
-//    }
-//    
-//    DeleteDC (hdcMem);
-// }
-
 //********************************************************************
 gdi_plus::gdi_plus(TCHAR *new_img_name) :
    // bmp(NULL),

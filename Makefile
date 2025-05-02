@@ -99,7 +99,7 @@ dist:
 	zip $(BASE).zip *.exe winwiz.chm $(IMAGES) history.winwiz.txt
 
 wc:
-	wc -l *.cpp *.rc
+	wc -l $(CSRC) *.rc
 
 lint:
 	cmd /C "c:\lint9\lint-nt +v -width(160,4) $(LiFLAGS) -ic:\lint9 mingw.lnt -os(_lint.tmp) lintdefs.cpp $(CSRC)"

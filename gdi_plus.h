@@ -51,13 +51,10 @@ private:
 public:   
    // gdi_plus();
    gdi_plus(TCHAR *new_img_name) ;
-   // gdi_plus(TCHAR *new_img_name, uint dx, uint dy) ;
    gdi_plus(TCHAR *new_img_name, uint icons_per_column, uint icon_rows);
    gdi_plus(TCHAR *new_img_name, uint icons_per_column, uint icon_rows, uint sprite_width, uint sprite_height);
    ~gdi_plus();
-   // void render_bitmap(HDC hdc, unsigned x, unsigned y);
    void render_bitmap(HDC hdc, uint xdest, uint ydest, uint sprite_col, uint sprite_row);
-   // void render_bitmap(HDC hdc, uint xdest, uint ydest, uint tile_index);
    uint img_width(void) const
       { return nWidth ; } ;
    uint img_height(void) const

@@ -1131,7 +1131,7 @@ int look_in_direction(HWND hwnd, unsigned key)
          if (is_monster_index(contents)) {
             sptr = get_object_name(contents) ;
             _stprintf(tempstr, _T("The Lamp shines west.  There you see %s %s [ L%u ]"), 
-               starts_with_vowel(sptr) ? "an" : "a", sptr,
+               starts_with_vowel(sptr) ? _T("an") : _T("a"), sptr,
                // get_object_name(contents), 
                contents - MONSTER_BASE + 1) ;
          } else {
@@ -1153,7 +1153,7 @@ int look_in_direction(HWND hwnd, unsigned key)
          if (is_monster_index(contents)) {
             sptr = get_object_name(contents) ;
             _stprintf(tempstr, _T("The Lamp shines north.  There you see %s %s [ L%u ]"), 
-               starts_with_vowel(sptr) ? "an" : "a", sptr,
+               starts_with_vowel(sptr) ? _T("an") : _T("a"), sptr,
                contents - MONSTER_BASE + 1) ;
          } else {
             _stprintf(tempstr, _T("The Lamp shines north.  There you see %s"), 
@@ -1174,7 +1174,7 @@ int look_in_direction(HWND hwnd, unsigned key)
          if (is_monster_index(contents)) {
             sptr = get_object_name(contents) ;
             _stprintf(tempstr, _T("The Lamp shines east.  There you see %s %s [ L%u ]") , 
-               starts_with_vowel(sptr) ? "an" : "a", sptr,
+               starts_with_vowel(sptr) ? _T("an") : _T("a"), sptr,
                contents - MONSTER_BASE + 1) ;
          } else {
             _stprintf(tempstr, _T("The Lamp shines east.  There you see %s") , 
@@ -1195,7 +1195,7 @@ int look_in_direction(HWND hwnd, unsigned key)
          if (is_monster_index(contents)) {
             sptr = get_object_name(contents) ;
             _stprintf(tempstr, _T("The Lamp shines south.  There you see %s %s [ L%u ]") , 
-               starts_with_vowel(sptr) ? "an" : "a", sptr,
+               starts_with_vowel(sptr) ? _T("an") : _T("a"), sptr,
                contents - MONSTER_BASE + 1) ;
          } else {
             _stprintf(tempstr, _T("The Lamp shines south.  There you see %s") , 
