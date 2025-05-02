@@ -16,9 +16,6 @@
 #include "wizard.h"
 #include "keywin32.h"
 
-//  this constant enables debug function, currently tied to key 'z'
-// #define USE_DEBUG_KEY   1
-
 //lint -esym(769, keymap_states_e::KEYMAP_SPELL)
 
 //  term_app.cpp
@@ -109,22 +106,6 @@ void keymap_show_state(void)
 }
 
 //*************************************************************
-#ifdef  USE_DEBUG_KEY
-static void execute_debug_function(void)
-{
-   player.has_runestaff = true ;
-   put_color_msg(TERM_RUNESTAFF, _T("GREAT ZOT!! You've found the RUNESTAFF!!"));
-   show_treasures() ;
-}
-#endif
-
-//*************************************************************
-// bool is_intro_screen_active(void)
-// {
-//    return (keymap == KEYMAP_INTRO) ? true : false ;
-// }
-
-//*************************************************************
 void set_default_keymap(void)
 {
    keymap = KEYMAP_DEFAULT ;
@@ -195,8 +176,6 @@ static bool can_I_see(void)
 
 //*************************************************************
 //  wfuncs.cpp
-extern void dump_level_knowledge(void);
-
 static int default_kbd_handler(HWND hwnd, unsigned inchr)
 {
    // int result ;
@@ -256,11 +235,7 @@ static int default_kbd_handler(HWND hwnd, unsigned inchr)
       break;
 
    case kh:  
-      queryout(_T("Terminal keyboard shortcuts")) ;
-      infoout(_T("Alt-b = Show About dialog")) ;
-      infoout(_T("Alt-d = Toggle debug flag")) ;
-      infoout(_T("Alt-h = Show Help dialog")) ;
-      infoout(_T("Alt-q = Close this program")) ;
+      show_help_menu();
       break;
       
    case kf:  light_a_flare(hwnd); break;
@@ -292,23 +267,16 @@ static int default_kbd_handler(HWND hwnd, unsigned inchr)
 
    case kp: teleport(hwnd, inchr); break;
    case kj: view_special_items(); break;
-   // case kh: view_help_screen(hwnd);  break ;
    case ka: attack_vendor(hwnd);  break ;
 
-   case kCc:
-   case kESC:
-      SendMessage(hwnd, WM_DESTROY, 0, 0) ;
-      break;
+   // case kCc:   //  these don't work
+   // case kESC:
+   //    SendMessage(hwnd, WM_DESTROY, 0, 0) ;
+   //    break;
 
-#ifdef  USE_DEBUG_KEY
-   case kz:
-      execute_debug_function();
-      break;
-#endif
-
-   case '?':
-      dump_level_knowledge();
-      break;
+   // case kQMark:   //  this doesn't work
+   //    dump_level_knowledge();
+   //    break;
 
    default:
       _stprintf (tempstr, _T("PRESS=0x%04X"), inchr);

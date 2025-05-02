@@ -85,6 +85,26 @@ static void toggle_debug_flag(void)
    infoout(msg);
 }
             
+//*************************************************************
+static void debug_force_runestaff(void)
+{
+   player.has_runestaff = true ;
+   put_color_msg(TERM_RUNESTAFF, _T("GREAT ZOT!! You've found the RUNESTAFF!!"));
+   show_treasures() ;
+}
+
+//*******************************************************************
+void show_help_menu(void)
+{
+   queryout(_T("Terminal keyboard shortcuts")) ;
+   infoout(_T("Alt-b = Show About dialog")) ;
+   infoout(_T("Alt-d = Toggle debug flag")) ;
+   infoout(_T("Alt-j = Debug: force runestaff")) ;
+   infoout(_T("Alt-k = Debug: show 'known levels' flags")) ;
+   infoout(_T("Alt-h = Show Help dialog")) ;
+   infoout(_T("Alt-q = Close this program")) ;
+}
+
 //*******************************************************************
 void status_message(TCHAR *msgstr)
 {
@@ -341,6 +361,10 @@ static LRESULT APIENTRY TermSubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, LP
       case WM_KEYDOWN:
       case WM_SYSKEYDOWN:
       case WM_CHAR:
+      case WM_NCHITTEST:
+      case WM_SETCURSOR:
+      case WM_MOUSEMOVE:
+      case WM_NOTIFY:
          break;
       default:
          syslog(_T("SubC [%s]\n"), lookup_winmsg_name(uMsg)) ;
@@ -654,6 +678,14 @@ static LRESULT CALLBACK TermProc (HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lP
             
          case IDB_DEBUG:
             toggle_debug_flag();  
+            break;
+            
+         case IDB_DEBUG_RS:
+            debug_force_runestaff();
+            break;
+            
+         case IDB_DEBUG_LEVELS:
+            dump_level_knowledge();
             break;
             
          case IDB_HELP:

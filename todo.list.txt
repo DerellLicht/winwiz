@@ -1,9 +1,6 @@
 ToDo list
 =========
 
-- After teleporting, level should be unknown, but X and Y for current level
-  are visible on the map!!
-
 - Impatient vendors is not yet implemented
 
 - Implement some way to track possessions of monsters/vendors,

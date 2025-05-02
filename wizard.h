@@ -13,13 +13,8 @@
 //  debug: message-reporting data 
 //****************************************************************************
 
-#define  DBG_VERBOSE       0x01
-#define  DBG_WINMSGS       0x02
-#define  DBG_RX_DEBUG      0x04
-#define  DBG_CTASK_TRACE   0x08
-#define  DBG_SMTP_RECV     0x10
-#define  DBG_POLLING       0x20
-#define  DBG_ETHERNET      0x40
+#define  DBG_WINMSGS       0x01
+#define  DBG_FORCE_RSTAFF  0x02
 
 extern uint dbg_flags ;
 
@@ -190,6 +185,7 @@ TERM_DEATH,
 TERM_ATMOSPHERE
 } ;
 
+void show_help_menu(void);
 int  termout(const TCHAR *fmt, ...);
 int  infoout(const TCHAR *fmt, ...);
 int  queryout(const TCHAR *fmt, ...);
@@ -271,6 +267,7 @@ void update_status(void);
 void show_treasures(void);
 void update_cursor(void);
 void render_combat_bitmap(void);
+void dump_level_knowledge(void);
 
 //  vendor.cpp
 int  trade_with_vendor(HWND hwnd);

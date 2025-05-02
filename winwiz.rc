@@ -35,6 +35,8 @@ BEGIN
     // VK_DOWN,        IDC_VK_DOWN,             VIRTKEY, NOINVERT
     "b",     IDB_ABOUT,         ASCII, ALT, NOINVERT
     "d",     IDB_DEBUG,         ASCII, ALT, NOINVERT
+    "j",     IDB_DEBUG_RS,      ASCII, ALT, NOINVERT
+    "k",     IDB_DEBUG_LEVELS,  ASCII, ALT, NOINVERT
     "h",     IDB_HELP,          ASCII, ALT, NOINVERT
     "q",     IDB_CLOSE,         ASCII, ALT, NOINVERT
 END

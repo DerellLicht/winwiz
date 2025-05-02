@@ -109,6 +109,7 @@ static void show_str(void);
 static void mark_room_as_known(unsigned x, unsigned y, unsigned level);
 static void draw_char_cursor(HDC hdc, unsigned on_or_off);
 
+/************************************************************************/
 static bool is_location_forgotten(void)
 {
    return !level_known[player.level] ;
@@ -148,7 +149,7 @@ void release_gdiplus_data(void)
 /************************************************************************/
 void dump_level_knowledge(void)
 {
-   syslog(_T("0%c 1%c 2%c 3%c 4%c 5%c 6%c 7%c, level=%u\n"),
+   _stprintf(tempstr, _T("0%c 1%c 2%c 3%c 4%c 5%c 6%c 7%c, level=%u"),
       (level_known[0]) ? 'T' : 'F',
       (level_known[1]) ? 'T' : 'F',
       (level_known[2]) ? 'T' : 'F',
@@ -158,6 +159,7 @@ void dump_level_knowledge(void)
       (level_known[6]) ? 'T' : 'F',
       (level_known[7]) ? 'T' : 'F',
       player.level) ;
+   termout(tempstr);
 }
 
 //*************************************************************
@@ -309,7 +311,8 @@ void clear_room(void)
 //*************************************************************
 static void update_position(void)
 {
-   if (player.is_blind  ||  is_location_forgotten()) 
+   // if (player.is_blind  ||  is_location_forgotten()) 
+   if (player.is_blind) 
       _stprintf (tempstr, _T(" X=?, Y=?"));
    else
       _stprintf (tempstr, _T(" X=%u, Y=%u"), player.x, player.y);
@@ -1950,7 +1953,6 @@ static void react_to_room(HWND hwndUnused)
       if (!player.is_blind)
          draw_char_cursor(hdc, OFF) ;
       player.x=random(DIMEN_COUNT); player.y=random(DIMEN_COUNT); player.level=random(DIMEN_COUNT);
-      // location_forgotten = !level_known[player.level] ;
       if (!player.is_blind) {
          draw_main_screen(NULL) ;   //  warp
       }

@@ -18,6 +18,8 @@
 #define  IDB_CLOSE            404
 #define  IDS_HELP             405
 #define  IDB_DEBUG            406
+#define  IDB_DEBUG_RS         407
+#define  IDB_DEBUG_LEVELS     408
 
 //  main-dialog controls
 #define  IDC_MAP_AREA         600
