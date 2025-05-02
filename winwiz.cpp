@@ -70,8 +70,11 @@ uint cyClient = 0 ;
 
 static CStatusBar *MainStatusBar = NULL;
 
-static bool redraw_in_progress = false ;
-bool prog_init_done = false ;
+//  This does not appear to be required for anything
+// static bool redraw_in_progress = false ;
+
+//  This prevents map from being redrawn until program init is completed
+// bool prog_init_done = false ;
 
 //*******************************************************************
 static void toggle_debug_flag(void)
@@ -582,7 +585,7 @@ static LRESULT CALLBACK TermProc (HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lP
             KillTimer(hwnd, main_timer_id) ;
    
             draw_intro_screen(hwnd) ;
-            prog_init_done = true ;
+            // prog_init_done = true ;
             // main_timer_id = SetTimer(hwnd, IDT_TIMER_MAIN, 1000, (TIMERPROC) NULL) ;
             main_timer_id = SetTimer(hwnd, IDT_TIMER_MAIN, 244, (TIMERPROC) NULL) ;
          } else {
@@ -591,18 +594,19 @@ static LRESULT CALLBACK TermProc (HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lP
                update_cursor() ;
             }
             // syslog("next_timer...redraw_in_progress=%s\n", (redraw_in_progress) ? "true" : "false") ;
-            if (redraw_in_progress) {
-               // syslog("redraw counts: %u vs %u\n", curr_redraw_counts, ref_redraw_counts) ;
-               // if (ref_redraw_counts != 0  &&  ref_redraw_counts == curr_redraw_counts) {
-                  // syslog("redraw main screen\n") ;
-                  redraw_in_progress = false ;
-                  if (!is_intro_screen_active()) {
-                     draw_current_screen() ;
-                     show_treasures() ;
-                  }
-               // }
-               // ref_redraw_counts = curr_redraw_counts ;
-            }
+            // if (redraw_in_progress) {
+            //    syslog(_T("redraw in progress"));
+            //    // syslog("redraw counts: %u vs %u\n", curr_redraw_counts, ref_redraw_counts) ;
+            //    // if (ref_redraw_counts != 0  &&  ref_redraw_counts == curr_redraw_counts) {
+            //       // syslog("redraw main screen\n") ;
+            //       redraw_in_progress = false ;
+            //       if (!is_intro_screen_active()) {
+            //          draw_current_screen() ;
+            //          show_treasures() ;
+            //       }
+            //    // }
+            //    // ref_redraw_counts = curr_redraw_counts ;
+            // }
          }
          return TRUE;
 
@@ -619,23 +623,23 @@ static LRESULT CALLBACK TermProc (HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lP
    //  04/16/14 - unfortunately, I cannot use WM_SIZE, nor any other message, to draw my graphics,
    //  because some other message occurs later and over-writes my work...
    //***********************************************************************************************
-   case WM_SIZE:
-      if (wParam == SIZE_RESTORED) {
-         // syslog("WM_SIZE\n") ;
-         redraw_in_progress = true ;
-      } 
-      //********************************************************************************************
-      //  The last operations in the dialog redraw, are subclassed WM_CTLCOLORSTATIC messages.
-      //  So, to determine when it is all done, I need to somehow recognize when these are done,
-      //  and then update our graphics objects.
-      //********************************************************************************************
-      return TRUE;
+   // case WM_SIZE:
+   //    if (wParam == SIZE_RESTORED) {
+   //       syslog(_T("WM_SIZE\n")) ;
+   //       redraw_in_progress = true ;
+   //    } 
+   //    //********************************************************************************************
+   //    //  The last operations in the dialog redraw, are subclassed WM_CTLCOLORSTATIC messages.
+   //    //  So, to determine when it is all done, I need to somehow recognize when these are done,
+   //    //  and then update our graphics objects.
+   //    //********************************************************************************************
+   //    return TRUE;
 
    //  this occurs during program startup
-   case WM_ERASEBKGND:
-      // syslog("WM_ERASEBKGND\n") ;
-      redraw_in_progress = true ;
-      break;
+   // case WM_ERASEBKGND:
+   //    syslog(_T("WM_ERASEBKGND\n")) ;
+   //    redraw_in_progress = true ;
+   //    break;
 
    case WM_COMMAND:
       {  //  create local context
@@ -646,7 +650,9 @@ static LRESULT CALLBACK TermProc (HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lP
       case FVIRTKEY:  //  keyboard accelerators: WARNING: same code as CBN_SELCHANGE !!
          //  fall through to BM_CLICKED, which uses same targets
       case BN_CLICKED:
-         syslog(_T("cmd: %u, target: %u\n"), cmd, target);
+         if (dbg_flags & DBG_WINMSGS) {
+            syslog(_T("cmd: %u, target: %u\n"), cmd, target);
+         }
          switch(target) {
             
          case IDB_ABOUT:

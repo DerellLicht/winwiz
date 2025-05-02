@@ -128,11 +128,11 @@ static void EndEncounter(void)
          player.gold += Q ;
          show_gold() ;
       }
-      // draw_main_screen();
-   } else {
+   } 
+   //  if you fought anything *other* than a vendor
+   else {
       Q = random(1000); 
       player.gold += Q ;
-      // draw_main_screen();
       _stprintf(tempstr, _T("%s %s lies dead at your feet."), 
          // starts_with_vowel(monster_info.desc) ? _T("an") : _T("a"),
          get_monster_prefix(monster_info.desc), 
@@ -157,7 +157,8 @@ static void EndEncounter(void)
       }
    }
    web_turns = 0 ;
-   redraw_map() ;
+   clear_room();
+   draw_main_screen(NULL) ;   //  end of combat
 }
 
 //*************************************************************
@@ -429,7 +430,7 @@ int cast_spell(HWND hwnd, unsigned inchr)
    
    pop_keymap() ; //  pop back to KEYMAP_MONSTER
    if (monster_info.hitpoints == 0) {
-      EndEncounter() ;
+      EndEncounter() ;  //  cast_spell()
       pop_keymap() ; //  pop back to KEYMAP_DEFAULT
       result = 0;
    }
@@ -559,10 +560,12 @@ int run_one_encounter_round(HWND hwnd, unsigned inchr)
       }
    }  //  switch
 
-   if (result == 0) 
+   if (result == 0) {
       EndEncounter() ;
-   else if (result > 0)
+   }
+   else if (result > 0) {
       show_combat_info() ;
+   }
 
 quiet_exit:
    return result ;

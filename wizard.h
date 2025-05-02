@@ -219,7 +219,6 @@ KEYMAP_SPELL,
 KEYMAP_ZOT_SCR,
 KEYMAP_WAIT_END,
 KEYMAP_TELEPORT,
-KEYMAP_HELP,
 KEYMAP_INTRO,
 KEYMAP_INITCHAR,
 KEYMAP_SPELL_SELECTION,
@@ -228,7 +227,7 @@ MAX_KEYMAP_STATES
 
 void set_default_keymap(void);
 bool is_default_keymap(void) ;
-bool is_intro_screen_active(void);
+// bool is_intro_screen_active(void);
 int push_keymap(keymap_states_t new_keymap);
 int pop_keymap(void);
 void reset_keymap(keymap_states_t new_keymap_state);
@@ -259,8 +258,7 @@ void show_player(void);
 void player_dies(HWND hwnd);
 void win_game(HWND hwnd);
 void draw_main_screen(HDC hdcUnused);
-void clear_room(HDC hdcUnused);
-void redraw_map(void);
+void clear_room(void);
 void adjust_hit_points(void);
 void show_dex(void);
 void show_int(void);
@@ -273,7 +271,6 @@ void update_status(void);
 void show_treasures(void);
 void update_cursor(void);
 void render_combat_bitmap(void);
-void draw_current_screen(void);
 
 //  vendor.cpp
 int  trade_with_vendor(HWND hwnd);

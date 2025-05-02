@@ -1,6 +1,8 @@
 ToDo list
 =========
 
+- when moving around, empty rooms are not drawn full-frame
+
 - Impatient vendors is not yet implemented
 
 - Implement some way to track possessions of monsters/vendors,

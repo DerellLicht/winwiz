@@ -119,10 +119,10 @@ static void execute_debug_function(void)
 #endif
 
 //*************************************************************
-bool is_intro_screen_active(void)
-{
-   return (keymap == KEYMAP_INTRO) ? true : false ;
-}
+// bool is_intro_screen_active(void)
+// {
+//    return (keymap == KEYMAP_INTRO) ? true : false ;
+// }
 
 //*************************************************************
 void set_default_keymap(void)
@@ -257,7 +257,6 @@ static int default_kbd_handler(HWND hwnd, unsigned inchr)
 
    case kh:  
       queryout(_T("Terminal keyboard shortcuts")) ;
-      // infoout(_T("Alt-s = send command (i.e., print command in terminal)")) ;
       infoout(_T("Alt-b = Show About dialog")) ;
       infoout(_T("Alt-d = Toggle debug flag")) ;
       infoout(_T("Alt-h = Show Help dialog")) ;
@@ -362,24 +361,14 @@ int process_keystroke(HWND hwnd, unsigned inchr)
       } else if (result > 0) {
          // push_keymap(KEYMAP_DEFAULT) ;
          pop_keymap() ;
+         clear_room();
          draw_main_screen(NULL) ;
-         clear_room(NULL);  //  calls show_player()
       }
       break;
 
    //  wait for one more keystroke before terminating
    case KEYMAP_WAIT_END:
       SendMessage(hwnd, WM_DESTROY, 0, 0) ;
-      break;
-
-   //  wait for any key before restoring screen
-//                WinHelp(hDlg, gszHelpName, HELP_INDEX, 0L);
-//          WinHelp(hDlg, gszHelpName, HELP_QUIT, 0L);
-//          DestroyWindow(hDlg);
-   case KEYMAP_HELP:
-      draw_main_screen(NULL) ;
-      // push_keymap(KEYMAP_DEFAULT) ;
-      pop_keymap() ;
       break;
 
    //  wait for one more keystroke before terminating

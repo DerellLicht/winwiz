@@ -38,8 +38,6 @@
 
 //lint -esym(715, hdc, hwnd)
 
-extern bool prog_init_done ;
-
 enum {
 TILE_COMBAT=0,
 TILE_VICTORY,
@@ -282,14 +280,9 @@ static void clear_map_area(HDC hdc, COLORREF Color)
 }
 
 //*************************************************************
-void clear_room(HDC hdcUnused)
+void clear_room(void)
 {
-   HDC hdc = GetDC(hwndMapArea) ;
    castle[player.x][player.y][player.level].contents = EMPTY_ROOM ;
-   mark_room_as_known(player.x, player.y, player.level) ;
-   draw_room_contents(hdc, player.x, player.y) ;   //  calls draw_sprite()
-   show_player() ;
-   ReleaseDC(hwndMapArea, hdc) ;
 }
 
 //*************************************************************
@@ -309,28 +302,15 @@ static void update_position(void)
 }
 
 //***********************************************************************
-//  this should *only* redraw the map
+//  called by *many* functions
 //***********************************************************************
-void redraw_map(void)
+void draw_main_screen(HDC hdcUnused)
 {
-   if (!prog_init_done) {
-      return ;
-   }
-   // syslog("redraw_map\n") ;
-   HDC hdc = GetDC(hwndMapArea) ;
-   // syslog("call clear_map_area\n") ;
-   clear_map_area(hdc, WIN_BLACK) ;
-   draw_all_room_sprites(hdc);   //  using hwndMapArea
-   clear_room(NULL);  //  calls show_player()
-   ReleaseDC(hwndMapArea, hdc) ;
-   set_term_attr_default();
-}
-
-//*************************************************************
-//  called only by draw_main_screen()
-//*************************************************************
-static void redraw_game_screen(void)
-{
+   if (cxClient == 0 || cyClient == 0)
+        return ;
+   // syslog(_T("draw_main_screen\n"));
+   map_image = MI_MAP ;
+   // redraw_game_screen() ;
    HDC hdc = GetDC(hwndMapArea) ;
    clear_map_area(hdc, WIN_BLACK) ;
    draw_all_room_sprites(hdc);   //  using hwndMapArea
@@ -338,33 +318,14 @@ static void redraw_game_screen(void)
    update_position() ;
    ReleaseDC(hwndMapArea, hdc) ;
    set_term_attr_default();
-}
-
-//***********************************************************************
-//  called by *many* functions
-//***********************************************************************
-void draw_main_screen(HDC hdcUnused)
-{
-   if (cxClient == 0 || cyClient == 0)
-        return ;
-   // syslog("draw_main_screen\n") ;
-   map_image = MI_MAP ;
-
-   //  Old procedure:
-   //  redraw_game_screen() did not call clear_room(),
-   //  redraw_map() does...
-   redraw_game_screen() ;
-   // update_status() ;
-   // redraw_level(hdc) ;
-
-   // redraw_map();
    update_status() ;
 }
 
 //****************************************************************************
-void draw_current_screen(void)
+static void draw_current_screen(void)
 {
    HDC hdc ;
+   // syslog(_T("draw_current_screen\n"));
    switch (map_image) {
    case MI_COMBAT:
       hdc = GetDC(hwndMapArea) ;
@@ -385,7 +346,7 @@ void draw_current_screen(void)
    case MI_UNDEFINED:
    case MI_MAP:
    default:   
-      draw_main_screen(NULL) ;
+      draw_main_screen(NULL) ;   // draw_current_screen()
       break;
    }
 }
@@ -486,7 +447,8 @@ void update_cursor(void)
       case MI_VICTORY:
       case MI_DEATH:  
       default:   
-         draw_main_screen(NULL) ;
+         // syslog(_T("update_cursor()\n"));
+         // draw_main_screen(NULL) ;   //  update_cursor()
          break;
       }
    }
@@ -1369,8 +1331,7 @@ static int open_book_or_chest(HWND hwnd, int contents)
          } else {
             player.blind_count = 1 + random(15); 
             player.is_blind = 1 ;
-            draw_main_screen(NULL);
-            // clear_message_area(term) ;
+            draw_main_screen(NULL); //  newly blinded
             put_message(_T("You open the book and   *** FLASH!! ***"));
             _stprintf(tempstr, _T("OH NO! YOU ARE NOW A BLIND %s !!"), race_str[player.race]);
             put_message(tempstr) ;
@@ -1422,7 +1383,7 @@ static int open_book_or_chest(HWND hwnd, int contents)
          break;
       }  //lint !e744  no default
 
-      clear_room(NULL); 
+      clear_room(); 
    }  //  if contents == BOOK 
    //*********************************************************************
    //  deal with a chest
@@ -1443,14 +1404,14 @@ static int open_book_or_chest(HWND hwnd, int contents)
          put_message(tempstr) ;
          player.gold += Q; 
          show_gold() ;
-         clear_room(NULL); 
+         clear_room(); 
       } else if (room < 7) {
          put_message(_T("You open the chest and find  **GAS** !!")) ;
          put_message(_T("YOU STAGGER FROM THE ROOM IN CONFUSION!!")) ; 
          ScrambleAttr() ; 
          move_one_square(hwnd) ;
          //  don't remove chest in this case
-         // clear_room(hdcMain); 
+         // clear_room(); 
       } else if (room < 9) {
          put_message(_T("KABOOM!  THE CHEST EXPLODES!!"));
          Q = random(6); 
@@ -1461,11 +1422,11 @@ static int open_book_or_chest(HWND hwnd, int contents)
          } 
          player.hit_points -= Q ;
          show_hit_points() ;
-         clear_room(NULL); 
+         clear_room(); 
       } else {
          push_keymap(KEYMAP_ZOT_SCR) ;
          draw_zot_window(hwnd) ;
-         clear_room(NULL); 
+         clear_room(); 
       }
    } else {
       put_message(_T("You can call your pen, but it won't answer...")) ;
@@ -1681,7 +1642,7 @@ int teleport(HWND hwnd, unsigned inchr)
       player.y = y ;
       if (level != (unsigned) player.level) {
          player.level = level ;
-         draw_main_screen(NULL) ;
+         draw_main_screen(NULL) ;   //  teleport to new location
       } else {
          player.level = level ;
       }
@@ -1700,7 +1661,7 @@ int teleport(HWND hwnd, unsigned inchr)
          player.has_runestaff = false ;
          player.has_orb_of_Zot = true ;
          show_treasures() ;
-         draw_main_screen(NULL) ;
+         // draw_main_screen(NULL) ;   //  teleported to orb of zot
       } else {
          react_to_room(hwnd) ;
          // reset_keymap(KEYMAP_DEFAULT);
@@ -1723,11 +1684,9 @@ int attack_vendor(HWND hwnd)
 {
    int contents = get_room_contents() ;
    if (contents != VENDOR) {
-      put_message(_T("***  You're sure attacky person! (no monster found)")) ;
+      // put_message(_T("***  You're sure attacky person! (no monster found)")) ;
       return 0;
    }
-   // HDC hdc = hdcMain ;
-   // update_room(hdc) ;
    vendor_angry = 1 ;
    react_to_monsters(NULL);  
    return 0;
@@ -1902,7 +1861,7 @@ static void react_to_room(HWND hwndUnused)
 
    switch (contents) {
    case GOLD_PIECES:
-      clear_room(NULL); 
+      clear_room(); 
       Q = 1 + random(200); 
       player.gold += Q ;
       _stprintf(tempstr, _T("You count %u coins in the pile!"), Q) ;
@@ -1911,7 +1870,7 @@ static void react_to_room(HWND hwndUnused)
       break;
 
    case FLARES:
-      clear_room(NULL); 
+      clear_room(); 
       Q = 1 + random(5) ;
       player.flares += Q ;
       _stprintf(tempstr, _T("You find %u flares lying here!"), Q) ;
@@ -1924,7 +1883,7 @@ static void react_to_room(HWND hwndUnused)
       player.x=random(DIMEN_COUNT); player.y=random(DIMEN_COUNT); player.level=random(DIMEN_COUNT);
       // location_forgotten = !level_known[player.level] ;
       if (!player.is_blind) {
-         draw_main_screen(NULL) ;
+         draw_main_screen(NULL) ;   //  warp
       }
       update_room() ;
       ReleaseDC(hwndMapArea, hdc) ; //  release the hdc before recursive call
@@ -1935,7 +1894,7 @@ static void react_to_room(HWND hwndUnused)
       if (++player.level > 7)   player.level = 0 ;
       // location_forgotten = !level_known[player.level] ;
       if (!player.is_blind) {
-         draw_main_screen(NULL) ;
+         draw_main_screen(NULL) ;   //  sinkhole
       }
       update_room() ;
       ReleaseDC(hwndMapArea, hdc) ; //  release the hdc before recursive call
@@ -1973,7 +1932,7 @@ static void react_to_room(HWND hwndUnused)
    case PALE_PEARL : 
    case NORN_STONE : 
    case RUBY_RED   : 
-      clear_room(hdc); 
+      clear_room(); 
       // tmask = 1 << (contents - RUBY_RED) ;
       tmask = contents - TREASURE_BASE ;
       _stprintf(tempstr, _T("You find %s [%u]... It's now yours!!"), 
@@ -2003,7 +1962,7 @@ static void react_to_room(HWND hwndUnused)
             put_message(_T("The Opal Eye cures your blindness!!")) ;
             player.blind_count = 0 ;
             player.is_blind = false ;
-            draw_main_screen(NULL) ;
+            draw_main_screen(NULL) ;   //  opal eye cures blindness
             update_position() ;
          }
          break;
@@ -2042,7 +2001,7 @@ static void update_blind_status(void)
    if (player.is_blind) {
       if (--player.blind_count == 0) {
          player.is_blind = false ; 
-         draw_main_screen(NULL) ;
+         draw_main_screen(NULL) ;   //  recover from blindness
          update_position() ;
       }
    }
@@ -2069,8 +2028,7 @@ void do_idle_tasks(void)
 //*************************************************************
 void draw_beginning_screen(void)
 {
-   // clear_dialog_area(hdcMain, GetSysColor(COLOR_3DFACE));
-   draw_main_screen(NULL) ;
+   draw_main_screen(NULL) ;   //  draw_beginning_screen()
    term_set_font(_T("Bodacious-Normal"), 120, EZ_ATTR_NORMAL) ;
    set_term_attr_default();
    update_room() ;
