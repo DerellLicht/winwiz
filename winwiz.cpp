@@ -513,13 +513,6 @@ static void do_init_dialog(HWND hwnd)
    //  create/configure terminal
    //****************************************************************
    setup_terminal_window(hwnd, MainStatusBar->height(), IDC_MAP_AREA, IDC_TERMINAL);
-   // uint ctrl_bottom = get_bottom_line(hwnd, IDC_MAP_AREA) ;
-   // uint lvdy = cyClient - ctrl_bottom - MainStatusBar->height() ;
-   // myTerminal = new CTerminal(hwnd, IDC_TERMINAL, g_hinst, 
-   //    0, ctrl_bottom, cxClient-1, lvdy,
-   //    LVL_STY_VIRTUAL | LVL_STY_NO_HEADER | LVL_STY_PAGE_TO_END ) ;
-   // myTerminal->set_terminal_font("Courier New", 100, EZ_ATTR_BOLD) ;
-   // myTerminal->lview_assign_column_headers() ;
    set_local_terminal_colors() ;
     
    // Subclass the terminal ListView

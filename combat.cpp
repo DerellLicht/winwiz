@@ -437,54 +437,6 @@ int cast_spell(HWND hwnd, unsigned inchr)
    return result ;
 }
 
-//*********************************************************
-//  this returns a valid random direction
-//*********************************************************
-typedef enum key_dirs_e {
-Key_N = 0,
-Key_E,
-Key_W,
-Key_S 
-} key_dirs_t ;
-
-static key_dirs_t get_random_direction(void)
-{
-   while (1) {
-      switch (random(4)) {
-      case Key_N:  //  north
-         if (player.y > 0) 
-            return Key_N;
-         break;
-
-      case Key_E:  //  east
-         if (player.x < 7) 
-            return Key_E;
-         break;
-
-      case Key_W:  //  west
-         if (player.x > 0) 
-            return Key_W;
-         break;
-
-      case Key_S:  //  south
-         if (player.y < 7) 
-            return Key_S;
-         break;
-      }  //lint !e744  no default
-   }  //  infinite loop
-}
-
-//****************************************************************************
-void move_one_square(HWND hwnd)
-{
-   switch (get_random_direction()) {
-   case Key_N:  move_north(hwnd) ; break;
-   case Key_E:  move_east (hwnd) ; break;
-   case Key_W:  move_west (hwnd) ; break;
-   case Key_S:  move_south(hwnd) ; break;
-   }  //lint !e744  no default
-}
-
 //*************************************************************
 static unsigned combat_round ;
 

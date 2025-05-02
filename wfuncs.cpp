@@ -227,6 +227,21 @@ static void draw_sprite(HDC hdc, unsigned scol, unsigned srow, unsigned xidest, 
 }
 
 //***********************************************************************
+static void draw_empty_room(HDC hdc, unsigned xidest, unsigned yidest)
+{
+   if (xidest >= 8  ||  yidest >= 8) {
+      syslog(_T("draw_empty_room: invalid pos: col=%u, row=%u\n"), xidest, yidest) ;
+      return ;
+   }
+   unsigned xdest = X_OFFSET + (xidest * (SPRITE_WIDTH  + X_GAP)) ;  //  draw_sprite()
+   unsigned ydest = Y_OFFSET + (yidest * (SPRITE_HEIGHT + Y_GAP)) ;  //  draw_sprite()
+   // pngSprites->render_bitmap(hdc, xdest, ydest, scol, srow) ;
+   Graphics graphics(hdc);
+   SolidBrush redBrush(Color(255, 66, 107, 107));            
+   graphics.FillRectangle(&redBrush, xdest, ydest, SPRITE_WIDTH, SPRITE_HEIGHT);
+}
+
+//***********************************************************************
 static void draw_room_contents(HDC hdc, unsigned col, unsigned row)
 {
    unsigned content ;
@@ -236,10 +251,16 @@ static void draw_room_contents(HDC hdc, unsigned col, unsigned row)
    else
       content = UNSEEN_ROOM ;
 
-   draw_sprite(hdc, 
-      object_data[content].sprite_col,
-      object_data[content].sprite_row,
-      col, row) ;
+   //  if content == EMPTY_ROOM (1), we should do a flood-fill of the space, 
+   //  instead of using that icon, since that icon has a black edge around the frame,
+   //  which isn't really what we want...
+   if (content == EMPTY_ROOM) {
+      draw_empty_room(hdc, col, row) ;
+   }
+   else {
+      draw_sprite(hdc, object_data[content].sprite_col, 
+                       object_data[content].sprite_row, col, row) ;
+   }
 }
 
 //***********************************************************************
@@ -1081,6 +1102,54 @@ int move_up(HWND hwnd)
    }
    Comments() ;
    return 0;
+}
+
+//*********************************************************
+//  this returns a valid random direction
+//*********************************************************
+typedef enum key_dirs_e {
+Key_N = 0,
+Key_E,
+Key_W,
+Key_S 
+} key_dirs_t ;
+
+static key_dirs_t get_random_direction(void)
+{
+   while (1) {
+      switch (random(4)) {
+      case Key_N:  //  north
+         if (player.y > 0) 
+            return Key_N;
+         break;
+
+      case Key_E:  //  east
+         if (player.x < 7) 
+            return Key_E;
+         break;
+
+      case Key_W:  //  west
+         if (player.x > 0) 
+            return Key_W;
+         break;
+
+      case Key_S:  //  south
+         if (player.y < 7) 
+            return Key_S;
+         break;
+      }  //lint !e744  no default
+   }  //  infinite loop
+}
+
+//****************************************************************************
+void move_one_square(HWND hwnd)
+{
+   switch (get_random_direction()) {
+   case Key_N:  move_north(hwnd) ; break;
+   case Key_E:  move_east (hwnd) ; break;
+   case Key_W:  move_west (hwnd) ; break;
+   case Key_S:  move_south(hwnd) ; break;
+   }  //lint !e744  no default
 }
 
 //****************************************************************************

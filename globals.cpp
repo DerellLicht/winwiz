@@ -3,9 +3,6 @@
 //  global variables for Wizard's Castle program
 //  
 //  Written by:   Daniel D. Miller
-//  
-//  Last Update:  03/01/01 18:52
-//  
 //************************************************************
 
 #include <windows.h>
