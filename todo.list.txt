@@ -1,6 +1,8 @@
 ToDo list
 =========
 
+- help file needs to be updated
+
 - when moving around, empty rooms are not drawn full-frame
 
 - Impatient vendors is not yet implemented
