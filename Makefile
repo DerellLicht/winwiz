@@ -34,7 +34,7 @@ CFLAGS += -Wno-write-strings
 ifeq ($(USE_UNICODE),YES)
 CFLAGS += -DUNICODE -D_UNICODE
 LFLAGS += -dUNICODE -d_UNICODE
-LiFLAGS += -dUNICODE -d_UNICODE
+LiFLAGS += -DUNICODE -D_UNICODE
 else
 CFLAGS += -Wno-stringop-truncation
 CFLAGS += -Wno-conversion-null

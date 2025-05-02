@@ -16,10 +16,10 @@ void gdi_plus::copy_imagelist_item(Graphics& graphics, int xsrc, int ysrc, int d
    // actually drawn 116x116
    // syslog(_T("cii: src: %ux%u, dxy: %ux%u, dest: %ux%u\n"),
    //    xsrc, ysrc, dx, dy, xdest, ydest);
-   graphics.DrawImage(gbitmap, xdest, ydest, xsrc, ysrc, dx, dy, UnitPixel);
-   // Bitmap* clone = gbitmap->Clone(xsrc, ysrc, dx, dy, PixelFormatDontCare);
-   // graphics.DrawImage(clone, xdest, ydest);
-   // delete clone ;
+   Bitmap* clone = gbitmap->Clone(xsrc, ysrc, dx, dy, PixelFormatDontCare);
+   //  use the five-arg form of DrawImage(), in order to disable auto-scaling
+   graphics.DrawImage(clone, xdest, ydest, dx, dy);
+   delete clone ;
 }  //lint !e818
 
 //********************************************************************
