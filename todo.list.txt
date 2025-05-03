@@ -1,8 +1,6 @@
 ToDo list
 =========
 
-- once level is unknown, rising to a level that is known, does not clear the unknown flag.
-
 - Impatient vendors is not yet implemented
 
 - Implement some way to track possessions of monsters/vendors,
