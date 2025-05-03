@@ -224,10 +224,11 @@ static void draw_empty_room(HDC hdc, unsigned xidest, unsigned yidest)
    }
    unsigned xdest = X_OFFSET + (xidest * (SPRITE_WIDTH  + X_GAP)) ;  //  draw_sprite()
    unsigned ydest = Y_OFFSET + (yidest * (SPRITE_HEIGHT + Y_GAP)) ;  //  draw_sprite()
-   // pngSprites->render_bitmap(hdc, xdest, ydest, scol, srow) ;
-   Graphics graphics(hdc);
-   SolidBrush redBrush(Color(255, 66, 107, 107));            
-   graphics.FillRectangle(&redBrush, xdest, ydest, SPRITE_WIDTH, SPRITE_HEIGHT);
+   ul2uc_t uconv ;
+   uconv.uc[2] = 107 ;  //  blue
+   uconv.uc[1] = 107 ;  //  green
+   uconv.uc[0] = 66 ;   //  red
+   pngSprites->DrawBoxFilled(hdc, xdest, ydest, SPRITE_WIDTH, SPRITE_HEIGHT, uconv.ul);
 }
 
 //***********************************************************************
