@@ -116,15 +116,8 @@ static bool is_location_forgotten(void)
 }
 
 /************************************************************************/
-static ULONG_PTR gdiplusToken;
-
-void init_gdiplus_data(void)
+void create_gdiplus_elements(void)
 {
-   GdiplusStartupInput gdiplusStartupInput;
-   
-   // Initialize GDI+.
-   GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
-   
    // tiles32.png: image: 1280x960, tiles: 40x27, sprites: 32x32
    pngSprites = new gdi_plus(_T("tiles32.png"), 40, 27, SPRITE_WIDTH, SPRITE_HEIGHT) ;
    // syslog(_T("tiles32.png: image: %ux%u, tiles: %ux%u, sprites: %ux%u\n"),
@@ -138,12 +131,6 @@ void init_gdiplus_data(void)
    //    pngTiles->img_width(), pngTiles->img_height(), 
    //    pngTiles->horiz_tiles(), pngTiles->vert_tiles(),
    //    pngTiles->get_sprite_dx(), pngTiles->get_sprite_dy());
-}
-
-/************************************************************************/
-void release_gdiplus_data(void)
-{
-   GdiplusShutdown(gdiplusToken);
 }
 
 /************************************************************************/

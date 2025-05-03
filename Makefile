@@ -71,7 +71,7 @@ LIBS= -lgdi32 -lcomctl32 -lhtmlhelp -lolepro32 -lole32 -luuid
 
 # none of the BMP/JPG code is relevant, if UNICODE is defined
 ifeq ($(USE_UNICODE), YES)
-CSRC+=gdi_plus.cpp
+CSRC+=gdi_plus.cpp gdiplus_setup.cpp
 LIBS += -lgdiplus 
 IMAGES=tiles32.png images.png
 else
@@ -140,11 +140,11 @@ der_libs/vlistview.o: der_libs/vlistview.h
 winwiz.o: resource.h version.h der_libs/common.h der_libs/commonw.h
 winwiz.o: der_libs/statbar.h der_libs/cterminal.h der_libs/vlistview.h
 winwiz.o: der_libs/terminal.h der_libs/winmsgs.h wizard.h keywin32.h
-winwiz.o: der_libs/tooltips.h
+winwiz.o: der_libs/tooltips.h gdiplus_setup.h
 globals.o: der_libs/common.h wizard.h
 keyboard.o: der_libs/common.h wizard.h keywin32.h
 wfuncs.o: resource.h der_libs/common.h der_libs/commonw.h wizard.h keywin32.h
-wfuncs.o: der_libs/terminal.h gdi_plus.h
+wfuncs.o: der_libs/terminal.h gdi_plus.h gdiplus_setup.h
 CastleInit.o: der_libs/common.h wizard.h
 initscrn.o: resource.h der_libs/common.h wizard.h
 combat.o: der_libs/common.h wizard.h keywin32.h
@@ -153,3 +153,4 @@ loadhelp.o: der_libs/common.h
 about.o: resource.h version.h der_libs/common.h wizard.h hyperlinks.h
 hyperlinks.o: der_libs/iface_32_64.h hyperlinks.h
 gdi_plus.o: der_libs/common.h gdi_plus.h
+gdiplus_setup.o: gdi_plus.h

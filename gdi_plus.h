@@ -27,6 +27,10 @@
 
 using namespace Gdiplus;
 
+//lint -esym(761, uint)  Redundant typedef previously declared at ...
+
+typedef unsigned int  uint ;
+
 class gdi_plus {
 private:   
    TCHAR *img_name ;

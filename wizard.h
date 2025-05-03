@@ -235,8 +235,7 @@ TCHAR *get_monster_prefix(TCHAR *monster_name);
 BOOL CmdAbout(HWND hwnd);
 
 //  from wfuncs.cpp
-void init_gdiplus_data(void);
-void release_gdiplus_data(void);
+void create_gdiplus_elements(void);
 void set_up_working_spaces(HWND hwnd);
 void draw_intro_screen(HWND hwnd);
 int  move_south(HWND hwnd);

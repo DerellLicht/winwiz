@@ -49,6 +49,7 @@
 #include "wizard.h"
 #include "keywin32.h"
 #include "tooltips.h"
+#include "gdiplus_setup.h"
 
 static TCHAR const * const Version = _T("Wizard's Castle, Version " VerNum " ") ;   //lint !e707
 
@@ -548,6 +549,7 @@ static void do_init_dialog(HWND hwnd)
    termout(_T("terminal size: columns=%u, screen rows=%u"),
       term_get_columns(), term_get_rows()) ;
 
+   create_gdiplus_elements();
    //****************************************************************
    main_timer_id = SetTimer(hwnd, IDT_TIMER_MAIN, 100, (TIMERPROC) NULL) ;
 }
