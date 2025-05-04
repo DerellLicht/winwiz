@@ -1,5 +1,21 @@
 ### WinWiz - a win32 port of the ancient DOS game Wizard's Castle
 
+MANY CYCLES AGO, IN THE KINGDOM OF N'DIC, THE GNOMIC
+WIZARD ZOT FORGED HIS GREAT *ORB OF POWER*.  HE SOON
+VANISHED, LEAVING BEHIND HIS VAST SUBTERRANEAN CASTLE
+FILLED WITH ESURIENT MONSTERS, FABULOUS TREASURES,
+AND THE INCREDIBLE *ORB OF ZOT*.  FROM THAT TIME HENCE,
+MANY A BOLD YOUTH HAS VENTURED INTO THE WIZARD'S CASTLE.
+AS OF NOW, *NONE* HAS EVER EMERGED VICTORIOUSLY!  BEWARE!!
+
+****************************************************************************************
+NOTE on startup delay...
+This program caches some resources related to rendering the tiles in the program;
+these resources are loaded at program startup.  This results in a few-seconds delay
+in the program initially showing up, but it also provides almost instant drawing of
+new pages during program operation.
+
+****************************************************************************************
 Notes on building this application:
 
 1. I use MinGW 32-bit to build it, I recommend that you do so as well
