@@ -9,13 +9,6 @@ MANY A BOLD YOUTH HAS VENTURED INTO THE WIZARD'S CASTLE.
 AS OF NOW, *NONE* HAS EVER EMERGED VICTORIOUSLY!  BEWARE!!
 
 ****************************************************************************************
-NOTE on startup delay...
-This program caches some resources related to rendering the tiles in the program;
-these resources are loaded at program startup.  This results in a few-seconds delay
-in the program initially showing up, but it also provides almost instant drawing of
-new pages during program operation.
-
-****************************************************************************************
 Notes on building this application:
 
 1. I use MinGW 32-bit to build it, I recommend that you do so as well
