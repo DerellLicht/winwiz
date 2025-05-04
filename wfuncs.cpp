@@ -119,14 +119,14 @@ static bool is_location_forgotten(void)
 void create_gdiplus_elements(void)
 {
    // tiles32.png: image: 1280x960, tiles: 40x27, sprites: 32x32
-   pngSprites = new gdi_plus(_T("tiles32.png"), 40, 27, SPRITE_WIDTH, SPRITE_HEIGHT) ;
+   pngSprites = new gdi_plus(_T("tiles32.png"), 40, 27, SPRITE_WIDTH, SPRITE_HEIGHT, CACHED_CLONES_ENABLED) ;
    // syslog(_T("tiles32.png: image: %ux%u, tiles: %ux%u, sprites: %ux%u\n"),
    //    pngSprites->img_width(), pngSprites->img_height(), 
    //    pngSprites->horiz_tiles(), pngSprites->vert_tiles(),
    //    pngSprites->get_sprite_dx(), pngSprites->get_sprite_dy());
    
    // images.png: image: 1077x362, tiles: 3x1, sprites: 359x362
-   pngTiles = new gdi_plus(_T("images.png"), 3, 1) ;
+   pngTiles = new gdi_plus(_T("images.png"), 3, 1, CACHED_CLONES_DISABLED) ;
    // syslog(_T("images.png: image: %ux%u, tiles: %ux%u, sprites: %ux%u\n"),
    //    pngTiles->img_width(), pngTiles->img_height(), 
    //    pngTiles->horiz_tiles(), pngTiles->vert_tiles(),
