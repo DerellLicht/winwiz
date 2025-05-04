@@ -118,6 +118,12 @@ bool is_default_keymap(void)
 }
 
 //*************************************************************
+uint get_keymap_state(void)
+{
+   return (uint) keymap ;
+}
+
+//*************************************************************
 static int kbd_handler_pool(HWND hwnd, unsigned inchr)
 {
    unsigned skip_keymap_pop = 0 ;

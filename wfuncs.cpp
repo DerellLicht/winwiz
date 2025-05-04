@@ -128,7 +128,7 @@ void create_gdiplus_elements(void)
 /************************************************************************/
 void dump_level_knowledge(void)
 {
-   _stprintf(tempstr, _T("0%c 1%c 2%c 3%c 4%c 5%c 6%c 7%c, level=%u"),
+   _stprintf(tempstr, _T("Levels known: 0%c 1%c 2%c 3%c 4%c 5%c 6%c 7%c, level=%u"),
       (level_known[0]) ? 'T' : 'F',
       (level_known[1]) ? 'T' : 'F',
       (level_known[2]) ? 'T' : 'F',
@@ -138,6 +138,8 @@ void dump_level_knowledge(void)
       (level_known[6]) ? 'T' : 'F',
       (level_known[7]) ? 'T' : 'F',
       player.level) ;
+   termout(tempstr);
+   _stprintf(tempstr, _T("kbd state: %u"), get_keymap_state());
    termout(tempstr);
 }
 
@@ -957,9 +959,7 @@ static void update_room(void)
       if (is_monster_index(idx)) {
          TCHAR *sptr = get_object_in_room(player.x, player.y, player.level) ;
          _stprintf(tempstr, _T("Here you find %s %s."), 
-            // starts_with_vowel(sptr) ? _T("an") : _T("a"), sptr) ;
-               get_monster_prefix(sptr), sptr) ;
-            // get_object_in_room(player.x, player.y, player.level)) ;
+            get_monster_prefix(sptr), sptr) ;
       } else {
          _stprintf(tempstr, _T("Here you find %s."), 
             get_object_in_room(player.x, player.y, player.level)) ;
@@ -1713,16 +1713,14 @@ int teleport(HWND hwnd, unsigned inchr)
          player.has_runestaff = false ;
          player.has_orb_of_Zot = true ;
          show_treasures() ;
+         pop_keymap() ; //  remove current TELEPORT keymap
          // draw_main_screen(NULL) ;   //  teleported to orb of zot
       } else {
+         pop_keymap() ; //  remove current TELEPORT keymap
          react_to_room(hwnd) ;
          // reset_keymap(KEYMAP_DEFAULT);
-         pop_keymap() ;
       }
       state = 0 ;
-      // push_keymap(KEYMAP_DEFAULT) ;
-      pop_keymap() ;
-      // reset_keymap(KEYMAP_DEFAULT);
       break;
    }  //lint !e744  no default
 

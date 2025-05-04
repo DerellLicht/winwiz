@@ -221,6 +221,7 @@ KEYMAP_SPELL_SELECTION,
 MAX_KEYMAP_STATES 
 } keymap_states_t ;
 
+uint get_keymap_state(void);
 void set_default_keymap(void);
 bool is_default_keymap(void) ;
 // bool is_intro_screen_active(void);

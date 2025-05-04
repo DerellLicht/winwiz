@@ -91,3 +91,6 @@ vers    date        actions taken
                  - added debug command and functions
                  - fixed bug: incorrectly drawn frames for empty room after moving through them.
                  - add caching of sprite resources at startup, to speed up map redraws.
+1.46 - 05/04/25  - bug (fixed): after telePort to monster location, keymap was wrong.
+
+                 

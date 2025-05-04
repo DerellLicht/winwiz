@@ -103,7 +103,7 @@ void show_help_menu(void)
    infoout(_T("Alt-q = Close this program")) ;
    termout(_T("Alt-d = Debug; Toggle debug flag")) ;
    termout(_T("Alt-j = Debug: force runestaff")) ;
-   termout(_T("Alt-k = Debug: show 'known levels' flags")) ;
+   termout(_T("Alt-k = Debug: show game states")) ;
 }
 
 //*******************************************************************
