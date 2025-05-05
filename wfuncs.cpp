@@ -119,8 +119,8 @@ static bool is_location_forgotten(void)
 void create_gdiplus_elements(void)
 {
    // tiles32.png: image: 1280x960, tiles: 40x27, sprites: 32x32
-   // pngSprites = new gdi_plus(_T("tiles32.png"), 40, 27, SPRITE_WIDTH, SPRITE_HEIGHT, CACHED_CLONES_ENABLED) ;
-   pngSprites = new gdi_plus(_T("tiles32.png"), 40, 27, SPRITE_WIDTH, SPRITE_HEIGHT, CACHED_CLONES_DISABLED) ;
+   pngSprites = new gdi_plus(_T("tiles32.png"), 40, 27, SPRITE_WIDTH, SPRITE_HEIGHT, CACHED_CLONES_ENABLED) ;
+   // pngSprites = new gdi_plus(_T("tiles32.png"), 40, 27, SPRITE_WIDTH, SPRITE_HEIGHT, CACHED_CLONES_DISABLED) ;
    
    // images.png: image: 1077x362, tiles: 3x1, sprites: 359x362
    pngTiles = new gdi_plus(_T("images.png"), 3, 1, CACHED_CLONES_DISABLED) ;
