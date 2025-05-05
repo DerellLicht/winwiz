@@ -120,7 +120,6 @@ void create_gdiplus_elements(void)
 {
    // tiles32.png: image: 1280x960, tiles: 40x27, sprites: 32x32
    pngSprites = new gdi_plus(_T("tiles32.png"), 40, 27, SPRITE_WIDTH, SPRITE_HEIGHT) ;
-   // pngSprites = new gdi_plus(_T("tiles32.png"), 40, 27, SPRITE_WIDTH, SPRITE_HEIGHT, CACHED_CLONES_DISABLED) ;
    
    // images.png: image: 1077x362, tiles: 3x1, sprites: 359x362
    pngTiles = new gdi_plus(_T("images.png"), 3, 1) ;
@@ -130,16 +129,11 @@ void create_gdiplus_elements(void)
 void dump_level_knowledge(void)
 {
    _stprintf(tempstr, _T("Levels known: 0%c 1%c 2%c 3%c 4%c 5%c 6%c 7%c, level=%u"),
-      (level_known[0]) ? 'T' : 'F',
-      (level_known[1]) ? 'T' : 'F',
-      (level_known[2]) ? 'T' : 'F',
-      (level_known[3]) ? 'T' : 'F',
-      (level_known[4]) ? 'T' : 'F',
-      (level_known[5]) ? 'T' : 'F',
-      (level_known[6]) ? 'T' : 'F',
-      (level_known[7]) ? 'T' : 'F',
-      player.level) ;
+      (level_known[0]) ? 'T' : 'F', (level_known[1]) ? 'T' : 'F', (level_known[2]) ? 'T' : 'F',
+      (level_known[3]) ? 'T' : 'F', (level_known[4]) ? 'T' : 'F', (level_known[5]) ? 'T' : 'F',
+      (level_known[6]) ? 'T' : 'F', (level_known[7]) ? 'T' : 'F', player.level) ;
    termout(tempstr);
+   
    _stprintf(tempstr, _T("kbd state: %u"), get_keymap_state());
    termout(tempstr);
 }
