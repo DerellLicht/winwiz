@@ -28,9 +28,7 @@
 
 //@@@  why do I need this here??   
 //@@@  It *should* be defined in windef.h
-#ifndef _lint
 #define min(a, b)  (((a) < (b)) ? (a) : (b)) 
-#endif
 
 //lint -esym(714, clear_room)
 //lint -esym(759, clear_room)
