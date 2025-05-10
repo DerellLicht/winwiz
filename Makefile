@@ -1,7 +1,11 @@
+#*************************************************************************************
+# NOTE regarding UNICODE support
+# This application now relies on GDI+ library, which in turn requires UINCODE.
+# Thus, the non-Unicode build is no longer supported.
+# That build required LodePng library, which provided support for .png files,
+# but no other extensions, and is now deprecated for all of my graphics programs.
+#*************************************************************************************
 USE_DEBUG = NO
-# USE_BMP and USE_PNG are superceded by USE_UNICODE, which selects GDI+
-USE_BMP = NO
-USE_PNG = NO
 USE_UNICODE = YES
 USE_64BIT = NO
 
@@ -74,20 +78,6 @@ ifeq ($(USE_UNICODE), YES)
 CSRC+=der_libs/gdi_plus.cpp der_libs/gdiplus_setup.cpp
 LIBS += -lgdiplus 
 IMAGES=tiles32.png images.png
-else
-ifeq ($(USE_BMP),YES)
-CFLAGS += -DUSE_BMP
-LiFLAGS += -DUSE_BMP
-ifeq ($(USE_PNG),YES)
-CFLAGS += -DUSE_PNG
-LiFLAGS += -DUSE_PNG
-CSRC+=lodepng.cpp lode_png.cpp
-endif
-IMAGES=*.png
-else
-CSRC+=jpeg_read.cpp
-IMAGES=*.jpg
-endif
 endif
 
 #************************************************************
@@ -114,9 +104,6 @@ depend:
 	makedepend $(CFLAGS) $(CSRC)
 
 #************************************************************
-lodepng.o: lodepng.cpp
-	g++ $(CFLAGS) -c $< -o $@
-
 winwiz.exe: $(OBJS)
 	$(TOOLS)\g++ $(CFLAGS) $(LFLAGS) $(OBJS) -o $@ $(LIBS)
 

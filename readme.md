@@ -16,6 +16,10 @@ Notes on building this application:
 2. Use --recursive when cloning the repository, so that you end up with the der_libs module as well.
 
 ****************************************************************************************
+Beginning in April 2025, the LodePng library is now deprecated,
+and UNICODE support is now required, for the GDI+ library that has replaced it.
+
+****************************************************************************************
 This project is licensed under Creative Commons CC0 1.0 Universal;  
 https://creativecommons.org/publicdomain/zero/1.0/
 
