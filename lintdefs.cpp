@@ -27,11 +27,15 @@
 //lint -e1054  template variable declaration expects a type, int assumed
 //lint -e1055  Symbol 'c_str' not a member of class ''
 //lint -e1013  Symbol 'c_str' not a member of class ''
-//lint -e765   external variable could be made static (caused by following a <vector> declaration)
-//lint -e526   Symbol not defined (caused by following a <vector> declaration)
-//lint -e528   Symbol not referenced (caused by following a <vector> declaration)
-//lint -e745   Symbol has no explicit type or class, int assumed (caused by following a <vector> declaration)
-//lint -e401   symbol not previously declared static (caused by following a <vector> declaration)
+
+//  all of these are caused by code following a <vector> declaration
+//lint -e765   external variable could be made static
+//lint -e526   Symbol not defined
+//lint -e528   Symbol not referenced
+//lint -e745   Symbol has no explicit type or class, int assumed
+//lint -e401   symbol not previously declared static
+//lint -e533   function should return a value (and it does)
+
 //  the following three are caused by c_str references
 //lint -e1025  No function matches invocation 'put_message(unsigned int, int)', 4 candidates found, 2 matched the argument count, none matched on
 //lint -e1703  Function 'put_message(wchar_t *)' arbitrarily selected.  Refer to Error 1025

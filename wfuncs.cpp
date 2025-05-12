@@ -2135,7 +2135,7 @@ L"AS OF NOW, *NONE* HAS EVER EMERGED VICTORIOUSLY!  BEWARE!!"
 // ,0 //  the NULL-terminator doesn't work with vector class
 };
 
-unsigned unused_lint_separator2138 = 0 ;  //lint !e19 !e129
+// unsigned unused_lint_separator2138 = 0 ;  //lint !e19 !e129
 
 void draw_intro_screen(HWND hwnd)
 {
