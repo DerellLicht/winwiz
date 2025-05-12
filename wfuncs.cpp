@@ -9,6 +9,9 @@
 #include <stdio.h>
 #include <stdlib.h>  //  rand() 
 #include <tchar.h>
+//  string plus vector classes add 78KB to program
+#include <string>
+#include <vector>
 
 #include "resource.h"
 #include "common.h"
@@ -22,13 +25,9 @@
 #include "lode_png.h"
 #endif
 
-// #ifdef UNICODE
-// using namespace Gdiplus;
-// #endif
-
-//@@@  why do I need this here??   
+//@@@  why do I need this here?? (as min() )
 //@@@  It *should* be defined in windef.h
-#define min(a, b)  (((a) < (b)) ? (a) : (b)) 
+#define dmin(a, b)  (((a) < (b)) ? (a) : (b)) 
 
 //lint -esym(714, clear_room)
 //lint -esym(759, clear_room)
@@ -90,15 +89,24 @@ static map_image_t map_image = MI_UNDEFINED ;
 //***********************************************************************
 //  string constants
 //***********************************************************************
-static TCHAR *names[10] = {
-   _T("THE REALM OF BYDL"), _T("GRIMMERDHORE"),  _T("DRAGON'S EGG"),    _T("RYJECK THOME"),
-   _T("SABTO'S DEMISE"),    _T("LYDEN VELDT"),   _T("DERELICT'S DOOM"), 
-   _T("MAXWELL'S FIELD"),   _T("SEER'S SOJOURN"), _T("TREACHER'S GORGE")
+//  string plus list classes add 75KB to program
+//  #include <list>  //  does not offer random access...
+// Access third element
+// cout << *next(l.begin(), 2);
+
+// static wchar_t *names[10] = {
+static std::vector<std::wstring> names {
+   L"THE REALM OF BYDL", L"GRIMMERDHORE",   L"DRAGON'S EGG",    L"RYJECK THOME",
+   L"SABTO'S DEMISE",    L"LYDEN VELDT",    L"DERELICT'S DOOM", 
+   L"MAXWELL'S FIELD",   L"SEER'S SOJOURN", L"TREACHER'S GORGE"
 };
 
-static TCHAR *weapon_str[5] = { _T("Hands "),  _T("Dagger"),  _T("Mace  "), _T("Sword "), _T("A Book") } ;
-static TCHAR *armour_str[4] = { _T("Prayers"), _T("Leather"), _T("Chainmail"), _T("Plate") } ;
-static TCHAR *curse_str[3]  = { _T("CURSE OF LETHARGY"), _T("CURSE OF THE LEECH"), _T("CURSE OF AMNESIA") } ;
+// static wchar_t *weapon_str[5] = { L"Hands ",  L"Dagger",  L"Mace  ", L"Sword ", L"A Book" } ;
+// static wchar_t *armour_str[4] = { L"Prayers", L"Leather", L"Chainmail", _T("Plate" } ;
+// static wchar_t *curse_str[3]  = { L"CURSE OF LETHARGY"), L"CURSE OF THE LEECH", L"CURSE OF AMNESIA" } ;
+static std::vector<std::wstring> weapon_str { L"Hands ",  L"Dagger",  L"Mace  ", L"Sword ", L"A Book" } ;
+static std::vector<std::wstring> armour_str { L"Prayers", L"Leather", L"Chainmail", _T("Plate" } ;
+static std::vector<std::wstring> curse_str  { L"CURSE OF LETHARGY"), L"CURSE OF THE LEECH", L"CURSE OF AMNESIA" } ;
 
 //***********************************************************************
 static void react_to_room(HWND hwndUnused);
@@ -563,7 +571,7 @@ void win_game(HWND hwnd)
    put_message(_T("You find yourself standing beside a sweet, cool")) ;
    put_message(_T("stream in the shade of a glowing, verdant forest...")) ;
    put_message(_T(" ")) ;
-   _stprintf(tempstr, _T("You emerge Victorious from %s !!!"), names[player.castle_nbr]) ;
+   _stprintf(tempstr, _T("You emerge Victorious from %s !!!"), names[player.castle_nbr].c_str()) ;
    put_message(tempstr) ;
 }
 
@@ -602,13 +610,13 @@ static void display_atmosphere(void)
    } else
    if (player.has_runestaff) {
       put_color_msg(TERM_DEATH, _T("With your last fading breath, you gasp a curse upon %s!!"),
-         names[player.castle_nbr]) ;
+         names[player.castle_nbr].c_str()) ;
       put_color_msg(TERM_DEATH, _T("The power of your curse causes the Runestaff to shatter with")) ;
       put_color_msg(TERM_DEATH, _T("a catastrophic blast, collapsing the castle upon itself...")) ;
       put_color_msg(TERM_DEATH, _T("Surely the Wizard of Zot would be gratified.")) ;
    } else 
    {
-      put_color_msg(TERM_DEATH, _T("You died while exploring %s"), names[player.castle_nbr]) ;
+      put_color_msg(TERM_DEATH, _T("You died while exploring %s"), names[player.castle_nbr].c_str()) ;
       // char *sptr = get_object_in_room(player.x, player.y, player.level) ;
       TCHAR *sptr = get_object_in_room(runestaff_room.x, runestaff_room.y, runestaff_room.level) ;
       put_color_msg(TERM_DEATH, _T("%s %s declares itself Master of the Castle!!"),
@@ -642,7 +650,7 @@ static void wrong_castle_death(HWND hwnd)
       // put_color_msg(TERM_DEATH, zot_chest_end_msg[j]) ;
       put_color_msg(TERM_DEATH, zot_chest_end_msg[j]) ;
    }
-   infoout(_T("You died while exploring %s"), names[player.castle_nbr]) ;
+   infoout(_T("You died while exploring %s"), names[player.castle_nbr].c_str()) ;
    map_image = MI_DEATH ;
    draw_current_screen();
 }
@@ -743,8 +751,11 @@ int manage_zot_input(HWND hwnd, unsigned inchr)
    }
    else if (result > 0) {
       //  compare entered data vs castle name
-      if (_tcsnicmp(castle_name, names[player.castle_nbr], 
-                         _tcslen(names[player.castle_nbr])) == 0) {
+      // TCHAR *sptr = names[player.castle_nbr] ;
+      // u_int slen = _tcslen(names[sptr);
+      const wchar_t *sptr = names[player.castle_nbr].c_str() ;
+      u_int slen = names[player.castle_nbr].length() ;
+      if (_tcsnicmp(castle_name, sptr, slen) == 0) {
          result = 1 ;
          infoout(_T("Whew!!!")) ;
          // hide_status_area() ;
@@ -1494,7 +1505,7 @@ static int drink_from_pool(HWND hwnd)
    case 0:
       put_message(_T("You take a drink and feel stronger"));
       j = 1 + random(3) ;
-      player.str = min(player.str + j, 18) ;
+      player.str = dmin(player.str + j, 18) ;
       adjust_hit_points() ;
       show_str() ;
       show_hit_points() ;
@@ -1517,7 +1528,7 @@ static int drink_from_pool(HWND hwnd)
    case 2: 
       put_message(_T("You take a drink and feel smarter"));
       j = 1 + random(3) ;
-      player.iq = min(player.iq + j, 18) ;
+      player.iq = dmin(player.iq + j, 18) ;
       show_int() ;
       break;
 
@@ -1536,7 +1547,7 @@ static int drink_from_pool(HWND hwnd)
    case 4: 
       put_message(_T("You take a drink and feel nimbler"));
       j = 1 + random(3) ;
-      player.dex = min(player.dex + j, 18) ;
+      player.dex = dmin(player.dex + j, 18) ;
       show_dex() ;
       break;
 
@@ -1710,7 +1721,7 @@ int teleport(HWND hwnd, unsigned inchr)
          // draw_main_screen(NULL) ;   //  teleported to orb of zot
       } else {
          pop_keymap() ; //  remove current TELEPORT keymap
-         react_to_room(hwnd) ;
+         react_to_room(NULL) ;
          // reset_keymap(KEYMAP_DEFAULT);
       }
       state = 0 ;
@@ -1746,7 +1757,7 @@ void view_special_items(void)
 {
    unsigned j ;
 
-   infoout(_T("you are currently exploring %s"), names[player.castle_nbr]) ;
+   infoout(_T("you are currently exploring %s"), names[player.castle_nbr].c_str()) ;
 
    infoout(_T("you possess:")) ;
    set_term_attr_default() ;
@@ -1777,7 +1788,7 @@ void view_special_items(void)
       for (j=0; j<3; j++) {
          if (player.curse_flags & tmask) {
             // SendMessage(special_fields[idx], WM_SETFONT, (WPARAM) hfont_comic_sans_bold, MAKELPARAM(FALSE, 0)); 
-            put_message(WIN_RED, curse_str[j]) ;
+            put_message(WIN_RED, curse_str[j].c_str()) ;
          }
          tmask <<= 1 ;
       }
@@ -1817,16 +1828,16 @@ void show_hit_points(void)
    SetWindowText(status_windows[3], status_update_text) ;
 }
    
-void show_weapon(void)
+void show_weapon(void) 
 {
    _stprintf(status_update_text, _T(" %s"), 
-      (player.has_book) ? _T("A Book") : weapon_str[player.weapon]) ; 
+      (player.has_book) ? _T("A Book") : weapon_str[player.weapon].c_str()) ; 
    SetWindowText(status_windows[4], status_update_text) ;
 }
    
 void show_armour(void)
 {
-   _stprintf(status_update_text, _T(" %s (%u)"), armour_str[player.armour], player.armour_points) ; 
+   _stprintf(status_update_text, _T(" %s (%u)"), armour_str[player.armour].c_str(), player.armour_points) ; 
    SetWindowText(status_windows[5], status_update_text) ;
 }
    
@@ -2112,27 +2123,31 @@ void set_up_working_spaces(HWND hwnd)
 }
 
 //****************************************************************************
-static TCHAR *intro_msg[] = {
-_T("MANY CYCLES AGO, IN THE KINGDOM OF N'DIC,  THE GNOMIC"),
-_T("WIZARD ZOT FORGED HIS GREAT *ORB OF POWER*.  HE SOON"),
-_T("VANISHED, LEAVING BEHIND HIS VAST SUBTERRANEAN CASTLE"),
-_T("FILLED WITH ESURIENT MONSTERS, FABULOUS TREASURES,"),
-_T("AND THE INCREDIBLE *ORB OF ZOT*.  FROM THAT TIME HENCE,"),
-_T("MANY A BOLD YOUTH HAS VENTURED INTO THE WIZARD'S CASTLE."),
-_T("AS OF NOW, *NONE* HAS EVER EMERGED VICTORIOUSLY!  BEWARE!!"),
-0 };
+// static TCHAR *intro_msg[] = {
+static std::vector<std::wstring> intro_msg {
+L"MANY CYCLES AGO, IN THE KINGDOM OF N'DIC,  THE GNOMIC",
+L"WIZARD ZOT FORGED HIS GREAT *ORB OF POWER*.  HE SOON",
+L"VANISHED, LEAVING BEHIND HIS VAST SUBTERRANEAN CASTLE",
+L"FILLED WITH ESURIENT MONSTERS, FABULOUS TREASURES,",
+L"AND THE INCREDIBLE *ORB OF ZOT*.  FROM THAT TIME HENCE,",
+L"MANY A BOLD YOUTH HAS VENTURED INTO THE WIZARD'S CASTLE.",
+L"AS OF NOW, *NONE* HAS EVER EMERGED VICTORIOUSLY!  BEWARE!!"
+// ,0 //  the NULL-terminator doesn't work with vector class
+};
 
-// HWND hwndIntroRegion = NULL ;
+unsigned unused_lint_separator2138 = 0 ;  //lint !e19 !e129
+
 void draw_intro_screen(HWND hwnd)
 {
-   uint j ;
-   put_message(WIN_MAGENTA, _T("* * * THE WIZARD'S CASTLE * * *")) ;
-   for (j=0; intro_msg[j] != 0; j++) {
-      // dprints_centered_x(hdc, y, WIN_BLUE, intro_msg[j]) ; y += dy ;
-      put_message(WIN_BLUE, intro_msg[j]) ;
+   put_message(WIN_MAGENTA, L"* * * THE WIZARD'S CASTLE * * *") ;
+   // for (auto j=0U; intro_msg[j] != 0; j++) { //  array version
+   for (auto j=0U; j < intro_msg.size() ; j++) {   //lint !e737
+   // for (auto it = intro_msg.begin(); it != intro_msg.end(); ++it) {
+      put_message(WIN_BLUE, (wchar_t *) intro_msg[j].c_str()) ;
+      // put_message(WIN_BLUE, it->c_str()) ;
    }
-   infoout(_T("You are now entering %s"), names[player.castle_nbr]) ;
+   infoout(_T("You are now entering %s"), names[player.castle_nbr].c_str()) ;
    queryout(_T("Do you wish to select your own attributes  (Type 's'),")) ;
    queryout(_T("or use the ones that the derelict prefers? (Type 'd')")) ;
-}
+}  // lint !e533
 

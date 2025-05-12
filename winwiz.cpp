@@ -258,6 +258,15 @@ void put_message(TCHAR *msgstr)
    termout(msgstr) ;
 }
 
+//*******************************************************************
+//  this uses default font and color
+//*******************************************************************
+void put_message(COLORREF attr, TCHAR *msgstr)
+{
+   term_set_attr(attr, term_atable[TERM_NORMAL].bgnd) ;
+   termout(msgstr) ;
+}
+
 //********************************************************************
 //  this function is only used for displaying RuneStaff and/or
 //  Orb Of Zot, in "treasures" listing

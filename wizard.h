@@ -192,6 +192,7 @@ int  queryout(const TCHAR *fmt, ...);
 int  term_append(const TCHAR *fmt, ...);
 int  wterm_replace(const TCHAR *fmt, ...);
 void put_message(TCHAR *msgstr);
+void put_message(COLORREF attr, TCHAR *msgstr);
 int  put_message(COLORREF attr, const TCHAR *fmt, ...);
 int  put_message(COLORREF fgnd, COLORREF bgnd, const TCHAR *fmt, ...);
 int  put_color_msg(uint idx, const TCHAR *fmt, ...);

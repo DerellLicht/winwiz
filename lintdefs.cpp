@@ -14,6 +14,35 @@
 //lint -e78    Symbol typedef'ed at location unknown used in expression
 //lint -e1098  Function template specialization does not match any function template
 
+//  C++ conditions not supported by PcLint
+//  Many of these are because PcLint 9 does not recognize C++ headers (without .h extension)
+//lint -e36    redefining the storage class of symbol conflicts with location unknown
+//lint -e40    Undeclared identifier 'wstring'
+//lint -e61    Bad type
+//lint -e64    Type mismatch (initialization) (const wchar_t * = int)
+//lint -e532   Return mode of function inconsistent with ... (return type is void)
+//lint -e746   call to function not made in the presence of a prototype
+//lint -e1057  Member cannot be used without an object
+//lint -e1062  template must be either a class or a function
+//lint -e1054  template variable declaration expects a type, int assumed
+//lint -e1055  Symbol 'c_str' not a member of class ''
+//lint -e1013  Symbol 'c_str' not a member of class ''
+//lint -e765   external variable could be made static (caused by following a <vector> declaration)
+//lint -e526   Symbol not defined (caused by following a <vector> declaration)
+//lint -e528   Symbol not referenced (caused by following a <vector> declaration)
+//lint -e745   Symbol has no explicit type or class, int assumed (caused by following a <vector> declaration)
+//lint -e401   symbol not previously declared static (caused by following a <vector> declaration)
+//  the following three are caused by c_str references
+//lint -e1025  No function matches invocation 'put_message(unsigned int, int)', 4 candidates found, 2 matched the argument count, none matched on
+//lint -e1703  Function 'put_message(wchar_t *)' arbitrarily selected.  Refer to Error 1025
+//lint -e119   Too many arguments (2) for prototype 'put_message(wchar_t *)'
+
+//lint -esym(526, length, c_str)
+//lint -esym(628, length, c_str)
+//  the next three are caused by PcLint not knowing 'auto'
+//lint -e808   No explicit type given symbol 'j', int assumed
+//lint -e574   Signed-unsigned mix with relational
+
 //lint -esym(578, y0, y1, Color)
 
 //lint -e592  Non-literal format specifier used without arguments
