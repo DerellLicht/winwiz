@@ -621,20 +621,6 @@ static LRESULT CALLBACK TermProc (HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lP
                quarter_seconds = 0 ;
                update_cursor() ;
             }
-            // syslog("next_timer...redraw_in_progress=%s\n", (redraw_in_progress) ? "true" : "false") ;
-            // if (redraw_in_progress) {
-            //    syslog(_T("redraw in progress"));
-            //    // syslog("redraw counts: %u vs %u\n", curr_redraw_counts, ref_redraw_counts) ;
-            //    // if (ref_redraw_counts != 0  &&  ref_redraw_counts == curr_redraw_counts) {
-            //       // syslog("redraw main screen\n") ;
-            //       redraw_in_progress = false ;
-            //       if (!is_intro_screen_active()) {
-            //          draw_current_screen() ;
-            //          show_treasures() ;
-            //       }
-            //    // }
-            //    // ref_redraw_counts = curr_redraw_counts ;
-            // }
          }
          return TRUE;
 

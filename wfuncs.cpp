@@ -435,28 +435,20 @@ static void draw_char_cursor(HDC hdc, unsigned on_or_off)
 }
 
 //*************************************************************
+//  called once per second from WM_TIMER
+//*************************************************************
 void update_cursor(void)
 {
    HDC hdc ;
    if (is_default_keymap()  &&  !player.is_blind) {
-      if (++cursor_idx >= 3)
+      if (++cursor_idx >= 3) {
          cursor_idx = 0 ;
+      }
 
-      switch (map_image) {
-      case MI_MAP:
+      if (map_image == MI_MAP) {
          hdc = GetDC(hwndMapArea) ;
          draw_char_cursor(hdc, true) ;
          ReleaseDC(hwndMapArea, hdc) ;
-         break;
-         
-      case MI_UNDEFINED:
-      case MI_COMBAT:
-      case MI_VICTORY:
-      case MI_DEATH:  
-      default:   
-         // syslog(_T("update_cursor()\n"));
-         // draw_main_screen(NULL) ;   //  update_cursor()
-         break;
       }
    }
 }
