@@ -90,6 +90,9 @@ all: $(BIN)
 clean:
 	rm -vf $(BIN) $(OBJS) *.zip *.bak *~
 
+check:
+	cmd /C "d:\clang\bin\clang-tidy.exe -header-filter=.* $(CSRC) -- -Ider_libs -DUNICODE -D_UNICODE "
+
 dist:
 	rm -f $(BASE).zip
 	zip $(BASE).zip *.exe winwiz.chm $(IMAGES) history.winwiz.txt LICENSE readme.md
