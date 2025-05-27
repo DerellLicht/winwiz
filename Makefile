@@ -64,6 +64,16 @@ CastleInit.cpp initscrn.cpp combat.cpp vendor.cpp loadhelp.cpp \
 about.cpp hyperlinks.cpp
 CSRC += $(CBASE)
 
+#  clang-tidy options
+CHFLAGS = -header-filter=.*
+CHTAIL = -- -Ider_libs
+ifeq ($(USE_64BIT),YES)
+CHTAIL += -DUSE_64BIT
+endif
+ifeq ($(USE_UNICODE),YES)
+CHTAIL += -DUNICODE -D_UNICODE
+endif
+
 # iface_lib.cpp 
 
 OBJS = $(CSRC:.cpp=.o) rc.o
@@ -91,7 +101,7 @@ clean:
 	rm -vf $(BIN) $(OBJS) *.zip *.bak *~
 
 check:
-	cmd /C "d:\clang\bin\clang-tidy.exe -header-filter=.* $(CSRC) -- -Ider_libs -DUNICODE -D_UNICODE "
+	cmd /C "d:\clang\bin\clang-tidy.exe $(CHFLAGS) $(CSRC) $(CHTAIL)"
 
 dist:
 	rm -f $(BASE).zip
