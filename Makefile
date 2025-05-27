@@ -74,8 +74,6 @@ ifeq ($(USE_UNICODE),YES)
 CHTAIL += -DUNICODE -D_UNICODE
 endif
 
-# iface_lib.cpp 
-
 OBJS = $(CSRC:.cpp=.o) rc.o
 
 BASE=winwiz
