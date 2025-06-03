@@ -50,16 +50,15 @@ TILE_DEATH
 #define  IMAGE_WIDTH       359
 #define  IMAGE_HEIGHT      362
 
-#ifdef UNICODE
 //  tiles32.png: 1280x960, 40x26 images, 1017 total
-// static gdi_plus pngSprites(_T("tiles32.png"), 40, 26) ;
-static gdi_plus *pngSprites = NULL ;
 //  images.png:  1077x362, 3x1 images, 3 total
-// static gdi_plus pngTiles  (_T("images.png"), 3, 1) ;
+// #ifdef _lint
+#ifdef _lint
+static gdi_plus *pngSprites = NULL ;
 static gdi_plus *pngTiles = NULL;
 #else
-static LodePng pngSprites(_T("tiles32.png"), SPRITE_HEIGHT, SPRITE_WIDTH) ;
-static LodePng pngTiles  (_T("images.png"),  IMAGE_WIDTH,   IMAGE_HEIGHT) ;
+static std::unique_ptr<gdi_plus> pngSprites ;
+static std::unique_ptr<gdi_plus> pngTiles ;
 #endif
 
 //*************************************************************
@@ -125,10 +124,14 @@ static bool is_location_forgotten(void)
 void create_gdiplus_elements(void)
 {
    // tiles32.png: image: 1280x960, tiles: 40x27, sprites: 32x32
-   pngSprites = new gdi_plus(_T("tiles32.png"), 40, 27, SPRITE_WIDTH, SPRITE_HEIGHT) ;
-   
    // images.png: image: 1077x362, tiles: 3x1, sprites: 359x362
-   pngTiles = new gdi_plus(_T("images.png"), 3, 1) ;
+#ifdef _lint
+   pngSprites = new gdi_plus(L"tiles32.png", 40, 27, SPRITE_WIDTH, SPRITE_HEIGHT) ;
+   pngTiles   = new gdi_plus(L"images.png"), 3, 1) ;  //lint !e505 !e522
+#else
+   pngSprites = std::make_unique<gdi_plus>(L"tiles32.png", 40, 27, SPRITE_WIDTH, SPRITE_HEIGHT) ;
+   pngTiles   = std::make_unique<gdi_plus>(L"images.png", 3, 1) ;
+#endif   
 }
 
 /************************************************************************/
@@ -1988,10 +1991,10 @@ static void react_to_room(HWND hwndUnused)
       show_treasures() ;
 
       //  see if anything helped with anything
-// ¦        RUBY RED   - AVOID LETHARGY     PALE PEARL - AVOID LEECH              ¦
-// ¦        GREEN GEM  - AVOID FORGETTING   OPAL EYE   - CURES BLINDNESS          ¦
-// ¦        BLUE FLAME - DISSOLVES BOOKS    NORN STONE - SNAKE ANTIDOTE?          ¦
-// ¦        PALANTIR   - NO BENEFIT         SILMARIL   - NO BENEFIT               ¦
+// ï¿½        RUBY RED   - AVOID LETHARGY     PALE PEARL - AVOID LEECH              ï¿½
+// ï¿½        GREEN GEM  - AVOID FORGETTING   OPAL EYE   - CURES BLINDNESS          ï¿½
+// ï¿½        BLUE FLAME - DISSOLVES BOOKS    NORN STONE - SNAKE ANTIDOTE?          ï¿½
+// ï¿½        PALANTIR   - NO BENEFIT         SILMARIL   - NO BENEFIT               ï¿½
       switch (contents) {
       case BLUE_FLAME:
          if (player.has_book) {
