@@ -4,11 +4,6 @@
 
 WINWIZICO       ICON    "pendant.ico"
 
-#define DONE_WIDTH   40   
-#define DONE_HEIGHT  20
-#define DONE_TOP     CL_TOP+5
-#define DONE_LEFT    140
-
 #define ATTR_WIDTH      (20)
 
 //***************************************************************
@@ -140,6 +135,11 @@ END
 #define CT4       CR3
 #define CT5       CR4
 
+#define DONE_WIDTH   40   
+#define DONE_HEIGHT  20
+#define DONE_TOP     CL_TOP+5
+#define DONE_LEFT    140
+
 #define ATTR_LEFT   (CW_LEFT+STR_WIDTH+10)
 
 /////////////////////////////////////////////////////////////////////////////
@@ -200,9 +200,8 @@ BEGIN
    PUSHBUTTON      "+",         IDC_INTUP,  CW_LEFT+59, CT5+1, 8, 8
    PUSHBUTTON      "-",         IDC_INTDN,  CW_LEFT+88, CT5+1, 8, 8
 
-   DEFPUSHBUTTON   "Done",IDOK,DONE_LEFT,DONE_TOP,DONE_WIDTH,DONE_HEIGHT,WS_GROUP
-
-END
+   DEFPUSHBUTTON   "Done",    IDOK,DONE_LEFT,DONE_TOP,DONE_WIDTH,DONE_HEIGHT,WS_GROUP
+END   
 
 //***************************************************************
 //  vendor-interface dialog constants
@@ -389,7 +388,7 @@ BEGIN
             VALUE "FileDescription", "winwiz"
             VALUE "FileVersion", VerNumA
             VALUE "InternalName", "Wizard's Castle"
-            VALUE "LegalCopyright", "Copyright © 2025 Derell Licht"
+            VALUE "LegalCopyright", "Copyright ï¿½ 2025 Derell Licht"
             VALUE "OriginalFilename", "winwiz.exe"
             VALUE "ProductName", "Wizard's Castle"
             VALUE "ProductVersion", VerNumA

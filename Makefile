@@ -8,13 +8,18 @@
 USE_DEBUG = NO
 USE_UNICODE = YES
 USE_64BIT = NO
+USE_CLANG = NO
 
+#  clang version of this exe is 220KB, while tdm version 380KB
 ifeq ($(USE_64BIT),YES)
 TOOLS=d:\tdm64\bin
 else
-#TOOLS=c:\mingw\bin
-#TOOLS=c:\TDM-GCC-64\bin
+ifeq ($(USE_CLANG),YES)
+TOOLS=D:\clang\bin
+#TOOLS=D:\clang_pc\bin
+else
 TOOLS=c:\tdm32\bin
+endif
 endif
 
 #*****************************************************************************
@@ -31,7 +36,7 @@ ifeq ($(USE_DEBUG),YES)
 CFLAGS=-Wall -O -g -mwindows 
 LFLAGS=
 else
-CFLAGS=-Wall -O2 -mwindows -Weffc++ 
+CFLAGS=-Wall -O2 -Weffc++ 
 LFLAGS=-s
 endif
 CFLAGS += -Wno-write-strings
@@ -57,6 +62,11 @@ der_libs/terminal.cpp \
 der_libs/tooltips.cpp \
 der_libs/vlistview.cpp 
 
+ifeq ($(USE_CLANG),YES)
+CFLAGS += -DUSING_CLANG
+endif
+LFLAGS += -mwindows 
+
 # separate local source files from library files,
 # so that wc operation is more appropriate.
 CBASE=winwiz.cpp globals.cpp keyboard.cpp wfuncs.cpp \
@@ -79,7 +89,7 @@ OBJS = $(CSRC:.cpp=.o) rc.o
 BASE=winwiz
 BIN=$(BASE).exe
 
-LIBS= -lgdi32 -lcomctl32 -lhtmlhelp -lolepro32 -lole32 -luuid
+LIBS= -lgdi32 -lcomdlg32 -lhtmlhelp -lolepro32 -lole32 -luuid
 
 # none of the BMP/JPG code is relevant, if UNICODE is defined
 ifeq ($(USE_UNICODE), YES)
@@ -118,8 +128,16 @@ depend:
 winwiz.exe: $(OBJS)
 	$(TOOLS)\g++ $(CFLAGS) $(LFLAGS) $(OBJS) -o $@ $(LIBS)
 
+#  I'm doing this hack, because clang version of windres gives
+#	$(TOOLS)\windres $< -O COFF -o $@
+#  while tdm version has no problems with the file...
 rc.o: winwiz.rc 
-	$(TOOLS)\windres $< -O coff -o $@
+ifeq ($(USE_CLANG),YES)
+	c:\tdm32\bin\windres $< -O COFF -o $@
+#	$(TOOLS)\windres $< -O COFF -o $@
+else
+	$(TOOLS)\windres $< -O COFF -o $@
+endif	
 
 # DO NOT DELETE
 
