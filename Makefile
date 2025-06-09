@@ -8,7 +8,7 @@
 USE_DEBUG = NO
 USE_UNICODE = YES
 USE_64BIT = NO
-USE_CLANG = NO
+USE_CLANG = YES
 
 #  clang version of this exe is 220KB, while tdm version 380KB
 ifeq ($(USE_64BIT),YES)
@@ -16,7 +16,6 @@ TOOLS=d:\tdm64\bin
 else
 ifeq ($(USE_CLANG),YES)
 TOOLS=D:\clang\bin
-#TOOLS=D:\clang_pc\bin
 else
 TOOLS=c:\tdm32\bin
 endif
@@ -132,12 +131,8 @@ winwiz.exe: $(OBJS)
 #	$(TOOLS)\windres $< -O COFF -o $@
 #  while tdm version has no problems with the file...
 rc.o: winwiz.rc 
-ifeq ($(USE_CLANG),YES)
 	c:\tdm32\bin\windres $< -O COFF -o $@
-#	$(TOOLS)\windres $< -O COFF -o $@
-else
-	$(TOOLS)\windres $< -O COFF -o $@
-endif	
+#	$(TOOLS)\windres $< -v -O COFF -o $@
 
 # DO NOT DELETE
 
