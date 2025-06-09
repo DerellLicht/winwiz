@@ -15,9 +15,9 @@ ifeq ($(USE_64BIT),YES)
 TOOLS=d:\tdm64\bin
 else
 ifeq ($(USE_CLANG),YES)
-TOOLS=D:\clang\bin
+TOOLS=d:\clang\bin
 else
-TOOLS=c:\tdm32\bin
+TOOLS=d:\tdm32\bin
 endif
 endif
 

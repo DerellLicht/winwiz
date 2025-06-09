@@ -353,7 +353,7 @@ CAPTION "About Wizard's Castle"
 // FONT 8, "MS Sans Serif"
 FONT 10, "Times New Roman"
 BEGIN
-    ICON            WINWIZICO,               IDC_STATIC,    9, 14, 0, 0
+    ICON            WINWIZICO,               IDC_STATIC,    9, 14,   0,  0
     LTEXT           "Wizard's Castle",       IDC_STATIC,   36, 15,  49, 10
     LTEXT           VerNumA,                 IDC_VERNUM,   86, 15,  50, 10
     LTEXT           "Copyright (c) 2025 ",   IDC_STATIC,   36, 28,  58, 10
