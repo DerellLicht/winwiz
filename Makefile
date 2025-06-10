@@ -2,13 +2,15 @@
 # NOTE regarding UNICODE support
 # This application now relies on GDI+ library, which in turn requires UINCODE.
 # Thus, the non-Unicode build is no longer supported.
-# That build required LodePng library, which provided support for .png files,
-# but no other extensions, and is now deprecated for all of my graphics programs.
 #*************************************************************************************
 USE_DEBUG = NO
 USE_UNICODE = YES
 USE_64BIT = NO
 USE_CLANG = NO
+# use -static for clang and cygwin/mingw
+USE_STATIC = YES
+# sadly, cygwin mingw does not support gdiplus...
+USE_CYGWIN = NO
 
 #  clang version of this exe is 220KB, while tdm version 380KB
 ifeq ($(USE_64BIT),YES)
@@ -17,7 +19,11 @@ else
 ifeq ($(USE_CLANG),YES)
 TOOLS=d:\clang\bin
 else
+ifeq ($(USE_CYGWIN),YES)
+TOOLS=C:\cygwin64\bin
+else
 TOOLS=d:\tdm32\bin
+endif
 endif
 endif
 
@@ -30,6 +36,30 @@ endif
 # If I build with -O2, I get no such warnings.
 # In either case, PcLint V9 is giving no warnings on this code.
 #*****************************************************************************
+
+# cygwin mingw paths
+# C:\cygwin64/bin/i686-w64-mingw32-g++.exe
+# C:\cygwin64/bin/x86_64-w64-mingw32-g++.exe
+# x86_64-w64-mingw32-g++ (GCC) 12.4.0
+# Your compiler is using C++17 (idx: 3, language standard code 201703)
+# C:\cygwin64/bin/i686-w64-mingw32-windres.exe
+# C:\cygwin64/bin/x86_64-w64-mingw32-windres.exe
+# sadly, cygwin mingw does not support gdiplus...
+
+ifeq ($(USE_64BIT),YES)
+ifeq ($(USE_CLANG),YES)
+GNAME=x86_64-w64-mingw32-clang++
+else
+#GNAME=g++
+GNAME=x86_64-w64-mingw32-g++
+endif
+else
+ifeq ($(USE_CYGWIN),YES)
+GNAME=i686-w64-mingw32-g++
+else
+GNAME=g++
+endif
+endif
 
 ifeq ($(USE_DEBUG),YES)
 CFLAGS=-Wall -O -g -mwindows 
@@ -49,6 +79,25 @@ CFLAGS += -Wno-stringop-truncation
 CFLAGS += -Wno-conversion-null
 endif
 
+ifeq ($(USE_CLANG),YES)
+CFLAGS += -DUSING_CLANG
+endif
+LFLAGS += -mwindows 
+
+ifeq ($(USE_STATIC),YES)
+LFLAGS += -static
+endif
+
+#  clang-tidy options
+CHFLAGS = -header-filter=.*
+CHTAIL = -- -Ider_libs
+ifeq ($(USE_64BIT),YES)
+CHTAIL += -DUSE_64BIT
+endif
+ifeq ($(USE_UNICODE),YES)
+CHTAIL += -DUNICODE -D_UNICODE
+endif
+
 # link library files
 LiFLAGS += -Ider_libs
 CFLAGS += -Ider_libs
@@ -61,27 +110,12 @@ der_libs/terminal.cpp \
 der_libs/tooltips.cpp \
 der_libs/vlistview.cpp 
 
-ifeq ($(USE_CLANG),YES)
-CFLAGS += -DUSING_CLANG
-endif
-LFLAGS += -mwindows 
-
 # separate local source files from library files,
 # so that wc operation is more appropriate.
 CBASE=winwiz.cpp globals.cpp keyboard.cpp wfuncs.cpp \
 CastleInit.cpp initscrn.cpp combat.cpp vendor.cpp loadhelp.cpp \
 about.cpp hyperlinks.cpp
 CSRC += $(CBASE)
-
-#  clang-tidy options
-CHFLAGS = -header-filter=.*
-CHTAIL = -- -Ider_libs
-ifeq ($(USE_64BIT),YES)
-CHTAIL += -DUSE_64BIT
-endif
-ifeq ($(USE_UNICODE),YES)
-CHTAIL += -DUNICODE -D_UNICODE
-endif
 
 OBJS = $(CSRC:.cpp=.o) rc.o
 
@@ -99,7 +133,7 @@ endif
 
 #************************************************************
 %.o: %.cpp
-	$(TOOLS)\g++ $(CFLAGS) -c $< -o $@
+	$(TOOLS)\$(GNAME) $(CFLAGS) -c $< -o $@
 
 #************************************************************
 all: $(BIN)
@@ -132,10 +166,14 @@ winwiz.exe: $(OBJS)
 #  while tdm version has no problems with the file...
 rc.o: winwiz.rc 
 ifeq ($(USE_CLANG),YES)
-#	$(TOOLS)\windres $< -v -O COFF -o $@
-	d:\tdm32\bin\windres $< -O COFF -o $@
+	$(TOOLS)\windres $< -v -O COFF -o $@
+#	d:\tdm32\bin\windres $< -O COFF -o $@
 else
+ifeq ($(USE_CYGWIN),YES)
+	$(TOOLS)\i686-w64-mingw32-windres $< -O COFF -o $@
+else	
 	$(TOOLS)\windres $< -O COFF -o $@
+endif	
 endif	
 
 # DO NOT DELETE
