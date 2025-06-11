@@ -6,4 +6,4 @@ _lint.tmp
 help/files/
 help/winwiz.htm
 help/winwiz.chm
-pclint.errors.txt
+out.txt
