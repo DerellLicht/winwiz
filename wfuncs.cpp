@@ -9,7 +9,6 @@
 #include <stdio.h>
 #include <stdlib.h>  //  rand() 
 #include <tchar.h>
-//  string plus vector classes add 78KB to program
 #include <string>
 #include <vector>
 
@@ -32,6 +31,7 @@
 //lint -esym(714, clear_room)
 //lint -esym(759, clear_room)
 //lint -esym(765, clear_room)
+//lint -esym(628, render_bitmap, DrawBoxFilled)
 
 //lint -esym(715, hdc, hwnd)
 
@@ -39,6 +39,65 @@ enum {
 TILE_COMBAT=0,
 TILE_VICTORY,
 TILE_DEATH
+} ;
+
+struct object_data_s {
+   unsigned sprite_row {};
+   unsigned sprite_col {};
+   TCHAR*    desc {nullptr};
+} ;
+
+//**************************************************************
+//  this is only referenced by wfuncs.cpp
+//**************************************************************
+static object_data_s object_data[LAST_OBJECT] = {
+{ 25,  9, _T("unassigned room") }, // UNSEEN_ROOM    ,  
+{ 21,  1, _T("normal room"    ) }, // EMPTY_ROOM     ,  
+{ 21,  4, _T("entrance"       ) }, // CASTLE_ENTRANCE,  
+{ 21, 11, _T("stairs up"      ) }, // STAIRS_UP      ,  
+{ 21, 12, _T("stairs down"    ) }, // STAIRS_DOWN    ,  
+
+// { OBJECT_BASE    ,   0,  6) },
+{ 22, 17, _T("a pool"       ) }, // POOL           ,  
+{ 14, 26, _T("a chest"      ) }, // CHEST          ,  
+{ 14, 28, _T("gold pieces"  ) }, // GOLD_PIECES    ,  
+{ 16,  3, _T("flares"       ) }, // FLARES         ,  
+{ 22, 11, _T("a warp"       ) }, // WARP           ,  
+{ 22,  2, _T("a sinkhole"   ) }, // SINKHOLE       ,  
+{  0, 32, _T("a crystal orb") }, // CRYSTAL_ORB    ,  
+{ 18,  0, _T("a book"       ) }, // BOOK           ,  
+// { OBJECT_END     ,  26,  9) },
+
+// { MONSTER_BASE   ,  26,  9) },
+{  1, 21, _T("kobold"  ) }, // KOBOLD         ,    
+{  1, 35, _T("orc"     ) }, // ORC            ,   
+{  0, 22, _T("kresh"   ) }, // KRESH          ,   
+{  1,  5, _T("goblin"  ) }, // GOBLIN         ,   
+{  5,  5, _T("ogre"    ) }, // OGRE           ,   
+{  4, 12, _T("troll"   ) }, // TROLL          ,   
+{  8, 16, _T("minotaur") }, // MINOTAUR       ,   
+{  9, 12, _T("ur-vile" ) }, // UR_VILE        ,   
+{  1, 14, _T("gargoyle") }, // GARGOYLE       ,   
+{  7, 33, _T("chimera" ) }, // CHIMERA        ,   
+{  7, 17, _T("balrog"  ) }, // BALROG         ,   
+{  3, 27, _T("dragon"  ) }, // DRAGON         ,   
+// { MONSTER_END    ,  26,  9) },
+
+{ 14, 34, _T("vendor") }, // VENDOR         ,  
+
+// { TREASURE_BASE  ,  26,  9) },
+{ 19, 29, _T("the Ruby Red"  ) }, // RUBY_RED       ,  
+{ 19, 30, _T("the Norn Stone") }, // NORN_STONE     ,  
+{ 20,  1, _T("the Pale Pearl") }, // PALE_PEARL     ,  
+{ 16, 13, _T("the Opal Eye"  ) }, // OPAL_EYE       ,  
+{ 19, 33, _T("the Green Gem" ) }, // GREEN_GEM      ,  
+{ 19, 31, _T("the Blue Flame") }, // BLUE_FLAME     ,  
+{ 20,  3, _T("the Palantir"  ) }, // PALANTIR       ,  
+{ 20,  0, _T("the Silmaril"  ) }, // SILMARIL       ,  
+
+{ 19, 25, _T("the RuneStaff" ) }, // RUNESTAFF       ,  
+{  0, 33, _T("the Orb of Zot") }, // ORB_OF_ZOT       ,  
+{  8, 39, _T("player") }  // PLAYER         ,  
 } ;
 
 //***********************************************************************
@@ -52,14 +111,8 @@ TILE_DEATH
 
 //  tiles32.png: 1280x960, 40x26 images, 1017 total
 //  images.png:  1077x362, 3x1 images, 3 total
-// #ifdef _lint
-#ifdef _lint
-static gdi_plus *pngSprites = NULL ;
-static gdi_plus *pngTiles = NULL;
-#else
 static std::unique_ptr<gdi_plus> pngSprites ;
 static std::unique_ptr<gdi_plus> pngTiles ;
-#endif
 
 //*************************************************************
 #define  X_OFFSET    16
@@ -88,12 +141,8 @@ static map_image_t map_image = MI_UNDEFINED ;
 //***********************************************************************
 //  string constants
 //***********************************************************************
-//  string plus list classes add 75KB to program
-//  #include <list>  //  does not offer random access...
-// Access third element
-// cout << *next(l.begin(), 2);
 
-// static wchar_t *names[10] = {
+// static wchar_t *names[CASTLE_NAMES_COUNT] = {
 static std::vector<std::wstring> names {
    L"THE REALM OF BYDL", L"GRIMMERDHORE",   L"DRAGON'S EGG",    L"RYJECK THOME",
    L"SABTO'S DEMISE",    L"LYDEN VELDT",    L"DERELICT'S DOOM", 
@@ -108,11 +157,17 @@ static std::vector<std::wstring> armour_str { L"Prayers", L"Leather", L"Chainmai
 static std::vector<std::wstring> curse_str  { L"CURSE OF LETHARGY"), L"CURSE OF THE LEECH", L"CURSE OF AMNESIA" } ;
 
 //***********************************************************************
-static void react_to_room(HWND hwndUnused);
+static void react_to_room(void);
 static void show_flares(void);
 static void show_str(void);
 static void mark_room_as_known(unsigned x, unsigned y, unsigned level);
 static void draw_char_cursor(HDC hdc, unsigned on_or_off);
+
+/************************************************************************/
+unsigned get_castle_name_count(void)
+{
+   return names.size();
+}
 
 /************************************************************************/
 static bool is_location_forgotten(void)
@@ -124,14 +179,9 @@ static bool is_location_forgotten(void)
 void create_gdiplus_elements(void)
 {
    // tiles32.png: image: 1280x960, tiles: 40x27, sprites: 32x32
-   // images.png: image: 1077x362, tiles: 3x1, sprites: 359x362
-#ifdef _lint
-   pngSprites = new gdi_plus(L"tiles32.png", 40, 27, SPRITE_WIDTH, SPRITE_HEIGHT) ;
-   pngTiles   = new gdi_plus(L"images.png"), 3, 1) ;  //lint !e505 !e522
-#else
+   // images.png:  image: 1077x362, tiles: 3x1, sprites: 359x362
    pngSprites = std::make_unique<gdi_plus>(L"tiles32.png", 40, 27, SPRITE_WIDTH, SPRITE_HEIGHT) ;
    pngTiles   = std::make_unique<gdi_plus>(L"images.png", 3, 1) ;
-#endif   
 }
 
 /************************************************************************/
@@ -168,13 +218,13 @@ TCHAR *get_room_contents_str(void)
 static TCHAR *get_object_in_room(int x, int y, int level)
 {  
    return object_data[get_room_contents(x, y, level)].desc ;
-}
+}  //lint !e550
 
 //*************************************************************
 TCHAR *get_object_name(int index)
 {
    return object_data[index].desc ;
-}         
+}  //lint !e550
 
 /************************************************************************/
 //  used only for Runestaff and OrbOfZot fields
@@ -489,7 +539,7 @@ void render_combat_bitmap(void)
 //************************************************************************************
 static void ScrambleAttr(void)
 {
-   unsigned j=0, k=0, l=0 ;
+   unsigned j, k, l ;
    
 #define  USE_BASIC_SYSTEM   
 
@@ -551,7 +601,7 @@ skipping:
    adjust_hit_points() ;
    
    update_status() ;
-}
+}  //lint !e550
 
 //*************************************************************
 void win_game(HWND hwnd)
@@ -863,7 +913,7 @@ static void CheckCurses(HDC hdc) //  derived from hwndMapArea
    if (curse_rooms[CURSE_OF_LETHARGY].is_known == 0  &&
        curse_rooms[CURSE_OF_LETHARGY].x == player.x  &&
        curse_rooms[CURSE_OF_LETHARGY].y == player.y  &&
-       curse_rooms[CURSE_OF_LETHARGY].level == player.level) {
+       curse_rooms[CURSE_OF_LETHARGY].level == player.level) { //lint !e644
          
       curse_rooms[CURSE_OF_LETHARGY].is_known = 1 ;
       if (!(player.treasures[TR_RUBY_RED])) {
@@ -977,7 +1027,7 @@ int move_west(HWND hwnd)
    restore_room(hdc) ;
    player.x-- ;
    update_room() ;
-   react_to_room(NULL) ;
+   react_to_room() ;
    ReleaseDC(hwndMapArea, hdc) ;
    Comments() ;
    return 0;
@@ -992,7 +1042,7 @@ int move_east(HWND hwnd)
    restore_room(hdc) ;
    player.x++ ;
    update_room() ;
-   react_to_room(NULL) ;
+   react_to_room() ;
    ReleaseDC(hwndMapArea, hdc) ;
    Comments() ;
    return 0;
@@ -1007,7 +1057,7 @@ int move_north(HWND hwnd)
    restore_room(hdc) ;
    player.y-- ;
    update_room() ;
-   react_to_room(NULL) ;
+   react_to_room() ;
    ReleaseDC(hwndMapArea, hdc) ;
    Comments() ;
    return 0;
@@ -1022,7 +1072,7 @@ int move_south(HWND hwnd)
    restore_room(hdc) ;
    player.y++ ;
    update_room() ;
-   react_to_room(NULL) ;
+   react_to_room() ;
    ReleaseDC(hwndMapArea, hdc) ;
    Comments() ;
    return 0;
@@ -1051,7 +1101,7 @@ int move_down(HWND hwnd)
       }
       draw_all_room_sprites() ;  //  formerly Map()/show_location()
       update_room() ;
-      react_to_room(NULL) ;
+      react_to_room() ;
       put_message(_T("Here you find stairs going up.")); 
    }
    Comments() ;
@@ -1079,7 +1129,7 @@ int move_up(HWND hwnd)
       // }
       draw_all_room_sprites() ;  //  formerly Map()/show_location()
       update_room() ;
-      react_to_room(NULL) ;
+      react_to_room() ;
       put_message(_T("Here you find stairs going down.")); 
    }
    Comments() ;
@@ -1699,7 +1749,7 @@ int teleport(HWND hwnd, unsigned inchr)
       }
       //  react to new room
       update_room() ;
-      // react_to_room(hwnd) ;
+      // react_to_room() ;
       
       if (player.x     == orb_room.x  &&
           player.y     == orb_room.y  &&
@@ -1716,7 +1766,7 @@ int teleport(HWND hwnd, unsigned inchr)
          // draw_main_screen(NULL) ;   //  teleported to orb of zot
       } else {
          pop_keymap() ; //  remove current TELEPORT keymap
-         react_to_room(NULL) ;
+         react_to_room() ;
          // reset_keymap(KEYMAP_DEFAULT);
       }
       state = 0 ;
@@ -1895,7 +1945,7 @@ void update_status(void)
 }
 
 //*************************************************************
-static void react_to_room(HWND hwndUnused)
+static void react_to_room(void)
 {
    int contents ;
    unsigned Q ;
@@ -1935,7 +1985,7 @@ static void react_to_room(HWND hwndUnused)
       }
       update_room() ;
       ReleaseDC(hwndMapArea, hdc) ; //  release the hdc before recursive call
-      react_to_room(NULL) ;
+      react_to_room() ;
       break;
 
    case SINKHOLE:
@@ -1946,7 +1996,7 @@ static void react_to_room(HWND hwndUnused)
       }
       update_room() ;
       ReleaseDC(hwndMapArea, hdc) ; //  release the hdc before recursive call
-      react_to_room(NULL) ;
+      react_to_room() ;
       break;
 
    case VENDOR: 
@@ -2041,7 +2091,7 @@ static void react_to_room(HWND hwndUnused)
    default: break ;
    }  //  switch on room contents
    ReleaseDC(hwndMapArea, hdc) ;
-}  //lint !e715  Symbol 'hwndUnused' (line 1667) not referenced
+}  //lint !e715 !e550  Symbol 'hwndUnused' (line 1667) not referenced
 
 //**********************************************************************
 static void update_blind_status(void)

@@ -203,21 +203,8 @@ void init_castle_contents(void)
 //*************************************************************
 void init_player(void)
 {
-   // unsigned itemp = 0 ; //  later, derive from options
-
-   ZeroMemory((char *) &player, sizeof(player_info_t)) ;
-   player.castle_nbr = random(DIMEN_COUNT) ;
-   player.str = 8 ;
-   player.iq = 8 ;
-   player.dex = 16 ;
+   player.castle_nbr = random(get_castle_name_count()) ;
    adjust_hit_points() ;
    race_str[3] = _T("DERELICT"); 
-   player.armour = 1 ; 
-   player.armour_points = 7 ;
-   player.weapon = 3 ;
-   player.has_lamp = true ;
-   player.x = 0 ;
-   player.y = 3 ;
-   player.level = 0 ;
 }         
 

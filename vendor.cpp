@@ -117,7 +117,7 @@ static BOOL CALLBACK VendorDlgProc (HWND hDlg, UINT message, WPARAM wParam, LPAR
       stat_prices[0] = 1+random(6) ;
       stat_value[0] = player.str ;
       vendor_show_value(hDlg, IDC_VSTRCOST, stat_prices[0]) ;
-      vendor_show_value(hDlg, IDC_VSTRDATA, stat_value[0]) ;
+      vendor_show_value(hDlg, IDC_VSTRDATA, stat_value[0]) ;   //lint !e727
 
       stat_prices[1] = 1+random(6) ;
       stat_value[1] = player.dex ;

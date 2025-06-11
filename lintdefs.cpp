@@ -113,3 +113,16 @@
 //lint -e713   Loss of precision (assignment) (unsigned int to int)
 //lint -e732   Loss of sign (initialization) (long to unsigned int)
 
+//  exclusions because pclint doesn't know later c++ constructs
+//lint -e52    Expected an lvalue
+//lint -e55    Bad type
+//lint -e63    Expected an lvalue
+//lint -e133   Too many initializers for aggregate 'unknown-name'
+//lint -e503   Boolean argument to relational
+//lint -e505   Redundant left argument to comma
+//lint -e522   Highest operation, function 'clear_room', lacks side-effects
+//lint -e650   Constant '32' out of range for operator '>'
+//lint -e685   Relational operator '>' always evaluates to 'false'
+//lint -e737   Loss of sign in promotion from int to unsigned int
+//lint -e1712  default constructor not defined for class 
+

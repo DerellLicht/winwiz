@@ -21,35 +21,34 @@ extern uint dbg_flags ;
 //************************************************************
 //  player attributes
 //************************************************************
-typedef struct player_info_s {
-   unsigned castle_nbr ; //  index into castle-name table
-   unsigned x, y, level ;
-   unsigned str, dex, iq ;
-   unsigned hit_points ;
-   unsigned race ;
+struct player_info {
+   unsigned castle_nbr{} ; //  index into castle-name table
+   unsigned x{0}, y{3}, level{0} ;
+   unsigned str{8}, dex{16}, iq{8} ;
+   unsigned hit_points {8};
+   unsigned race {0};
    // unsigned sex ; //  not really used anywhere, even in original
-   unsigned armour, armour_points, weapon ;
-   unsigned flares ;
-   unsigned gold ;
+   unsigned armour{1}, armour_points{7}, weapon{3} ;
+   unsigned flares {0};
+   unsigned gold {0};
 
-   int   turns ;
-   int   treasure_count ;
-   unsigned treasures[8] ;  //  bitmapped field
+   int   turns {0};
+   int   treasure_count {0};
+   unsigned treasures[8] {};  //  bitmapped field
 
-   bool  has_orb_of_Zot ;
-   bool  has_runestaff ;
-   bool  has_lamp ;
+   bool  has_orb_of_Zot{false} ;
+   bool  has_runestaff{false} ;
+   bool  has_lamp{true} ;
 
    //  curses and afflictions
-   unsigned curse_flags ;  //  bitmapped field
-   bool  is_blind ;
-   int   blind_count ;
-   bool  has_book ;
-   int   book_count ;
+   unsigned curse_flags{0} ;  //  bitmapped field
+   bool  is_blind{false} ;
+   int   blind_count{0} ;
+   bool  has_book{false} ;
+   int   book_count{} ;
+} ;
 
-} player_info_t ;
-
-extern player_info_t  player ;
+extern player_info player ;
 
 //  treasure flags constants
 #define  TR_RUBY_RED       0
@@ -78,14 +77,13 @@ typedef struct castle_room_s {
    unsigned contents ;  //  index into object_info[] 
 } castle_room_t ;
 
-// int rooms[8][8][8] ;
 #define  DIMEN_COUNT    8
 extern castle_room_t castle[DIMEN_COUNT][DIMEN_COUNT][DIMEN_COUNT] ; //  Castle definitions
 extern castle_room_t runestaff_room, orb_room ;
 extern castle_room_t curse_rooms[3] ;
 
-//  constants for referencing room contents.  This must match
-//  display_objects_t display_objects[] 
+//  constants for referencing room contents.  
+//  This must match display_objects_t display_objects[] 
 #define  UNSEEN_ROOM        0
 #define  EMPTY_ROOM         1
 #define  CASTLE_ENTRANCE    2
@@ -137,14 +135,6 @@ extern castle_room_t curse_rooms[3] ;
 #define  PLAYER            36
 
 #define  LAST_OBJECT       37
-
-typedef struct object_data_s {
-   // unsigned obj_idx ;
-   unsigned sprite_row ;
-   unsigned sprite_col ;
-   TCHAR*    desc ;
-} object_data_t ;
-extern object_data_t object_data[LAST_OBJECT] ;
 
 //**************************************************************
 //  misc string arrays
@@ -237,6 +227,7 @@ TCHAR *get_monster_prefix(TCHAR *monster_name);
 BOOL CmdAbout(HWND hwnd);
 
 //  from wfuncs.cpp
+unsigned get_castle_name_count(void);
 void create_gdiplus_elements(void);
 void set_up_working_spaces(HWND hwnd);
 void draw_intro_screen(HWND hwnd);

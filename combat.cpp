@@ -57,25 +57,27 @@
 #include "wizard.h"
 #include "keywin32.h"
 
-typedef struct monster_info_s {
-   int index ;
-   TCHAR *desc ;
-   unsigned hitpoints ;
-   unsigned level ;
-   unsigned treasures[8] ;
-   unsigned treasure_count ;
-} monster_info_t ;
+struct monster_info_s {
+   int index {};
+   TCHAR *desc {nullptr};
+   unsigned hitpoints {};
+   unsigned level {};
+   unsigned treasures[8] {};
+   unsigned treasure_count {};
+} ;
 
 //  this doesn't solve the problem...
 //  This struct is invalid once encounter is ended,
 //  even if monster (or vendor) is still alive
-static monster_info_t monster_info ;
+static monster_info_s monster_info ;
 
 static int web_turns = 0 ;
 
 int vendor_angry = 0 ;
 
-static unsigned weapon_damage[4] = { 0, 6,  8, 10 } ;
+//lint -esym(551, weapon_damage, armour_resist) Symbol not accessed
+//  weapon_str { L"Hands ",  L"Dagger",  L"Mace  ", L"Sword ", L"A Book" } ;
+static unsigned weapon_damage[5] = { 0, 6,  8, 10, 0 } ;
 static unsigned armour_resist[4] = { 0, 4, 10, 20 } ;
 
 static TCHAR *meal[8] = { _T("sandwich"),_T("stew"), _T("soup"), _T("burger"), _T("roast"), _T("filet"), _T("taco"), _T("pie") } ;
@@ -175,7 +177,7 @@ static int monsters_turn(HWND hwnd)
       player_resist  = random(4 * player.dex) + armour_resist[player.armour] ;
       damage = 1 + random(monster_info.level) ;
 
-      if (monster_attack > player_resist) {
+      if (monster_attack > player_resist) {  //lint !e530
          // wsprintf(tempstr, 
          put_color_msg(TERM_MONSTER_HIT, _T("OUCH!!  It hit you!! [ %u points, A%u, D%u ]"), 
             damage, monster_attack, player_resist) ;
@@ -528,7 +530,7 @@ quiet_exit:
 //*************************************************************
 void react_to_monsters(HDC hdcUnused)
 {
-   ZeroMemory((char *) &monster_info, sizeof(monster_info_t)) ;
+   // ZeroMemory((char *) &monster_info, sizeof(monster_info_t)) ;
    monster_info.index     = get_room_contents() ;
    monster_info.desc      = get_room_contents_str() ;
    monster_info.level     = monster_info.index - MONSTER_BASE + 1;   //  base:1
