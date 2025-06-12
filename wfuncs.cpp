@@ -199,7 +199,7 @@ void dump_level_knowledge(void)
 //*************************************************************
 static unsigned get_room_contents(unsigned x, unsigned y, unsigned level)
 {
-   return castle[x][y][level].contents ;
+   return castle[x][y][level].contents ;  //  NOLINT
 }
 
 unsigned get_room_contents(void)
@@ -283,7 +283,7 @@ static void draw_room_contents(HDC hdc, unsigned col, unsigned row)
 {
    unsigned content ;
 
-   if (castle[col][row][player.level].is_known)
+   if (castle[col][row][player.level].is_known)  //  NOLINT
       content = get_room_contents(col, row, player.level) ;
    else
       content = UNSEEN_ROOM ;
