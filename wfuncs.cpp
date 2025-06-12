@@ -160,7 +160,6 @@ static std::vector<std::wstring> curse_str  { L"CURSE OF LETHARGY"), L"CURSE OF 
 static void react_to_room(void);
 static void show_flares(void);
 static void show_str(void);
-static void mark_room_as_known(unsigned x, unsigned y, unsigned level);
 static void draw_char_cursor(HDC hdc, unsigned on_or_off);
 
 /************************************************************************/
@@ -509,12 +508,16 @@ void update_cursor(void)
 //****************************************************************************
 static void mark_room_as_known(unsigned x, unsigned y, unsigned level)
 {
-   castle[x][y][level].is_known = 1 ;
+   if (x < DIMEN_COUNT  &&  y < DIMEN_COUNT  &&  level < DIMEN_COUNT) {
+      castle[x][y][level].is_known = 1 ;
+   }
 }
 
 static void hide_room(unsigned x, unsigned y, unsigned level)
 {
-   castle[x][y][level].is_known = 0 ;
+   if (x < DIMEN_COUNT  &&  y < DIMEN_COUNT  &&  level < DIMEN_COUNT) {
+      castle[x][y][level].is_known = 0 ;
+   }
 }
 
 //*************************************************************

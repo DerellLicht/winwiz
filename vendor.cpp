@@ -13,7 +13,8 @@
 #define min(a, b)  (((a) < (b)) ? (a) : (b)) 
 #endif
 
-static unsigned item_prices[4] = { 0, 1250, 1500, 2000 } ;
+//  in case of weapons, there can be a fifth item (book)
+static unsigned item_prices[5] = { 0, 1250, 1500, 2000, 0 } ;
 
 // static char dbg[128] ;
 // ilI1|  0Oo 
@@ -137,7 +138,7 @@ static BOOL CALLBACK VendorDlgProc (HWND hDlg, UINT message, WPARAM wParam, LPAR
    case WM_COMMAND:
       switch (LOWORD (wParam)) {
       case IDVOK:
-         if (iWeapon != IDC_VWNONE  &&  player.gold >= item_prices[iWeapon - IDC_VWNONE]) {
+         if (iWeapon != IDC_VWNONE  &&  player.gold >= item_prices[iWeapon - IDC_VWNONE]) {  // NOLINT
             player.weapon = iWeapon - IDC_VWNONE ;
             player.gold -= item_prices[player.weapon] ;
          }
