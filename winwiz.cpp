@@ -484,7 +484,7 @@ static void center_window(void)
 }
 
 //***********************************************************************
-static tooltip_data_t main_tooltips[] = {
+static tooltip_data main_tooltips[] = {
 { IDC_T0,    _T(" the Ruby Red "  ) },  
 { IDC_T1,    _T(" the Norn Stone ") },  
 { IDC_T2,    _T(" the Pale Pearl ") },  
