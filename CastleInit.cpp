@@ -158,12 +158,12 @@ void init_castle_contents(void)
    for (y=0; y<8; y++) {
    for (x=0; x<8; x++) {
       castle[x][y][level].contents = EMPTY_ROOM ;
-      castle[x][y][level].is_known = 0 ;
+      castle[x][y][level].is_known = false ;
    } } } 
 
    /* Place entrance */
    castle[0][3][0].contents = CASTLE_ENTRANCE ;         
-   castle[0][3][0].is_known = 1 ;
+   castle[0][3][0].is_known = true ;
 
    //  place two stairs per level
    for (level=0; level<7; level++) {

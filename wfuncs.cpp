@@ -509,14 +509,14 @@ void update_cursor(void)
 static void mark_room_as_known(unsigned x, unsigned y, unsigned level)
 {
    if (x < DIMEN_COUNT  &&  y < DIMEN_COUNT  &&  level < DIMEN_COUNT) {
-      castle[x][y][level].is_known = 1 ;
+      castle[x][y][level].is_known = true ;
    }
 }
 
 static void hide_room(unsigned x, unsigned y, unsigned level)
 {
    if (x < DIMEN_COUNT  &&  y < DIMEN_COUNT  &&  level < DIMEN_COUNT) {
-      castle[x][y][level].is_known = 0 ;
+      castle[x][y][level].is_known = false ;
    }
 }
 
@@ -913,34 +913,34 @@ static void CheckCurses(HDC hdc) //  derived from hwndMapArea
    }
 
    //  did we step on a new curse??
-   if (curse_rooms[CURSE_OF_LETHARGY].is_known == 0  &&
-       curse_rooms[CURSE_OF_LETHARGY].x == player.x  &&
-       curse_rooms[CURSE_OF_LETHARGY].y == player.y  &&
-       curse_rooms[CURSE_OF_LETHARGY].level == player.level) { //lint !e644
+   if (!curse_rooms[CURSE_OF_LETHARGY].is_known  &&
+        curse_rooms[CURSE_OF_LETHARGY].x == player.x  &&
+        curse_rooms[CURSE_OF_LETHARGY].y == player.y  &&
+        curse_rooms[CURSE_OF_LETHARGY].level == player.level) { //lint !e644
          
-      curse_rooms[CURSE_OF_LETHARGY].is_known = 1 ;
+      curse_rooms[CURSE_OF_LETHARGY].is_known = true ;
       if (!(player.treasures[TR_RUBY_RED])) {
          player.curse_flags |= CR_LETHARGY ;
          put_message(_T("***  You have been afflicted with the Curse of Lethargy !!")) ;
       }
    }
-   if (curse_rooms[CURSE_OF_LEECH].is_known == 0  &&
-       curse_rooms[CURSE_OF_LEECH].x == player.x  &&
-       curse_rooms[CURSE_OF_LEECH].y == player.y  &&
-       curse_rooms[CURSE_OF_LEECH].level == player.level) {
+   if (!curse_rooms[CURSE_OF_LEECH].is_known  &&
+        curse_rooms[CURSE_OF_LEECH].x == player.x  &&
+        curse_rooms[CURSE_OF_LEECH].y == player.y  &&
+        curse_rooms[CURSE_OF_LEECH].level == player.level) {
          
-      curse_rooms[CURSE_OF_LEECH].is_known = 1 ;
+      curse_rooms[CURSE_OF_LEECH].is_known = true ;
       if (!(player.treasures[TR_PALE_PEARL])) {
          player.curse_flags |= CR_LEECH ;
          put_message(_T("***  You have been afflicted with the Curse of the Leech !!")) ;
       }
    }
-   if (curse_rooms[CURSE_OF_FORGET].is_known == 0  &&
-       curse_rooms[CURSE_OF_FORGET].x == player.x  &&
-       curse_rooms[CURSE_OF_FORGET].y == player.y  &&
-       curse_rooms[CURSE_OF_FORGET].level == player.level) {
+   if (!curse_rooms[CURSE_OF_FORGET].is_known  &&
+        curse_rooms[CURSE_OF_FORGET].x == player.x  &&
+        curse_rooms[CURSE_OF_FORGET].y == player.y  &&
+        curse_rooms[CURSE_OF_FORGET].level == player.level) {
          
-      curse_rooms[CURSE_OF_FORGET].is_known = 1 ;
+      curse_rooms[CURSE_OF_FORGET].is_known = true ;
       if (!(player.treasures[TR_GREEN_GEM])) {
          player.curse_flags |= CR_FORGET ;
          put_message(_T("***  You have been afflicted with the Curse of Amnesia !!")) ;
@@ -1377,7 +1377,8 @@ static int gaze_into_orb(HWND hwnd)
       break;
 
    case 4: 
-      A = random(DIMEN_COUNT); B = random(DIMEN_COUNT); C = random(DIMEN_COUNT); mark_room_as_known(A, B, C);
+      A = random(DIMEN_COUNT); B = random(DIMEN_COUNT); C = random(DIMEN_COUNT); 
+      mark_room_as_known(A, B, C);
       _stprintf(tempstr, _T("You see %s at (%d,%d), level %d."),
          get_object_in_room(A, B, C), A, B, C) ;
       put_message(tempstr) ;
@@ -1394,7 +1395,7 @@ static int gaze_into_orb(HWND hwnd)
             A = random(DIMEN_COUNT); B = random(DIMEN_COUNT); C = random(DIMEN_COUNT);
          }
          _stprintf(tempstr, _T("You see the ** ORB OF ZOT ** at (%d,%d), Level %d!!"),
-            A, B, C);
+            A, B, C);   //lint !e644
       } else 
       {
          _stprintf(tempstr, _T("You see %s carrying a large, ornate staff."),

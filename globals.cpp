@@ -2,7 +2,7 @@
 //  globals.cpp
 //  global variables for Wizard's Castle program
 //  
-//  Written by:   Daniel D. Miller
+//  Written by:   Derell Licht
 //************************************************************
 
 #include <windows.h>
@@ -13,13 +13,15 @@
 
 player_info player ;    //  player attributes
 
-castle_room_t castle[DIMEN_COUNT][DIMEN_COUNT][DIMEN_COUNT] ; //  Castle definitions
+//lint -esym(729, castle)  Symbol not explicitly initialized
+//lint -esym(552, castle)  Symbol not accessed
+castle_room castle[DIMEN_COUNT][DIMEN_COUNT][DIMEN_COUNT] ; //  Castle definitions
 
 TCHAR tempstr[128] ;
 
 //  locations of special objects which share room with other objects
-castle_room_t runestaff_room, orb_room ;
-castle_room_t curse_rooms[3] ;
+castle_room runestaff_room, orb_room ;
+castle_room curse_rooms[3] ;
 
 //**************************************************************
 //  misc string arrays

@@ -71,16 +71,16 @@ extern player_info player ;
 #define  CURSE_OF_FORGET      2
 
 //****************************************************
-typedef struct castle_room_s {
-   unsigned x, y, level ;  //  only used for special rooms (curse/orb/runestaff)
-   unsigned is_known ;
-   unsigned contents ;  //  index into object_info[] 
-} castle_room_t ;
+struct castle_room {
+   unsigned x{}, y{}, level{} ;  //  only used for special rooms (curse/orb/runestaff)
+   bool is_known{false} ;
+   unsigned contents{} ;  //  index into object_info[]
+} ;
 
 #define  DIMEN_COUNT    8
-extern castle_room_t castle[DIMEN_COUNT][DIMEN_COUNT][DIMEN_COUNT] ; //  Castle definitions
-extern castle_room_t runestaff_room, orb_room ;
-extern castle_room_t curse_rooms[3] ;
+extern castle_room castle[DIMEN_COUNT][DIMEN_COUNT][DIMEN_COUNT] ; //  Castle definitions
+extern castle_room runestaff_room, orb_room ;
+extern castle_room curse_rooms[3] ;
 
 //  constants for referencing room contents.  
 //  This must match display_objects_t display_objects[] 
@@ -154,10 +154,10 @@ extern TCHAR tempstr[128] ;
 //  winwiz.cpp
 extern uint cxClient, cyClient ;
 
-typedef struct attrib_table_s {
+struct attrib_table {
    COLORREF fgnd ;
    COLORREF bgnd ;
-} attrib_table_t ;
+} ;
 
 #define  NUM_TERM_ATTR_ENTRIES   8
 void status_message(TCHAR *msgstr);

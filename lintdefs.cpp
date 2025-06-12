@@ -125,4 +125,5 @@
 //lint -e685   Relational operator '>' always evaluates to 'false'
 //lint -e737   Loss of sign in promotion from int to unsigned int
 //lint -e1712  default constructor not defined for class 
+//lint -e550   Symbol not accessed (pclint doesn't understand non-static struct init)
 

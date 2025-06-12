@@ -14,7 +14,7 @@
 #endif
 
 //  in case of weapons, there can be a fifth item (book)
-static unsigned item_prices[5] = { 0, 1250, 1500, 2000, 0 } ;
+static unsigned item_prices[4] = { 0, 1250, 1500, 2000 } ;
 
 // static char dbg[128] ;
 // ilI1|  0Oo 
@@ -38,17 +38,21 @@ static void update_equip_avail(HWND hDlg)
       HWND hwndArmour = GetDlgItem(hDlg, j) ;
       HWND hwndWeapon = GetDlgItem(hDlg, tval) ;
 
-      //  debug
+      //     if index == IDC_VWNONE/IDC_VANONE
+      //  or if equipped item is greater than selected item
+      //  or if available cash is less than item cost
+      //       mark item disabled
+      //  else mark item enabled
       if (item_prices[idx] <= (unsigned) player.gold) {
-         if (idx == 0  ||  apoints > player.armour_points) 
-            EnableWindow(hwndArmour, TRUE) ;
-         else 
+         if (idx == 0  ||  apoints <= player.armour_points) 
             EnableWindow(hwndArmour, FALSE) ;
+         else 
+            EnableWindow(hwndArmour, TRUE) ;
 
-         if (idx == 0  ||  idx > (unsigned) player.weapon) 
-            EnableWindow(hwndWeapon, TRUE) ;
-         else
+         if (idx == 0  ||  idx <= (unsigned) player.weapon) 
             EnableWindow(hwndWeapon, FALSE) ;
+         else
+            EnableWindow(hwndWeapon, TRUE) ;
       } else {
          EnableWindow(hwndArmour, FALSE) ;
          EnableWindow(hwndWeapon, FALSE) ;
@@ -97,18 +101,14 @@ static BOOL CALLBACK VendorDlgProc (HWND hDlg, UINT message, WPARAM wParam, LPAR
          }
          vendor_show_value(hDlg, tval, treasure_prices[idx]) ;
       }
-      //  debug
-      // _stprintf(dbg, _T("va=%u, hgt=%u, clhgt=%u, go_top=%u\n"),
-      //    VARMOR_TOP, CR_HEIGHT, CL_HEIGHT, GO_TOP) ;
-      // OutputDebugString(dbg) ;
 
       //  mark initial armour/weapon selections
-      iArmour = IDC_VANONE ;
-      CheckRadioButton (hDlg, IDC_VANONE, IDC_VAPLATE, iArmour) ;
-      iWeapon = IDC_VWNONE ;
-      CheckRadioButton (hDlg, IDC_VWNONE, IDC_VWSWORD, iWeapon) ;
+      iArmour = IDC_VANONE + player.armour ;
+      CheckRadioButton (hDlg, IDC_VANONE, IDC_VAPLATE, iArmour) ; //lint !e727
+      iWeapon = IDC_VWNONE + player.weapon ;
+      CheckRadioButton (hDlg, IDC_VWNONE, IDC_VWSWORD, iWeapon) ; //lint !e727
 
-      // syslog("player gold=%u, armour=%u/%u, weapon=%u\n",
+      // syslog(L"player gold=%u, armour=%u/%u, weapon=%u\n",
       //    player.gold, player.armour, 
       //    player.armour_points,
       //    player.weapon) ;

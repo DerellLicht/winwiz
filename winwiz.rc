@@ -14,7 +14,7 @@ WINWIZICO       ICON    "pendant.ico"
 //  See GetDialogBaseUnits() and "DIALOG CONTROL" in MSDN
 //***************************************************************
 #define FONT_HEIGHT     10
-#define STR_WIDTH       60
+#define STR_WIDTH       65
 
 //*******************************************************************
 //  keyboard accelerators
@@ -340,7 +340,7 @@ BEGIN
     RTEXT          " ",               IDC_VINTDATA, VL1+VGEM_VWIDTH+21,               VINT_TOP, VGEM_VWIDTH, FONT_HEIGHT,0,WS_EX_STATICEDGE
     PUSHBUTTON     "-",               IDC_VINTLESS, VL1+VGEM_VWIDTH+21+VGEM_VWIDTH+2, VINT_TOP+1, BTN_DIM, BTN_DIM
 
-    LTEXT          "* Number of skill points/1000 GP", IDC_STATIC, VS_LEFT+6, VINT_TOP+FONT_HEIGHT+5, 112, FONT_HEIGHT
+    LTEXT          "* 1000 GP per skill point", IDC_STATIC, VS_LEFT+6, VINT_TOP+FONT_HEIGHT+5, 112, FONT_HEIGHT
     PUSHBUTTON     "Sell Gems",IDC_SELLGEMS,SG_LEFT,SG_TOP,SG_WIDTH,DONE_HEIGHT,WS_GROUP
     DEFPUSHBUTTON  "Pay and Exit",IDVOK,VDONE_LEFT,DONE_TOP,VDONE_WIDTH,DONE_HEIGHT,WS_GROUP
 

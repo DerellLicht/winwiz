@@ -119,8 +119,7 @@ void status_message(uint idx, TCHAR *msgstr)
 }
 
 //****************************************************************************
-//lint -esym(756, attrib_table_t)
-static attrib_table_t term_atable[NUM_TERM_ATTR_ENTRIES] = {
+static attrib_table term_atable[NUM_TERM_ATTR_ENTRIES] = {
    { WIN_CYAN,    WIN_BLACK },    // TERM_NORMAL 
    { WIN_BCYAN,   WIN_GREY },     // TERM_INFO
    { WIN_YELLOW,  WIN_BLUE },     // TERM_QUERY
