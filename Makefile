@@ -111,7 +111,7 @@ der_libs/vlistview.cpp
 
 # separate local source files from library files,
 # so that wc operation is more appropriate.
-CBASE=winwiz.cpp globals.cpp keyboard.cpp wfuncs.cpp \
+CBASE=winwiz.cpp keyboard.cpp wfuncs.cpp \
 CastleInit.cpp initscrn.cpp combat.cpp vendor.cpp loadhelp.cpp \
 about.cpp hyperlinks.cpp
 CSRC += $(CBASE)
@@ -193,7 +193,6 @@ winwiz.o: resource.h version.h der_libs/common.h der_libs/commonw.h
 winwiz.o: der_libs/statbar.h der_libs/cterminal.h der_libs/vlistview.h
 winwiz.o: der_libs/terminal.h der_libs/winmsgs.h wizard.h keywin32.h
 winwiz.o: der_libs/tooltips.h der_libs/gdiplus_setup.h
-globals.o: der_libs/common.h wizard.h
 keyboard.o: der_libs/common.h wizard.h keywin32.h
 wfuncs.o: resource.h der_libs/common.h der_libs/commonw.h wizard.h keywin32.h
 wfuncs.o: der_libs/terminal.h der_libs/gdi_plus.h

@@ -139,8 +139,6 @@ extern castle_room curse_rooms[3] ;
 //**************************************************************
 //  misc string arrays
 //**************************************************************
-extern TCHAR *race_str[4] ;
-
 extern TCHAR tempstr[128] ;
 
 //**************************************************************
@@ -227,6 +225,8 @@ TCHAR *get_monster_prefix(TCHAR *monster_name);
 BOOL CmdAbout(HWND hwnd);
 
 //  from wfuncs.cpp
+TCHAR *get_race_str(uint idx);
+void set_race_str(uint idx, TCHAR *newstr);
 unsigned get_castle_name_count(void);
 void create_gdiplus_elements(void);
 void set_up_working_spaces(HWND hwnd);

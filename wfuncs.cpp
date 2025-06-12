@@ -35,6 +35,18 @@
 
 //lint -esym(715, hdc, hwnd)
 
+TCHAR tempstr[128] ;
+
+player_info player ;    //  player attributes
+
+//lint -esym(729, castle)  Symbol not explicitly initialized
+//lint -esym(552, castle)  Symbol not accessed
+castle_room castle[DIMEN_COUNT][DIMEN_COUNT][DIMEN_COUNT] ; //  Castle definitions
+
+//  locations of special objects which share room with other objects
+castle_room runestaff_room, orb_room ;
+castle_room curse_rooms[3] ;
+
 enum {
 TILE_COMBAT=0,
 TILE_VICTORY,
@@ -153,8 +165,20 @@ static std::vector<std::wstring> names {
 // static wchar_t *armour_str[4] = { L"Prayers", L"Leather", L"Chainmail", _T("Plate" } ;
 // static wchar_t *curse_str[3]  = { L"CURSE OF LETHARGY"), L"CURSE OF THE LEECH", L"CURSE OF AMNESIA" } ;
 static std::vector<std::wstring> weapon_str { L"Hands ",  L"Dagger",  L"Mace  ", L"Sword ", L"A Book" } ;
-static std::vector<std::wstring> armour_str { L"Prayers", L"Leather", L"Chainmail", _T("Plate" } ;
-static std::vector<std::wstring> curse_str  { L"CURSE OF LETHARGY"), L"CURSE OF THE LEECH", L"CURSE OF AMNESIA" } ;
+static std::vector<std::wstring> armour_str { L"Prayers", L"Leather", L"Chainmail", L"Plate" } ;
+static std::vector<std::wstring> curse_str  { L"CURSE OF LETHARGY", L"CURSE OF THE LEECH", L"CURSE OF AMNESIA" } ;
+
+static TCHAR race_str[4][11]   = { _T("Human "),  _T("Dwarf "),  _T("Hobbit"), _T("Elf   ") } ;
+
+TCHAR *get_race_str(uint idx)
+{
+   return race_str[idx] ;
+}
+
+void set_race_str(uint idx, TCHAR *newstr)
+{
+   _tcsncpy(race_str[idx], newstr, 10) ;
+}
 
 //***********************************************************************
 static void react_to_room(void);
@@ -1336,7 +1360,7 @@ static int gaze_into_orb(HWND hwnd)
    unsigned A, B, C ;
 
    if (player.is_blind) {
-      _stprintf(tempstr, _T("You can't SEE, you foolish %s..."), race_str[player.race]) ;
+      _stprintf(tempstr, _T("You can't SEE, you foolish %s..."), get_race_str(player.race)) ;
       put_message(tempstr) ;
       return 1;
    }
@@ -1438,7 +1462,7 @@ static int open_book_or_chest(HWND hwnd, int contents)
             player.is_blind = 1 ;
             draw_main_screen(NULL); //  newly blinded
             put_message(_T("You open the book and   *** FLASH!! ***"));
-            _stprintf(tempstr, _T("OH NO! YOU ARE NOW A BLIND %s !!"), race_str[player.race]);
+            _stprintf(tempstr, _T("OH NO! YOU ARE NOW A BLIND %s !!"), get_race_str(player.race));
             put_message(tempstr) ;
          }
          break;
@@ -1449,7 +1473,7 @@ static int open_book_or_chest(HWND hwnd, int contents)
          break;
 
       case 2:
-         _stprintf(tempstr, _T("You open the book and find an old copy of Play%s!"), race_str[random(4)]);
+         _stprintf(tempstr, _T("You open the book and find an old copy of Play%s!"), get_race_str(random(4)));
          put_message(tempstr) ;
          break;
 
@@ -1617,7 +1641,7 @@ static int drink_from_pool(HWND hwnd)
          j = random(4); 
          if (j != player.race) {
             player.race = j ;
-            _stprintf(tempstr, _T("With a scream of agony, you turn into a %s"), race_str[j]) ;
+            _stprintf(tempstr, _T("With a scream of agony, you turn into a %s"), get_race_str(j)) ;
             put_message(tempstr) ;
             //  alter stats when this happens??
             break;
