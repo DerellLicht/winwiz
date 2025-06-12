@@ -151,6 +151,12 @@ MI_DEATH
 static map_image_t map_image = MI_UNDEFINED ;
 
 //***********************************************************************
+static void react_to_room(void);
+static void show_flares(void);
+static void show_str(void);
+static void draw_char_cursor(HDC hdc, unsigned on_or_off);
+
+//***********************************************************************
 //  string constants
 //***********************************************************************
 
@@ -164,27 +170,29 @@ static std::vector<std::wstring> names {
 // static wchar_t *weapon_str[5] = { L"Hands ",  L"Dagger",  L"Mace  ", L"Sword ", L"A Book" } ;
 // static wchar_t *armour_str[4] = { L"Prayers", L"Leather", L"Chainmail", _T("Plate" } ;
 // static wchar_t *curse_str[3]  = { L"CURSE OF LETHARGY"), L"CURSE OF THE LEECH", L"CURSE OF AMNESIA" } ;
+// static TCHAR race_str[4][11]   = { _T("Human "),  _T("Dwarf "),  _T("Hobbit"), _T("Elf   ") } ;
 static std::vector<std::wstring> weapon_str { L"Hands ",  L"Dagger",  L"Mace  ", L"Sword ", L"A Book" } ;
 static std::vector<std::wstring> armour_str { L"Prayers", L"Leather", L"Chainmail", L"Plate" } ;
 static std::vector<std::wstring> curse_str  { L"CURSE OF LETHARGY", L"CURSE OF THE LEECH", L"CURSE OF AMNESIA" } ;
+static std::vector<std::wstring> race_str   { L"Human", L"Dwarf", L"Hobbit", L"Elf" } ;
 
-static TCHAR race_str[4][11]   = { _T("Human "),  _T("Dwarf "),  _T("Hobbit"), _T("Elf   ") } ;
-
-TCHAR *get_race_str(uint idx)
+/************************************************************************/
+wchar_t const * const get_race_str(uint idx)
 {
-   return race_str[idx] ;
+   return race_str[idx].c_str() ;
+}
+
+//lint -esym(759, get_race_str)   header declaration for symbol could be moved from header to module
+wchar_t const * const get_race_str(void)
+{
+   return race_str[player.race].c_str() ;
 }
 
 void set_race_str(uint idx, TCHAR *newstr)
 {
-   _tcsncpy(race_str[idx], newstr, 10) ;
+   // _tcsncpy(race_str[idx], newstr, 10) ;
+   race_str[idx] = newstr;
 }
-
-//***********************************************************************
-static void react_to_room(void);
-static void show_flares(void);
-static void show_str(void);
-static void draw_char_cursor(HDC hdc, unsigned on_or_off);
 
 /************************************************************************/
 unsigned get_castle_name_count(void)
@@ -1360,7 +1368,7 @@ static int gaze_into_orb(HWND hwnd)
    unsigned A, B, C ;
 
    if (player.is_blind) {
-      _stprintf(tempstr, _T("You can't SEE, you foolish %s..."), get_race_str(player.race)) ;
+      _stprintf(tempstr, _T("You can't SEE, you foolish %s..."), get_race_str()) ;
       put_message(tempstr) ;
       return 1;
    }
@@ -1462,7 +1470,7 @@ static int open_book_or_chest(HWND hwnd, int contents)
             player.is_blind = 1 ;
             draw_main_screen(NULL); //  newly blinded
             put_message(_T("You open the book and   *** FLASH!! ***"));
-            _stprintf(tempstr, _T("OH NO! YOU ARE NOW A BLIND %s !!"), get_race_str(player.race));
+            _stprintf(tempstr, _T("OH NO! YOU ARE NOW A BLIND %s !!"), get_race_str());
             put_message(tempstr) ;
          }
          break;
@@ -1830,6 +1838,7 @@ void view_special_items(void)
 {
    unsigned j ;
 
+   infoout(_T("You are a %s"), get_race_str()) ;
    infoout(_T("you are currently exploring %s"), names[player.castle_nbr].c_str()) ;
 
    infoout(_T("you possess:")) ;

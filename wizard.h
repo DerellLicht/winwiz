@@ -225,7 +225,8 @@ TCHAR *get_monster_prefix(TCHAR *monster_name);
 BOOL CmdAbout(HWND hwnd);
 
 //  from wfuncs.cpp
-TCHAR *get_race_str(uint idx);
+wchar_t const * const get_race_str(void);
+wchar_t const * const get_race_str(uint idx);
 void set_race_str(uint idx, TCHAR *newstr);
 unsigned get_castle_name_count(void);
 void create_gdiplus_elements(void);
