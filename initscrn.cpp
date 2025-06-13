@@ -4,6 +4,7 @@
 
 #include "resource.h"
 #include "common.h"
+#include "commonw.h"
 #include "wizard.h"
 
 static HWND hwndCCdlgStatic1 = 0 ;
@@ -259,7 +260,9 @@ static BOOL CALLBACK CreateDlgProc (HWND hDlg, UINT message, WPARAM wParam, LPAR
 void draw_init_screen(HWND hwnd)
 {
    // if (DialogBox (g_hinst, TEXT ("CreateBox"), hwnd, CreateDlgProc))
-   int result = DialogBox (GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_CREATEBOX), NULL, CreateDlgProc) ;
+   //  passing top-level hwnd to DialogBox(), 
+   //  draws this dialog in position relative to that hwnd.
+   int result = DialogBox (GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_CREATEBOX), hwnd, CreateDlgProc) ;
    if (result < 0) {
       syslog(_T("Init: DialogBox: %s\n"), get_system_message()) ;
    } 

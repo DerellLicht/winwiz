@@ -197,7 +197,7 @@ keyboard.o: der_libs/common.h wizard.h keywin32.h
 wfuncs.o: resource.h der_libs/common.h der_libs/commonw.h wizard.h keywin32.h
 wfuncs.o: der_libs/terminal.h der_libs/gdi_plus.h
 CastleInit.o: der_libs/common.h wizard.h
-initscrn.o: resource.h der_libs/common.h wizard.h
+initscrn.o: resource.h der_libs/common.h der_libs/commonw.h wizard.h
 combat.o: der_libs/common.h wizard.h keywin32.h
 vendor.o: resource.h der_libs/common.h wizard.h
 loadhelp.o: der_libs/common.h

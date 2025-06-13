@@ -55,8 +55,6 @@ static TCHAR const * const Version = _T("Wizard's Castle, Version " VerNum " ") 
 
 static HINSTANCE g_hinst = 0;
 
-static HWND hwndMain ;
-
 //lint -esym(714, dbg_flags)
 //lint -esym(759, dbg_flags)
 //lint -esym(765, dbg_flags)
@@ -70,12 +68,6 @@ uint cxClient = 0 ;
 uint cyClient = 0 ;
 
 static CStatusBar *MainStatusBar = NULL;
-
-//  This does not appear to be required for anything
-// static bool redraw_in_progress = false ;
-
-//  This prevents map from being redrawn until program init is completed
-// bool prog_init_done = false ;
 
 //*******************************************************************
 static void toggle_debug_flag(void)
@@ -450,40 +442,6 @@ static LRESULT APIENTRY TermSubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, LP
 }
 
 //***********************************************************************
-static uint screen_width  = 0 ;
-static uint screen_height = 0 ;
-
-static void ww_get_monitor_dimens(HWND hwnd)
-{
-   HMONITOR currentMonitor;      // Handle to monitor where fullscreen should go
-   MONITORINFO mi;               // Info of that monitor
-   currentMonitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
-   mi.cbSize = sizeof(MONITORINFO);
-   if (GetMonitorInfo(currentMonitor, &mi) != FALSE) {
-      screen_width  = mi.rcMonitor.right  - mi.rcMonitor.left ;
-      screen_height = mi.rcMonitor.bottom - mi.rcMonitor.top ;
-   }
-   // curr_dpi = GetScreenDPI() ;
-}
-
-//***********************************************************************
-static void center_window(void)
-{
-   ww_get_monitor_dimens(hwndMain);
-   
-   RECT myRect ;
-   GetWindowRect(hwndMain, &myRect) ;
-   // GetClientRect(hwnd, &myRect) ;
-   uint dialog_width = (myRect.right - myRect.left) ;
-   uint dialog_height = (myRect.bottom - myRect.top) ;
-
-   uint x0 = (screen_width  - dialog_width ) / 2 ;
-   uint y0 = (screen_height - dialog_height) / 2 ;
-
-   SetWindowPos(hwndMain, HWND_TOP, x0, y0, 0, 0, SWP_NOSIZE) ;
-}
-
-//***********************************************************************
 static tooltip_data main_tooltips[] = {
 { IDC_T0,    _T(" the Ruby Red "  ) },  
 { IDC_T1,    _T(" the Norn Stone ") },  
@@ -508,8 +466,7 @@ static void do_init_dialog(HWND hwnd)
    SetClassLong(hwnd, GCL_HICON,   (LONG) LoadIcon(g_hinst, (LPCTSTR)WINWIZICO));
    SetClassLong(hwnd, GCL_HICONSM, (LONG) LoadIcon(g_hinst, (LPCTSTR)WINWIZICO));
 
-   hwndMain = hwnd ;
-
+   get_monitor_dimens(hwnd);
    set_up_working_spaces(hwnd) ; //  do this *before* tooltips !!
    //***************************************************************************
    //  add tooltips and bitmaps
@@ -527,7 +484,7 @@ static void do_init_dialog(HWND hwnd)
    cxClient = (myRect.right - myRect.left) ;
    cyClient = (myRect.bottom - myRect.top) ;
 
-   center_window() ;
+   center_dialog_on_screen(hwnd);
    //****************************************************************
    //  create/configure status bar
    //****************************************************************
