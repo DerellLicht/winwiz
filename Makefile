@@ -160,9 +160,6 @@ depend:
 winwiz.exe: $(OBJS)
 	$(TOOLS)\g++ $(CFLAGS) $(LFLAGS) $(OBJS) -o $@ $(LIBS)
 
-#  I'm doing this hack, because clang version of windres gives
-#	$(TOOLS)\windres $< -O COFF -o $@
-#  while tdm version has no problems with the file...
 rc.o: winwiz.rc 
 ifeq ($(USE_CLANG),YES)
 	$(TOOLS)\windres $< -O COFF -o $@
