@@ -93,4 +93,4 @@ vers    date        actions taken
                  - add caching of sprite resources at startup, to speed up map redraws.
 1.46 - 05/04/25  - bug (fixed): after telePort to monster location, keymap was wrong.
 
-                 
+1.47 - 06/13/25  update player description after character changes
