@@ -28,6 +28,17 @@ static void vendor_show_value(HWND hDlg, int vid, unsigned value)
 }
 
 //****************************************************************************
+void enable_stat_chg_buttons(HWND hwnd, bool bEnable)
+{
+   EnableWindow(GetDlgItem (hwnd, IDC_VSTRMORE), bEnable) ;
+   EnableWindow(GetDlgItem (hwnd, IDC_VSTRLESS), bEnable) ;
+   EnableWindow(GetDlgItem (hwnd, IDC_VDEXMORE), bEnable) ;
+   EnableWindow(GetDlgItem (hwnd, IDC_VDEXLESS), bEnable) ;
+   EnableWindow(GetDlgItem (hwnd, IDC_VINTMORE), bEnable) ;
+   EnableWindow(GetDlgItem (hwnd, IDC_VINTLESS), bEnable) ;
+}
+
+//****************************************************************************
 static void update_equip_avail(HWND hDlg)
 {
    unsigned j, idx, tval ;
@@ -88,6 +99,8 @@ static BOOL CALLBACK VendorDlgProc (HWND hDlg, UINT message, WPARAM wParam, LPAR
 
       //  show current available gold
       vendor_show_value(hDlg, IDC_VGOLD, player.gold) ;
+      
+      enable_stat_chg_buttons(hDlg, (player.gold > 1000) ? true : false);
 
       //  set up gem-sales display
       for (j=IDC_GEM1, tval=IDC_TGEM1, idx=0; j<=IDC_GEM8; j++, tval++, idx++) {
@@ -130,6 +143,9 @@ static BOOL CALLBACK VendorDlgProc (HWND hDlg, UINT message, WPARAM wParam, LPAR
       vendor_show_value(hDlg, IDC_VINTCOST, stat_prices[2]) ;
       vendor_show_value(hDlg, IDC_VINTDATA, stat_value[2]) ;
 
+      if (player.treasure_count == 0) {
+         EnableWindow(GetDlgItem (hDlg, IDC_SELLGEMS), FALSE) ;
+      }
       //  move focus to exit button
       iTemp = IDVOK ;
       SetFocus (GetDlgItem (hDlg, iTemp)) ;
@@ -158,6 +174,7 @@ static BOOL CALLBACK VendorDlgProc (HWND hDlg, UINT message, WPARAM wParam, LPAR
             player.iq  = min(stat_value[2], 18) ;
          // iCurrentColor  = iRace ;
          // iCurrentFigure = iFigure ;
+         show_treasures();
          EndDialog (hDlg, TRUE) ;
          return TRUE ;
            
@@ -173,6 +190,7 @@ static BOOL CALLBACK VendorDlgProc (HWND hDlg, UINT message, WPARAM wParam, LPAR
             }
          }
          SendMessage(hDlg, WM_INITDIALOG, 0, 0) ;
+         enable_stat_chg_buttons(hDlg, (player.gold > 1000) ? true : false);
          return TRUE ;
            
       case IDC_GEM1:
@@ -224,6 +242,7 @@ static BOOL CALLBACK VendorDlgProc (HWND hDlg, UINT message, WPARAM wParam, LPAR
             vendor_show_value(hDlg, IDC_VGOLD, player.gold) ;
             update_equip_avail(hDlg) ;
          }
+         enable_stat_chg_buttons(hDlg, (player.gold > 1000) ? true : false);
          return TRUE ;
          
       case IDC_VSTRLESS:
@@ -237,6 +256,7 @@ static BOOL CALLBACK VendorDlgProc (HWND hDlg, UINT message, WPARAM wParam, LPAR
             vendor_show_value(hDlg, IDC_VGOLD, player.gold) ;
             update_equip_avail(hDlg) ;
          }
+         enable_stat_chg_buttons(hDlg, (player.gold > 1000) ? true : false);
          return TRUE ;
          
       case IDC_VDEXMORE:
@@ -252,6 +272,7 @@ static BOOL CALLBACK VendorDlgProc (HWND hDlg, UINT message, WPARAM wParam, LPAR
             vendor_show_value(hDlg, IDC_VGOLD, player.gold) ;
             update_equip_avail(hDlg) ;
          }
+         enable_stat_chg_buttons(hDlg, (player.gold > 1000) ? true : false);
          return TRUE ;
 
       case IDC_VDEXLESS:
@@ -263,6 +284,7 @@ static BOOL CALLBACK VendorDlgProc (HWND hDlg, UINT message, WPARAM wParam, LPAR
             vendor_show_value(hDlg, IDC_VGOLD, player.gold) ;
             update_equip_avail(hDlg) ;
          }
+         enable_stat_chg_buttons(hDlg, (player.gold > 1000) ? true : false);
          return TRUE ;
          
       case IDC_VINTMORE:
@@ -278,6 +300,7 @@ static BOOL CALLBACK VendorDlgProc (HWND hDlg, UINT message, WPARAM wParam, LPAR
             vendor_show_value(hDlg, IDC_VGOLD, player.gold) ;
             update_equip_avail(hDlg) ;
          }
+         enable_stat_chg_buttons(hDlg, (player.gold > 1000) ? true : false);
          return TRUE ;
          
       case IDC_VINTLESS:
@@ -289,6 +312,7 @@ static BOOL CALLBACK VendorDlgProc (HWND hDlg, UINT message, WPARAM wParam, LPAR
             vendor_show_value(hDlg, IDC_VGOLD, player.gold) ;
             update_equip_avail(hDlg) ;
          }
+         enable_stat_chg_buttons(hDlg, (player.gold > 1000) ? true : false);
          return TRUE ;
       }  //lint !e744  switch on target checkbox
       break;

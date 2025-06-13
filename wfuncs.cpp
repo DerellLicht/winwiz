@@ -1969,6 +1969,9 @@ void show_treasures(void)
             object_data[TREASURE_BASE+idx].sprite_row,
             idx) ;
       }
+      else {
+         clear_treasure_area(hwndTreasures[idx], GetSysColor(COLOR_3DFACE));
+      }
    }
    if (player.has_runestaff) {
       draw_sprite_treasure(
