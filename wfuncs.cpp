@@ -89,7 +89,7 @@ static object_data_s object_data[LAST_OBJECT] = {
 {  4, 12, _T("troll"   ) }, // TROLL          ,   
 {  8, 16, _T("minotaur") }, // MINOTAUR       ,   
 {  9, 12, _T("ur-vile" ) }, // UR_VILE        ,   
-{  1, 14, _T("gargoyle") }, // GARGOYLE       ,   
+{  1, 14, _T("gargoyle") }, // GARGOYLE       ,
 {  7, 33, _T("chimera" ) }, // CHIMERA        ,   
 {  7, 17, _T("balrog"  ) }, // BALROG         ,   
 {  3, 27, _T("dragon"  ) }, // DRAGON         ,   
@@ -109,7 +109,12 @@ static object_data_s object_data[LAST_OBJECT] = {
 
 { 19, 25, _T("the RuneStaff" ) }, // RUNESTAFF       ,  
 {  0, 33, _T("the Orb of Zot") }, // ORB_OF_ZOT       ,  
-{  8, 39, _T("player") }  // PLAYER         ,  
+// race_str   { L"Human", L"Dwarf", L"Hobbit", L"Elf" } ;
+//                         //  all offset from PLAYER
+{  8, 39, _T("Human") },   // HUMAN  = PLAYER + 0
+{  6,  2, _T("Dwarf") },   // DWARF  = PLAYER + 1
+{  1,  4, _T("Hobbit") },  // HOBBIT = PLAYER + 2
+{  8, 24, _T("Elf") }      // ELF    = PLAYER + 3
 } ;
 
 //***********************************************************************
@@ -185,7 +190,13 @@ wchar_t const * const get_race_str(uint idx)
 //lint -esym(759, get_race_str)   header declaration for symbol could be moved from header to module
 wchar_t const * const get_race_str(void)
 {
-   return race_str[player.race].c_str() ;
+   // uint player_sprite = (player.alt_race == 0) ? PLAYER+player.race : player.alt_race ;
+   if (player.alt_race == 0) {
+      return race_str[player.race].c_str() ;
+   }
+   else {
+      return get_object_name(player.alt_race);
+   }
 }
 
 void set_race_str(uint idx, TCHAR *newstr)
@@ -453,9 +464,10 @@ static void restore_room(HDC hdc)   //  derived from hwndMapArea
 void show_player(void)
 {
    if (!player.is_blind) {
+      uint player_sprite = (player.alt_race == 0) ? PLAYER+player.race : player.alt_race ;
       HDC hdc = GetDC(hwndMapArea) ;
-      draw_sprite(hdc, object_data[PLAYER].sprite_col,
-                       object_data[PLAYER].sprite_row, player.x, player.y) ;
+      draw_sprite(hdc, object_data[player_sprite].sprite_col,
+                       object_data[player_sprite].sprite_row, player.x, player.y) ;
       draw_char_cursor(hdc, ON) ;
       ReleaseDC(hwndMapArea, hdc) ;
    }
@@ -664,6 +676,11 @@ static bool starts_with_vowel(TCHAR *monster)
    case 'i':
    case 'o':
    case 'u':
+   case 'A':
+   case 'E':
+   case 'I':
+   case 'O':
+   case 'U':
       return true;
 
    default:
@@ -1393,8 +1410,10 @@ static int gaze_into_orb(HWND hwnd)
       break;
 
    case 1: 
-      _stprintf(tempstr, _T("You see yourself drinking from a pool and becoming a %s"),
-            get_object_name(MONSTER_BASE + random(12))) ;
+      player.alt_race = MONSTER_BASE + random(12) ;
+      _stprintf(tempstr, _T("You see yourself drinking from a pool and becoming %s %s"),
+            get_monster_prefix(get_object_name(player.alt_race)),
+            get_object_name(player.alt_race)) ;
       put_message(tempstr) ;
       break;
 
@@ -1649,7 +1668,10 @@ static int drink_from_pool(HWND hwnd)
          j = random(4); 
          if (j != player.race) {
             player.race = j ;
-            _stprintf(tempstr, _T("With a scream of agony, you turn into a %s"), get_race_str(j)) ;
+            player.alt_race = 0 ;   //  reset any monster changes
+            _stprintf(tempstr, _T("With a scream of agony, you turn into %s %s"), 
+               get_monster_prefix(get_object_name(j)),
+               get_race_str(j)) ;
             put_message(tempstr) ;
             //  alter stats when this happens??
             break;
@@ -1838,7 +1860,8 @@ void view_special_items(void)
 {
    unsigned j ;
 
-   infoout(_T("You are a %s"), get_race_str()) ;
+   wchar_t const * const me = get_race_str() ;
+   infoout(_T("You are %s %s"), get_monster_prefix((TCHAR *)me), me);
    infoout(_T("you are currently exploring %s"), names[player.castle_nbr].c_str()) ;
 
    infoout(_T("you possess:")) ;

@@ -27,6 +27,7 @@ struct player_info {
    unsigned str{8}, dex{16}, iq{8} ;
    unsigned hit_points {8};
    unsigned race {0};
+   unsigned alt_race {0};  //  used if player is changed into a monster
    // unsigned sex ; //  not really used anywhere, even in original
    unsigned armour{1}, armour_points{7}, weapon{3} ;
    unsigned flares {0};
@@ -132,9 +133,14 @@ extern castle_room curse_rooms[3] ;
 #define  RUNESTAFF         34
 #define  ORB_OF_ZOT        35
 
+// race_str   { L"Human", L"Dwarf", L"Hobbit", L"Elf" } ;
 #define  PLAYER            36
+#define  HUMAN             36
+#define  DWARF             37
+#define  HOBBIT            38
+#define  ELF               39
 
-#define  LAST_OBJECT       37
+#define  LAST_OBJECT       40
 
 //**************************************************************
 //  misc string arrays

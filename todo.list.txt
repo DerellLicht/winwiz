@@ -1,9 +1,6 @@
 ToDo list
 =========
 
-- Update player icon;
-  after "you see yourself turn into a xxx", player should be drawn with icon for xxx ...
-  
 - Vendor dialog: Attributes buttons should be disabled, 
   if not enough gold to use them
   
