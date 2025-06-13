@@ -169,7 +169,7 @@ static bool can_I_see(void)
 {
    TCHAR msgstr[81] ;
    if (player.is_blind) {
-      _stprintf(msgstr, _T("YOU CAN'T SEE, YOU BLIND %s !!"), get_race_str(player.race));
+      _stprintf(msgstr, _T("YOU CAN'T SEE, YOU BLIND %s !!"), get_race_str());
       put_message(msgstr) ;
       return false;
    }

@@ -1,6 +1,9 @@
 ToDo list
 =========
 
+- Update player icon;
+  after "you see yourself turn into a xxx", player should be drawn with icon for xxx ...
+
 - Impatient vendors is not yet implemented
 
 - Implement some way to track possessions of monsters/vendors,
