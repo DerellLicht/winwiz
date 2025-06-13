@@ -206,6 +206,6 @@ void init_player(void)
    player.castle_nbr = random(get_castle_name_count()) ;
    adjust_hit_points() ;
    // race_str[3] = _T("DERELICT"); //  all this time, this has been a buffer overrun!!!
-   set_race_str(3, _T("DERELICT"));
+   set_race_str(0, _T("DERELICT")); //  replace Human; index 3 is Elf
 }         
 
