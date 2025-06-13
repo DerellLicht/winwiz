@@ -1,11 +1,6 @@
 ToDo list
 =========
 
-- Vendor dialog: Attributes buttons should be disabled, 
-  if not enough gold to use them
-  
-  Also, Sell Gems should be disabled if no gems are available (or selected)  
-
 - Impatient vendors is not yet implemented
 
 - Implement some way to track possessions of monsters/vendors,
