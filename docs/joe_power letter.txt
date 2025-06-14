@@ -1,0 +1,25 @@
+From: "Joseph Power" <joepower@mindspring.com>
+To: me
+Subject: Wizard's Castle
+Date: Monday, January 03, 2005 01:34
+
+Gosh, talk about a blast from the past!
+
+I'm glad you enjoyed the game and I hope I didn't screw up your grades too
+badly.  I originally wrote it for the Exidy Sorcerer (a Z80 based system 
+that didn't last very long.)  The first version took up more memory than 
+the demo unit at New Dimensions In Computing (NDIC) had.  I eventually 
+crammed it down into 16K and ported it to the Apple ][ and TRS-80. 
+After a sale to Kilobaud software fell through, I sent it off to
+Recreational Computing.
+
+In case you were wondering about the strange comment and the weird machine
+language call - Exidy bought the cheap version of Microsoft's Basic 
+interpreter and it had no RANDOMIZE command.  I created one and tucked it 
+into the comment.  That, more than anything else, caused people the most 
+headaches in converting it.
+
+Anyway, it is nice to see people enjoyed it.
+
+Joe Power
+
