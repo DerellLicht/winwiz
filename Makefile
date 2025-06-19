@@ -116,6 +116,8 @@ CastleInit.cpp initscrn.cpp combat.cpp vendor.cpp loadhelp.cpp \
 about.cpp hyperlinks.cpp
 CSRC += $(CBASE)
 
+LINTFILES=lintdefs.cpp lintdefs.ref.h 
+
 OBJS = $(CSRC:.cpp=.o) rc.o
 
 BASE=winwiz
@@ -151,7 +153,7 @@ wc:
 	wc -l $(CBASE) *.rc
 
 lint:
-	cmd /C "c:\lint9\lint-nt +v -width(160,4) $(LiFLAGS) -ic:\lint9 mingw.lnt -os(_lint.tmp) lintdefs.cpp $(CSRC)"
+	cmd /C "c:\lint9\lint-nt +v -width(160,4) $(LiFLAGS) -ic:\lint9 mingw.lnt -os(_lint.tmp) $(LINTFILES) $(CSRC)"
 
 depend:
 	makedepend $(CFLAGS) $(CSRC)

@@ -88,20 +88,19 @@
 //lint -e840   Use of nul character in a string literal
 //lint -e845   The right argument to operator '|' is certain to be 0
 
-//lint -e730   Boolean argument to function that expects boolean argument (duh)
-//lint -e786   String concatenation within initializer
 //lint -e525   Negative indentation from line ...
 //lint -e539   Did not expect positive indentation from line ...
-//lint -e725   Expected positive indentation from line 1470
 //lint -e716   while(1) ...
 //lint -e717   do ... while(0);
+//lint -e725   Expected positive indentation from line 1470
 //lint -e731   Boolean argument to equal/not equal
+//lint -e730   Boolean argument to function that expects boolean argument (duh)
+//lint -e786   String concatenation within initializer
 //lint -e801   Use of goto is deprecated
 //lint -e818   Pointer parameter could be declared as pointing to const
 //lint -e830   Location cited in prior message
 //lint -e831   Reference cited in prior message
 //lint -e834   Operator '-' followed by operator '-' is confusing.  Use parentheses.
-//lint -e1776  Converting a string literal to char * is not const safe (arg. no. 2)
 //lint -e1773  Attempt to cast away const (or volatile)
 //lint -e1762  Member function could be made const
 
@@ -112,18 +111,5 @@
 //  compiler knows how to handle these, but maybe check later
 //lint -e713   Loss of precision (assignment) (unsigned int to int)
 //lint -e732   Loss of sign (initialization) (long to unsigned int)
-
-//  exclusions because pclint doesn't know later c++ constructs
-//lint -e52    Expected an lvalue
-//lint -e55    Bad type
-//lint -e63    Expected an lvalue
-//lint -e133   Too many initializers for aggregate 'unknown-name'
-//lint -e503   Boolean argument to relational
-//lint -e505   Redundant left argument to comma
-//lint -e522   Highest operation, function 'clear_room', lacks side-effects
-//lint -e650   Constant '32' out of range for operator '>'
-//lint -e685   Relational operator '>' always evaluates to 'false'
 //lint -e737   Loss of sign in promotion from int to unsigned int
-//lint -e1712  default constructor not defined for class 
-//lint -e550   Symbol not accessed (pclint doesn't understand non-static struct init)
 

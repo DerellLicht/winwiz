@@ -62,6 +62,7 @@ struct object_data_s {
 //**************************************************************
 //  this is only referenced by wfuncs.cpp
 //**************************************************************
+//lint -e133  Too many initializers for aggregate 'unknown-name'
 static object_data_s object_data[LAST_OBJECT] = {
 { 25,  9, _T("unassigned room") }, // UNSEEN_ROOM    ,  
 { 21,  1, _T("normal room"    ) }, // EMPTY_ROOM     ,  
