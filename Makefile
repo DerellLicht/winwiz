@@ -73,6 +73,7 @@ ifeq ($(USE_UNICODE),YES)
 CFLAGS += -DUNICODE -D_UNICODE
 LFLAGS += -dUNICODE -d_UNICODE
 LiFLAGS += -DUNICODE -D_UNICODE
+IFLAGS += -DUNICODE -D_UNICODE
 else
 CFLAGS += -Wno-stringop-truncation
 CFLAGS += -Wno-conversion-null
@@ -86,6 +87,8 @@ LFLAGS += -mwindows
 ifeq ($(USE_STATIC),YES)
 LFLAGS += -static
 endif
+
+IFLAGS += -Ider_libs
 
 #  clang-tidy options
 CHFLAGS = -header-filter=.*
@@ -156,7 +159,7 @@ lint:
 	cmd /C "c:\lint9\lint-nt +v -width(160,4) $(LiFLAGS) -ic:\lint9 mingw.lnt -os(_lint.tmp) $(LINTFILES) $(CSRC)"
 
 depend:
-	makedepend $(CFLAGS) $(CSRC)
+	makedepend $(IFLAGS) $(CSRC)
 
 #************************************************************
 winwiz.exe: $(OBJS)
