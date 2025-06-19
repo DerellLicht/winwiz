@@ -1,6 +1,5 @@
 //************************************************************************
 //  Copyright (c) 1986-2025  Daniel D Miller
-//  winwiz.exe - Wizard's Castle
 //  loadhelp.cpp - Load Windows help file
 //************************************************************************
 #include <windows.h>
@@ -10,11 +9,7 @@
 #include "common.h"
 
 //*************************************************************
-#ifndef PATH_MAX
-#define  PATH_MAX    1024
-#endif
-
-static TCHAR chmname[PATH_MAX] = _T("");
+static TCHAR chmname[MAX_PATH_LEN] = _T("");
 
 static void find_chm_location(void)
 {
