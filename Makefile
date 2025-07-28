@@ -110,13 +110,14 @@ der_libs/statbar.cpp \
 der_libs/cterminal.cpp \
 der_libs/terminal.cpp \
 der_libs/tooltips.cpp \
+der_libs/hyperlinks.cpp \
 der_libs/vlistview.cpp 
 
 # separate local source files from library files,
 # so that wc operation is more appropriate.
-CBASE=winwiz.cpp keyboard.cpp wfuncs.cpp \
-CastleInit.cpp initscrn.cpp combat.cpp vendor.cpp loadhelp.cpp \
-about.cpp hyperlinks.cpp
+CBASE=winwiz.cpp keyboard.cpp wfuncs.cpp about.cpp \
+CastleInit.cpp initscrn.cpp combat.cpp vendor.cpp loadhelp.cpp 
+
 CSRC += $(CBASE)
 
 LINTFILES=lintdefs.cpp lintdefs.ref.h 
@@ -189,6 +190,7 @@ der_libs/terminal.o: der_libs/cterminal.h der_libs/vlistview.h
 der_libs/terminal.o: der_libs/terminal.h der_libs/winmsgs.h
 der_libs/tooltips.o: der_libs/iface_32_64.h der_libs/common.h
 der_libs/tooltips.o: der_libs/tooltips.h
+der_libs/hyperlinks.o: der_libs/iface_32_64.h der_libs/hyperlinks.h
 der_libs/vlistview.o: der_libs/common.h der_libs/commonw.h
 der_libs/vlistview.o: der_libs/vlistview.h
 winwiz.o: resource.h version.h der_libs/common.h der_libs/commonw.h
@@ -198,12 +200,12 @@ winwiz.o: der_libs/tooltips.h der_libs/gdiplus_setup.h
 keyboard.o: der_libs/common.h wizard.h keywin32.h
 wfuncs.o: resource.h der_libs/common.h der_libs/commonw.h wizard.h keywin32.h
 wfuncs.o: der_libs/terminal.h der_libs/gdi_plus.h
+about.o: resource.h version.h der_libs/common.h wizard.h
+about.o: der_libs/hyperlinks.h
 CastleInit.o: der_libs/common.h wizard.h
 initscrn.o: resource.h der_libs/common.h der_libs/commonw.h wizard.h
 combat.o: der_libs/common.h wizard.h keywin32.h
 vendor.o: resource.h der_libs/common.h wizard.h
 loadhelp.o: der_libs/common.h
-about.o: resource.h version.h der_libs/common.h wizard.h hyperlinks.h
-hyperlinks.o: der_libs/iface_32_64.h hyperlinks.h
 der_libs/gdi_plus.o: der_libs/common.h der_libs/gdi_plus.h
 der_libs/gdiplus_setup.o: der_libs/gdi_plus.h
