@@ -47,6 +47,9 @@ HISTORY:    Date:      Author:     Comment:
 //static BOOL CALLBACK AboutDlgProc(HWND hdlg, UINT uMessage, WPARAM wparam, LPARAM lparam)
 static INT_PTR CALLBACK AboutDlgProc(HWND hdlg, UINT uMessage, WPARAM wparam, LPARAM lparam)
 {
+#define  BUF_LEN  255
+   wchar_t buf[BUF_LEN+1];
+   
    switch(uMessage) {
    case WM_INITDIALOG:
       SetWindowText(GetDlgItem(hdlg, IDC_VERNUM), (TCHAR *) VerNum) ;
@@ -57,11 +60,9 @@ static INT_PTR CALLBACK AboutDlgProc(HWND hdlg, UINT uMessage, WPARAM wparam, LP
    case WM_COMMAND:
       switch (LOWORD(wparam)) {
       case IDC_WEBLINK:
-         ShellExecute(hdlg, _T("open"), _T("http://derelllicht.42web.io/winwiz.html"), _T(""), _T(""), SW_SHOW);
-         return TRUE;
-         
       case IDC_WEBLINK2:
-         ShellExecute(hdlg, _T("open"), _T("https://github.com/DerellLicht/winwiz"), _T(""), _T(""), SW_SHOW);
+         GetDlgItemText(hdlg, LOWORD(wparam), buf, BUF_LEN);
+         ShellExecute(hdlg, L"open", buf, L"", L"", SW_SHOW);
          return TRUE;
          
       case IDOK:
