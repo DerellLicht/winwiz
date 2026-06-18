@@ -90,16 +90,6 @@ endif
 
 IFLAGS += -Ider_libs
 
-#  clang-tidy options
-CHFLAGS = -header-filter=.*
-CHTAIL = -- -Ider_libs
-ifeq ($(USE_64BIT),YES)
-CHTAIL += -DUSE_64BIT
-endif
-ifeq ($(USE_UNICODE),YES)
-CHTAIL += -DUNICODE -D_UNICODE
-endif
-
 # link library files
 LiFLAGS += -Ider_libs
 CFLAGS += -Ider_libs
@@ -119,6 +109,17 @@ CBASE=winwiz.cpp keyboard.cpp wfuncs.cpp about.cpp \
 CastleInit.cpp initscrn.cpp combat.cpp vendor.cpp loadhelp.cpp 
 
 CSRC += $(CBASE)
+
+#  clang-tidy options
+CHFLAGS = -header-filter=.*
+CHTAIL = --
+CHTAIL += -Ider_libs
+ifeq ($(USE_64BIT),YES)
+CHTAIL += -DUSE_64BIT
+endif
+ifeq ($(USE_UNICODE),YES)
+CHTAIL += -DUNICODE -D_UNICODE
+endif
 
 LINTFILES=lintdefs.cpp lintdefs.ref.h 
 
@@ -146,15 +147,15 @@ all: $(BIN)
 clean:
 	rm -vf $(BIN) $(OBJS) *.zip *.bak *~
 
-check:
-	cmd /C "d:\clang\bin\clang-tidy.exe $(CHFLAGS) $(CSRC) $(CHTAIL)"
-
 dist:
 	rm -f $(BASE).zip
 	zip $(BASE).zip *.exe winwiz.chm $(IMAGES) history.winwiz.txt LICENSE readme.md
 
 wc:
 	wc -l $(CBASE) *.rc
+
+check:
+	cmd /C "d:\llvm\bin\clang-tidy.exe $(CHFLAGS) $(CSRC) $(CHTAIL)"
 
 lint:
 	cmd /C "c:\lint9\lint-nt +v -width(160,4) $(LiFLAGS) -ic:\lint9 mingw.lnt -os(_lint.tmp) $(LINTFILES) $(CSRC)"

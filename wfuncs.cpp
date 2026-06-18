@@ -315,7 +315,7 @@ static void draw_empty_room(HDC hdc, unsigned xidest, unsigned yidest)
    }
    unsigned xdest = X_OFFSET + (xidest * (SPRITE_WIDTH  + X_GAP)) ;  //  draw_sprite()
    unsigned ydest = Y_OFFSET + (yidest * (SPRITE_HEIGHT + Y_GAP)) ;  //  draw_sprite()
-   ul2uc_t uconv ;
+   ul2uc_t uconv {};
    uconv.uc[2] = 107 ;  //  blue
    uconv.uc[1] = 107 ;  //  green
    uconv.uc[0] = 66 ;   //  red
@@ -2249,11 +2249,8 @@ L"AS OF NOW, *NONE* HAS EVER EMERGED VICTORIOUSLY!  BEWARE!!"
 void draw_intro_screen(HWND hwnd)
 {
    put_message(WIN_MAGENTA, L"* * * THE WIZARD'S CASTLE * * *") ;
-   // for (auto j=0U; intro_msg[j] != 0; j++) { //  array version
-   for (auto j=0U; j < intro_msg.size() ; j++) {   //lint !e737
-   // for (auto it = intro_msg.begin(); it != intro_msg.end(); ++it) {
-      put_message(WIN_BLUE, (wchar_t *) intro_msg[j].c_str()) ;
-      // put_message(WIN_BLUE, it->c_str()) ;
+   for(auto &text_line : intro_msg) {
+      put_message(WIN_GREEN, (wchar_t *) text_line.c_str()) ;
    }
    infoout(_T("You are now entering %s"), names[player.castle_nbr].c_str()) ;
    queryout(_T("Do you wish to select your own attributes  (Type 's'),")) ;
