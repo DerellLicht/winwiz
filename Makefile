@@ -110,17 +110,6 @@ CastleInit.cpp initscrn.cpp combat.cpp vendor.cpp loadhelp.cpp
 
 CSRC += $(CBASE)
 
-#  clang-tidy options
-CHFLAGS = -header-filter=.*
-CHTAIL = --
-CHTAIL += -Ider_libs
-ifeq ($(USE_64BIT),YES)
-CHTAIL += -DUSE_64BIT
-endif
-ifeq ($(USE_UNICODE),YES)
-CHTAIL += -DUNICODE -D_UNICODE
-endif
-
 LINTFILES=lintdefs.cpp lintdefs.ref.h 
 
 OBJS = $(CSRC:.cpp=.o) rc.o
@@ -155,7 +144,7 @@ wc:
 	wc -l $(CBASE) *.rc
 
 check:
-	cmd /C "d:\llvm\bin\clang-tidy.exe $(CHFLAGS) $(CSRC) $(CHTAIL)"
+	cmd /C "d:\llvm\bin\clang-tidy.exe $(CSRC)"
 
 lint:
 	cmd /C "c:\lint9\lint-nt +v -width(160,4) $(LiFLAGS) -ic:\lint9 mingw.lnt -os(_lint.tmp) $(LINTFILES) $(CSRC)"
@@ -165,8 +154,10 @@ depend:
 
 #************************************************************
 winwiz.exe: $(OBJS)
-	$(TOOLS)\g++ $(CFLAGS) $(LFLAGS) $(OBJS) -o $@ $(LIBS)
+	$(TOOLS)/g++ $(CFLAGS) $(LFLAGS) $(OBJS) -o $@ $(LIBS)
 
+# note: though all other utilities can accept forward slash in paths,
+#       windres cannot... 
 rc.o: winwiz.rc 
 ifeq ($(USE_CLANG),YES)
 	$(TOOLS)\windres $< -O COFF -o $@

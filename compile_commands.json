@@ -1,0 +1,362 @@
+[
+ {
+  "directory": "D:\\SourceCode\\Git\\winwiz",
+  "arguments": [
+   "D:/llvm/bin/i686-w64-mingw32-clang++.exe",
+   "-Wall",
+   "-O2",
+   "-Weffc++",
+   "-Wno-write-strings",
+   "-DUNICODE",
+   "-D_UNICODE",
+   "-Ider_libs",
+   "-c",
+   "der_libs/common_funcs.cpp",
+   "-o",
+   "der_libs/common_funcs.o"
+  ],
+  "file": "der_libs/common_funcs.cpp"
+ },
+ {
+  "directory": "D:\\SourceCode\\Git\\winwiz",
+  "arguments": [
+   "D:/llvm/bin/i686-w64-mingw32-clang++.exe",
+   "-Wall",
+   "-O2",
+   "-Weffc++",
+   "-Wno-write-strings",
+   "-DUNICODE",
+   "-D_UNICODE",
+   "-Ider_libs",
+   "-c",
+   "der_libs/common_win.cpp",
+   "-o",
+   "der_libs/common_win.o"
+  ],
+  "file": "der_libs/common_win.cpp"
+ },
+ {
+  "directory": "D:\\SourceCode\\Git\\winwiz",
+  "arguments": [
+   "D:/llvm/bin/i686-w64-mingw32-clang++.exe",
+   "-Wall",
+   "-O2",
+   "-Weffc++",
+   "-Wno-write-strings",
+   "-DUNICODE",
+   "-D_UNICODE",
+   "-Ider_libs",
+   "-c",
+   "der_libs/winmsgs.cpp",
+   "-o",
+   "der_libs/winmsgs.o"
+  ],
+  "file": "der_libs/winmsgs.cpp"
+ },
+ {
+  "directory": "D:\\SourceCode\\Git\\winwiz",
+  "arguments": [
+   "D:/llvm/bin/i686-w64-mingw32-clang++.exe",
+   "-Wall",
+   "-O2",
+   "-Weffc++",
+   "-Wno-write-strings",
+   "-DUNICODE",
+   "-D_UNICODE",
+   "-Ider_libs",
+   "-c",
+   "der_libs/statbar.cpp",
+   "-o",
+   "der_libs/statbar.o"
+  ],
+  "file": "der_libs/statbar.cpp"
+ },
+ {
+  "directory": "D:\\SourceCode\\Git\\winwiz",
+  "arguments": [
+   "D:/llvm/bin/i686-w64-mingw32-clang++.exe",
+   "-Wall",
+   "-O2",
+   "-Weffc++",
+   "-Wno-write-strings",
+   "-DUNICODE",
+   "-D_UNICODE",
+   "-Ider_libs",
+   "-c",
+   "der_libs/cterminal.cpp",
+   "-o",
+   "der_libs/cterminal.o"
+  ],
+  "file": "der_libs/cterminal.cpp"
+ },
+ {
+  "directory": "D:\\SourceCode\\Git\\winwiz",
+  "arguments": [
+   "D:/llvm/bin/i686-w64-mingw32-clang++.exe",
+   "-Wall",
+   "-O2",
+   "-Weffc++",
+   "-Wno-write-strings",
+   "-DUNICODE",
+   "-D_UNICODE",
+   "-Ider_libs",
+   "-c",
+   "der_libs/terminal.cpp",
+   "-o",
+   "der_libs/terminal.o"
+  ],
+  "file": "der_libs/terminal.cpp"
+ },
+ {
+  "directory": "D:\\SourceCode\\Git\\winwiz",
+  "arguments": [
+   "D:/llvm/bin/i686-w64-mingw32-clang++.exe",
+   "-Wall",
+   "-O2",
+   "-Weffc++",
+   "-Wno-write-strings",
+   "-DUNICODE",
+   "-D_UNICODE",
+   "-Ider_libs",
+   "-c",
+   "der_libs/tooltips.cpp",
+   "-o",
+   "der_libs/tooltips.o"
+  ],
+  "file": "der_libs/tooltips.cpp"
+ },
+ {
+  "directory": "D:\\SourceCode\\Git\\winwiz",
+  "arguments": [
+   "D:/llvm/bin/i686-w64-mingw32-clang++.exe",
+   "-Wall",
+   "-O2",
+   "-Weffc++",
+   "-Wno-write-strings",
+   "-DUNICODE",
+   "-D_UNICODE",
+   "-Ider_libs",
+   "-c",
+   "der_libs/hyperlinks.cpp",
+   "-o",
+   "der_libs/hyperlinks.o"
+  ],
+  "file": "der_libs/hyperlinks.cpp"
+ },
+ {
+  "directory": "D:\\SourceCode\\Git\\winwiz",
+  "arguments": [
+   "D:/llvm/bin/i686-w64-mingw32-clang++.exe",
+   "-Wall",
+   "-O2",
+   "-Weffc++",
+   "-Wno-write-strings",
+   "-DUNICODE",
+   "-D_UNICODE",
+   "-Ider_libs",
+   "-c",
+   "der_libs/vlistview.cpp",
+   "-o",
+   "der_libs/vlistview.o"
+  ],
+  "file": "der_libs/vlistview.cpp"
+ },
+ {
+  "directory": "D:\\SourceCode\\Git\\winwiz",
+  "arguments": [
+   "D:/llvm/bin/i686-w64-mingw32-clang++.exe",
+   "-Wall",
+   "-O2",
+   "-Weffc++",
+   "-Wno-write-strings",
+   "-DUNICODE",
+   "-D_UNICODE",
+   "-Ider_libs",
+   "-c",
+   "winwiz.cpp",
+   "-o",
+   "winwiz.o"
+  ],
+  "file": "winwiz.cpp"
+ },
+ {
+  "directory": "D:\\SourceCode\\Git\\winwiz",
+  "arguments": [
+   "D:/llvm/bin/i686-w64-mingw32-clang++.exe",
+   "-Wall",
+   "-O2",
+   "-Weffc++",
+   "-Wno-write-strings",
+   "-DUNICODE",
+   "-D_UNICODE",
+   "-Ider_libs",
+   "-c",
+   "keyboard.cpp",
+   "-o",
+   "keyboard.o"
+  ],
+  "file": "keyboard.cpp"
+ },
+ {
+  "directory": "D:\\SourceCode\\Git\\winwiz",
+  "arguments": [
+   "D:/llvm/bin/i686-w64-mingw32-clang++.exe",
+   "-Wall",
+   "-O2",
+   "-Weffc++",
+   "-Wno-write-strings",
+   "-DUNICODE",
+   "-D_UNICODE",
+   "-Ider_libs",
+   "-c",
+   "wfuncs.cpp",
+   "-o",
+   "wfuncs.o"
+  ],
+  "file": "wfuncs.cpp"
+ },
+ {
+  "directory": "D:\\SourceCode\\Git\\winwiz",
+  "arguments": [
+   "D:/llvm/bin/i686-w64-mingw32-clang++.exe",
+   "-Wall",
+   "-O2",
+   "-Weffc++",
+   "-Wno-write-strings",
+   "-DUNICODE",
+   "-D_UNICODE",
+   "-Ider_libs",
+   "-c",
+   "about.cpp",
+   "-o",
+   "about.o"
+  ],
+  "file": "about.cpp"
+ },
+ {
+  "directory": "D:\\SourceCode\\Git\\winwiz",
+  "arguments": [
+   "D:/llvm/bin/i686-w64-mingw32-clang++.exe",
+   "-Wall",
+   "-O2",
+   "-Weffc++",
+   "-Wno-write-strings",
+   "-DUNICODE",
+   "-D_UNICODE",
+   "-Ider_libs",
+   "-c",
+   "CastleInit.cpp",
+   "-o",
+   "CastleInit.o"
+  ],
+  "file": "CastleInit.cpp"
+ },
+ {
+  "directory": "D:\\SourceCode\\Git\\winwiz",
+  "arguments": [
+   "D:/llvm/bin/i686-w64-mingw32-clang++.exe",
+   "-Wall",
+   "-O2",
+   "-Weffc++",
+   "-Wno-write-strings",
+   "-DUNICODE",
+   "-D_UNICODE",
+   "-Ider_libs",
+   "-c",
+   "initscrn.cpp",
+   "-o",
+   "initscrn.o"
+  ],
+  "file": "initscrn.cpp"
+ },
+ {
+  "directory": "D:\\SourceCode\\Git\\winwiz",
+  "arguments": [
+   "D:/llvm/bin/i686-w64-mingw32-clang++.exe",
+   "-Wall",
+   "-O2",
+   "-Weffc++",
+   "-Wno-write-strings",
+   "-DUNICODE",
+   "-D_UNICODE",
+   "-Ider_libs",
+   "-c",
+   "combat.cpp",
+   "-o",
+   "combat.o"
+  ],
+  "file": "combat.cpp"
+ },
+ {
+  "directory": "D:\\SourceCode\\Git\\winwiz",
+  "arguments": [
+   "D:/llvm/bin/i686-w64-mingw32-clang++.exe",
+   "-Wall",
+   "-O2",
+   "-Weffc++",
+   "-Wno-write-strings",
+   "-DUNICODE",
+   "-D_UNICODE",
+   "-Ider_libs",
+   "-c",
+   "vendor.cpp",
+   "-o",
+   "vendor.o"
+  ],
+  "file": "vendor.cpp"
+ },
+ {
+  "directory": "D:\\SourceCode\\Git\\winwiz",
+  "arguments": [
+   "D:/llvm/bin/i686-w64-mingw32-clang++.exe",
+   "-Wall",
+   "-O2",
+   "-Weffc++",
+   "-Wno-write-strings",
+   "-DUNICODE",
+   "-D_UNICODE",
+   "-Ider_libs",
+   "-c",
+   "loadhelp.cpp",
+   "-o",
+   "loadhelp.o"
+  ],
+  "file": "loadhelp.cpp"
+ },
+ {
+  "directory": "D:\\SourceCode\\Git\\winwiz",
+  "arguments": [
+   "D:/llvm/bin/i686-w64-mingw32-clang++.exe",
+   "-Wall",
+   "-O2",
+   "-Weffc++",
+   "-Wno-write-strings",
+   "-DUNICODE",
+   "-D_UNICODE",
+   "-Ider_libs",
+   "-c",
+   "der_libs/gdi_plus.cpp",
+   "-o",
+   "der_libs/gdi_plus.o"
+  ],
+  "file": "der_libs/gdi_plus.cpp"
+ },
+ {
+  "directory": "D:\\SourceCode\\Git\\winwiz",
+  "arguments": [
+   "D:/llvm/bin/i686-w64-mingw32-clang++.exe",
+   "-Wall",
+   "-O2",
+   "-Weffc++",
+   "-Wno-write-strings",
+   "-DUNICODE",
+   "-D_UNICODE",
+   "-Ider_libs",
+   "-c",
+   "der_libs/gdiplus_setup.cpp",
+   "-o",
+   "der_libs/gdiplus_setup.o"
+  ],
+  "file": "der_libs/gdiplus_setup.cpp"
+ }
+]
