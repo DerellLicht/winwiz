@@ -16,7 +16,7 @@ ifeq ($(USE_64BIT),YES)
 TOOLS=d:\tdm64\bin
 else
 ifeq ($(USE_CLANG),YES)
-TOOLS=d:\clang\bin
+TOOLS=d:\llvm\bin
 else
 ifeq ($(USE_CYGWIN),YES)
 TOOLS=C:\cygwin64\bin
