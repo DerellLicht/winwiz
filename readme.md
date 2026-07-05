@@ -27,6 +27,7 @@ Beginning in April 2025, the LodePng library is now deprecated,
 and UNICODE support is now required, for the GDI+ library that has replaced it.
 
 <hr>
+
 This project is licensed under __Creative Commons CC0 1.0 Universal__ <br>  
 https://creativecommons.org/publicdomain/zero/1.0/
 
