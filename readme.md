@@ -28,7 +28,7 @@ and UNICODE support is now required, for the GDI+ library that has replaced it.
 
 <hr>
 
-This project is licensed under _Creative Commons CC0 1.0 Universal_ <br>  
+This project is licensed under _Creative Commons CC0 1.0 Universal_   
 https://creativecommons.org/publicdomain/zero/1.0/
 
 The person who associated a work with this deed has dedicated the work to the
