@@ -45,7 +45,6 @@ static void update_equip_avail(HWND hDlg)
 
    //  update armour/weapon entries based on available cash
    for (j=IDC_VANONE, tval=IDC_VWNONE, idx=0; idx <= 3; j++, tval++, idx++) {
-      unsigned apoints = idx * 7 ;
       HWND hwndArmour = GetDlgItem(hDlg, j) ;
       HWND hwndWeapon = GetDlgItem(hDlg, tval) ;
 
@@ -55,6 +54,7 @@ static void update_equip_avail(HWND hDlg)
       //       mark item disabled
       //  else mark item enabled
       if (item_prices[idx] <= (unsigned) player.gold) {
+         unsigned apoints = idx * 7 ;
          if (idx == 0  ||  apoints <= player.armour_points) 
             EnableWindow(hwndArmour, FALSE) ;
          else 

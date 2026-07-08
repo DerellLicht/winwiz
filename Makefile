@@ -143,6 +143,9 @@ dist:
 wc:
 	wc -l $(CBASE) *.rc
 
+cppc:
+	cmd /C "cppcheck --project=compile_commands.json --check-level=exhaustive --enable=all --std=c++14 --suppressions-list=./.suppress.cppcheck"
+
 check:
 	cmd /C "d:\llvm\bin\clang-tidy.exe $(CSRC)"
 

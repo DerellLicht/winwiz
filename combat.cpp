@@ -169,7 +169,7 @@ static int monsters_turn(HWND hwnd)
    if (monster_info.hitpoints == 0) 
       return 0;
 
-   unsigned monster_attack, player_resist, damage, apts ;
+   unsigned monster_attack, player_resist, damage ; //, apts ;
 
    switch (web_turns) {
    case 0:
@@ -193,7 +193,7 @@ static int monsters_turn(HWND hwnd)
          show_hit_points() ;
 
          if (player.armour > 0) {
-            apts = random(3);
+            unsigned apts = random(3);
             if (apts >= player.armour_points) {
                put_message(_T("Your armor has been destroyed.  Good Luck!!"));
                player.armour = 0; 

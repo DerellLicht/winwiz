@@ -669,7 +669,7 @@ void win_game(HWND hwnd)
 }
 
 //*************************************************************
-static bool starts_with_vowel(TCHAR *monster)
+static bool starts_with_vowel(TCHAR const *monster)
 {
    switch (*monster) {
    case 'a':
@@ -690,12 +690,13 @@ static bool starts_with_vowel(TCHAR *monster)
 }
 
 //*************************************************************
-TCHAR *get_monster_prefix(TCHAR *monster_name)
+TCHAR *get_monster_prefix(TCHAR const *monster_name)
 {
    static TCHAR *an_str = _T("an") ;
    static TCHAR *a_str = _T("a") ;
    return starts_with_vowel(monster_name) ? an_str : a_str ;
 }
+
 //*************************************************************
 static void display_atmosphere(void)
 {
@@ -1462,7 +1463,6 @@ static int gaze_into_orb(HWND hwnd)
 //****************************************************************************
 static int open_book_or_chest(HWND hwnd, int contents)
 {
-   unsigned Q, room ;
 
    //*****************************************************
    //  deal with a book
@@ -1554,7 +1554,8 @@ static int open_book_or_chest(HWND hwnd, int contents)
    //    10% smoky room
    //*********************************************************************
    else if (contents == CHEST) {
-      room = random(10) ;
+      unsigned Q ; 
+      unsigned room = random(10) ;
       if (room < 4) {
          Q=random(1000);
          _stprintf(tempstr, _T("YOU OPEN THE CHEST AND  FIND %d GOLD PIECES!"), Q) ; 
