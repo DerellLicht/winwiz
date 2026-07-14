@@ -138,7 +138,7 @@ clean:
 
 dist:
 	rm -f $(BASE).zip
-	zip $(BASE).zip *.exe winwiz.chm $(IMAGES) history.winwiz.txt LICENSE readme.md
+	zip $(BASE).zip *.exe winwiz.chm $(IMAGES) history.winwiz.txt LICENSE.txt readme.md
 
 wc:
 	wc -l $(CBASE) *.rc
