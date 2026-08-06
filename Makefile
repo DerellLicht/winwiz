@@ -64,7 +64,7 @@ ifeq ($(USE_DEBUG),YES)
 CFLAGS=-Wall -O -g -mwindows 
 LFLAGS=
 else
-CFLAGS=-Wall -O2 -Weffc++ 
+CFLAGS=-Wall -O2 -Weffc++ -c 
 LFLAGS=-s
 endif
 CFLAGS += -Wno-write-strings
@@ -163,7 +163,7 @@ depend:
 
 #************************************************************
 winwiz.exe: $(OBJS)
-	$(TOOLS)/g++ $(CFLAGS) $(LFLAGS) $(OBJS) -o $@ $(LIBS)
+	$(TOOLS)/g++ $(LFLAGS) $(OBJS) -o $@ $(LIBS)
 
 # note: though all other utilities can accept forward slash in paths,
 #       windres cannot... 
