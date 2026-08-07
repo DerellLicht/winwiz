@@ -62,3 +62,4 @@ Checks: |
   -readability-redundant-parentheses,
   -readability-function-cognitive-complexity,
   -readability-misleading-indentation,
+  -readability-inconsistent-declaration-parameter-name,
