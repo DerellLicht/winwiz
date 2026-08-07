@@ -53,14 +53,14 @@ static void update_equip_avail(HWND hDlg)
       //  or if available cash is less than item cost
       //       mark item disabled
       //  else mark item enabled
-      if (item_prices[idx] <= (unsigned) player.gold) {
+      if (item_prices[idx] <= player.gold) {
          unsigned apoints = idx * 7 ;
          if (idx == 0  ||  apoints <= player.armour_points) 
             EnableWindow(hwndArmour, FALSE) ;
          else 
             EnableWindow(hwndArmour, TRUE) ;
 
-         if (idx == 0  ||  idx <= (unsigned) player.weapon) 
+         if (idx == 0  ||  idx <= player.weapon) 
             EnableWindow(hwndWeapon, FALSE) ;
          else
             EnableWindow(hwndWeapon, TRUE) ;
@@ -100,7 +100,7 @@ static BOOL CALLBACK VendorDlgProc (HWND hDlg, UINT message, WPARAM wParam, LPAR
       //  show current available gold
       vendor_show_value(hDlg, IDC_VGOLD, player.gold) ;
       
-      enable_stat_chg_buttons(hDlg, (player.gold > 1000) ? true : false);
+      enable_stat_chg_buttons(hDlg, (player.gold > 1000));
 
       //  set up gem-sales display
       for (j=IDC_GEM1, tval=IDC_TGEM1, idx=0; j<=IDC_GEM8; j++, tval++, idx++) {
@@ -190,7 +190,7 @@ static BOOL CALLBACK VendorDlgProc (HWND hDlg, UINT message, WPARAM wParam, LPAR
             }
          }
          SendMessage(hDlg, WM_INITDIALOG, 0, 0) ;
-         enable_stat_chg_buttons(hDlg, (player.gold > 1000) ? true : false);
+         enable_stat_chg_buttons(hDlg, (player.gold > 1000));
          return TRUE ;
            
       case IDC_GEM1:
@@ -242,7 +242,7 @@ static BOOL CALLBACK VendorDlgProc (HWND hDlg, UINT message, WPARAM wParam, LPAR
             vendor_show_value(hDlg, IDC_VGOLD, player.gold) ;
             update_equip_avail(hDlg) ;
          }
-         enable_stat_chg_buttons(hDlg, (player.gold > 1000) ? true : false);
+         enable_stat_chg_buttons(hDlg, (player.gold > 1000));
          return TRUE ;
          
       case IDC_VSTRLESS:
@@ -256,7 +256,7 @@ static BOOL CALLBACK VendorDlgProc (HWND hDlg, UINT message, WPARAM wParam, LPAR
             vendor_show_value(hDlg, IDC_VGOLD, player.gold) ;
             update_equip_avail(hDlg) ;
          }
-         enable_stat_chg_buttons(hDlg, (player.gold > 1000) ? true : false);
+         enable_stat_chg_buttons(hDlg, (player.gold > 1000));
          return TRUE ;
          
       case IDC_VDEXMORE:
@@ -272,7 +272,7 @@ static BOOL CALLBACK VendorDlgProc (HWND hDlg, UINT message, WPARAM wParam, LPAR
             vendor_show_value(hDlg, IDC_VGOLD, player.gold) ;
             update_equip_avail(hDlg) ;
          }
-         enable_stat_chg_buttons(hDlg, (player.gold > 1000) ? true : false);
+         enable_stat_chg_buttons(hDlg, (player.gold > 1000));
          return TRUE ;
 
       case IDC_VDEXLESS:
@@ -284,7 +284,7 @@ static BOOL CALLBACK VendorDlgProc (HWND hDlg, UINT message, WPARAM wParam, LPAR
             vendor_show_value(hDlg, IDC_VGOLD, player.gold) ;
             update_equip_avail(hDlg) ;
          }
-         enable_stat_chg_buttons(hDlg, (player.gold > 1000) ? true : false);
+         enable_stat_chg_buttons(hDlg, (player.gold > 1000));
          return TRUE ;
          
       case IDC_VINTMORE:
@@ -300,7 +300,7 @@ static BOOL CALLBACK VendorDlgProc (HWND hDlg, UINT message, WPARAM wParam, LPAR
             vendor_show_value(hDlg, IDC_VGOLD, player.gold) ;
             update_equip_avail(hDlg) ;
          }
-         enable_stat_chg_buttons(hDlg, (player.gold > 1000) ? true : false);
+         enable_stat_chg_buttons(hDlg, (player.gold > 1000));
          return TRUE ;
          
       case IDC_VINTLESS:
@@ -312,7 +312,7 @@ static BOOL CALLBACK VendorDlgProc (HWND hDlg, UINT message, WPARAM wParam, LPAR
             vendor_show_value(hDlg, IDC_VGOLD, player.gold) ;
             update_equip_avail(hDlg) ;
          }
-         enable_stat_chg_buttons(hDlg, (player.gold > 1000) ? true : false);
+         enable_stat_chg_buttons(hDlg, (player.gold > 1000));
          return TRUE ;
       }  //lint !e744  switch on target checkbox
       break;

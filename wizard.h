@@ -245,7 +245,7 @@ int  move_west(HWND hwnd);
 int  move_down(HWND hwnd);
 int  move_up(HWND hwnd);
 void move_one_square(HWND hwnd);
-int  look_in_direction(HWND hwnd, unsigned chr);
+int  look_in_direction(HWND hwnd, unsigned key);
 unsigned get_room_contents(void);
 TCHAR *get_room_contents_str(void);
 TCHAR *get_object_name(int index);

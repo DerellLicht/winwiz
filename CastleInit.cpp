@@ -6,6 +6,22 @@
 #include "wizard.h"
 
 //*************************************************************
+static unsigned X = 0 ;
+static unsigned Y = 0 ;
+static unsigned Z = 0 ;
+
+static void increment_cursor()
+{
+   //  increment cursor
+   if (++X > 7) {
+      X = 0 ;
+      if (++Y > 7) {
+         Y = 0 ;
+      }
+   }
+}
+
+//*************************************************************
 //  Select random locations for room contents, 
 //  and avoid duplicate room assignments. 
 //*************************************************************
@@ -15,86 +31,69 @@
 //*************************************************************
 static void LOCATE(unsigned Z, unsigned Q)
 {                                         
-   unsigned X = (unsigned) random(DIMEN_COUNT);
-   unsigned Y = (unsigned) random(DIMEN_COUNT);
+   X = random(DIMEN_COUNT);
+   Y = random(DIMEN_COUNT);
 
-   while (1) {
+   while (LOOP_FOREVER) {
       if (castle[X][Y][Z].contents == EMPTY_ROOM) {
           castle[X][Y][Z].contents = Q;
           break;
       }
-      else {
-         if (++X > 7) {
-            X = 0 ;
-            if (++Y > 7) 
-               Y = 0 ;
-         }
-      }
+      
+      increment_cursor();
    }
 }
 
 //*************************************************************
 static void place_stairs(unsigned level)
 {
-   unsigned X = random(DIMEN_COUNT);
-   unsigned Y = random(DIMEN_COUNT);
+   X = random(DIMEN_COUNT);
+   Y = random(DIMEN_COUNT);
 
-   while (1) {
+   while (LOOP_FOREVER) {
       if (castle[X][Y][level].contents == EMPTY_ROOM) {
           castle[X][Y][level].contents = STAIRS_DOWN ;
           castle[X][Y][level+1].contents = STAIRS_UP;
          break;
       }
-      if (++X > 7) {
-         X = 0 ;
-         if (++Y > 7) 
-            Y = 0 ;
-      }
+      
+      increment_cursor();
    }
 }
 
 //*************************************************************
 static void place_treasure(unsigned Q)
 {
-   unsigned X = random(DIMEN_COUNT);
-   unsigned Y = random(DIMEN_COUNT);
-   unsigned Z = random(DIMEN_COUNT);
+   X = random(DIMEN_COUNT);
+   Y = random(DIMEN_COUNT);
+   Z = random(DIMEN_COUNT);
 
-   while (1) {
+   while (LOOP_FOREVER) {
       if (castle[X][Y][Z].contents == EMPTY_ROOM) {
-         castle[X][Y][Z].contents = Q;
+          castle[X][Y][Z].contents = Q;
          break;
-         }
-      else {
-         if (++X > 7) {
-            X = 0 ;
-            if (++Y > 7) 
-               Y = 0 ;
-         }
       }
+      
+      increment_cursor();
    }
 }
 
 //*************************************************************
 static void place_curse(unsigned k)
 {
-   unsigned X = random(DIMEN_COUNT);
-   unsigned Y = random(DIMEN_COUNT);
-   unsigned Z = random(DIMEN_COUNT);
+   X = random(DIMEN_COUNT);
+   Y = random(DIMEN_COUNT);
+   Z = random(DIMEN_COUNT);
 
-   while (1) {
+   while (LOOP_FOREVER) {
       if (castle[X][Y][Z].contents == EMPTY_ROOM) {
          curse_rooms[k].x = X ;
          curse_rooms[k].y = Y ;
          curse_rooms[k].level = Z ;
          break;
-      } else {
-         if (++X > 7) {
-            X = 0 ;
-            if (++Y > 7) 
-               Y = 0 ;
-         }
-      }
+      } 
+
+      increment_cursor();
    }
 }
 
@@ -104,47 +103,39 @@ static void place_curse(unsigned k)
 //*************************************************************
 static void place_runestaff(void)
 {
-   unsigned X = random(DIMEN_COUNT);
-   unsigned Y = random(DIMEN_COUNT);
-   unsigned Z = random(DIMEN_COUNT);
+   X = random(DIMEN_COUNT);
+   Y = random(DIMEN_COUNT);
+   Z = random(DIMEN_COUNT);
 
-   while (1) {
+   while (LOOP_FOREVER) {
       if (castle[X][Y][Z].contents >= MONSTER_BASE  &&
           castle[X][Y][Z].contents <= MONSTER_END) {
           runestaff_room.x = X ;
           runestaff_room.y = Y ;
           runestaff_room.level = Z ;
          break;
-      } else {
-         if (++X > 7) {
-            X = 0 ;
-            if (++Y > 7) 
-               Y = 0 ;
-         }
-      }
+      } 
+      
+      increment_cursor();
    }
 }         
 
 //*************************************************************
 static void place_orb(void)
 {
-   unsigned X = random(DIMEN_COUNT);
-   unsigned Y = random(DIMEN_COUNT);
-   unsigned Z = random(DIMEN_COUNT);
+   X = random(DIMEN_COUNT);
+   Y = random(DIMEN_COUNT);
+   Z = random(DIMEN_COUNT);
 
-   while (1) {
+   while (LOOP_FOREVER) {
       if (castle[X][Y][Z].contents == EMPTY_ROOM) {
          orb_room.x = X ;
          orb_room.y = Y ;
          orb_room.level = Z ;
          break;
-      } else {
-         if (++X > 7) {
-            X = 0 ;
-            if (++Y > 7) 
-               Y = 0 ;
-         }
-      }
+      } 
+      
+      increment_cursor();
    }
 }         
 

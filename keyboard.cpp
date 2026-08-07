@@ -114,7 +114,7 @@ void set_default_keymap(void)
 //*************************************************************
 bool is_default_keymap(void)
 {
-   return (keymap == KEYMAP_DEFAULT) ? true : false ;
+   return (keymap == KEYMAP_DEFAULT) ;
 }
 
 //*************************************************************
@@ -319,10 +319,12 @@ int process_keystroke(HWND hwnd, unsigned inchr)
 
    case KEYMAP_MONSTER:
       result = run_one_encounter_round(hwnd, inchr) ;
-      if (result < 0) 
+      if (result < 0) {
          return result ;
-      else if (result == 0)
+      }
+      if (result == 0) {
          pop_keymap() ;
+      }
       break;
 
    case KEYMAP_SPELL_SELECTION:

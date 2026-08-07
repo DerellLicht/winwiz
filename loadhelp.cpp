@@ -32,6 +32,5 @@ void view_help_screen(HWND hwnd)
    // Warning: .drectve `-defaultlib:uuid.lib ' unrecognized   
    //  But ignoring them doesn't seem to hurt anything...
    HtmlHelp(hwnd, chmname, HH_DISPLAY_TOPIC, 0L);
-   return ;
 }
 

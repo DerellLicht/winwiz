@@ -152,9 +152,6 @@ check:
 clint:
 	cmd /C "python ..\ClaudeLint.py --exclude der_libs"
 	
-cstale:
-	cmd /C "python ..\check_compile_commands_stale.py"
-
 lint:
 	cmd /C "c:\lint9\lint-nt +v -width(160,4) $(LiFLAGS) -ic:\lint9 mingw.lnt -os(_lint.tmp) $(LINTFILES) $(CSRC)"
 

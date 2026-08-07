@@ -674,7 +674,7 @@ static LRESULT CALLBACK TermProc (HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lP
 
 //***********************************************************************
 //lint -esym(1784, WinMain)
-int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine, int iCmdShow)
+int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine, int iCmdShow) // NOLINT(readability-inconsistent-declaration-parameter-name)
    {
    g_hinst = hInstance;
 

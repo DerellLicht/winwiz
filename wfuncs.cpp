@@ -195,9 +195,7 @@ wchar_t const * const get_race_str(void)
    if (player.alt_race == 0) {
       return race_str[player.race].c_str() ;
    }
-   else {
-      return get_object_name(player.alt_race);
-   }
+   return get_object_name(player.alt_race);
 }
 
 void set_race_str(uint idx, TCHAR *newstr)
@@ -1022,9 +1020,10 @@ static void Comments(void)
 //*************************************************************
 static bool is_monster_index(uint idx)
 {
-   if (idx >= MONSTER_BASE  &&  idx <= MONSTER_END) 
-      return true;
-   return false;
+   return (idx >= MONSTER_BASE  &&  idx <= MONSTER_END) ;
+   // if (idx >= MONSTER_BASE  &&  idx <= MONSTER_END) 
+   //    return true;
+   // return false;
 }
 
 //*************************************************************
@@ -1801,7 +1800,7 @@ int teleport(HWND hwnd, unsigned inchr)
       //  move the player
       player.x = x ;
       player.y = y ;
-      if (level != (unsigned) player.level) {
+      if (level != player.level) {
          player.level = level ;
          draw_main_screen(NULL) ;   //  teleport to new location
       } else {

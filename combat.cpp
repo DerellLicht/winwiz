@@ -405,7 +405,7 @@ int cast_spell(HWND hwnd, unsigned inchr)
          // result = -1 ;
          // break;
       }
-      if ((unsigned) player.iq < monster_info.hitpoints) {
+      if (player.iq < monster_info.hitpoints) {
          _stprintf(tempstr, _T("The %s's magic was stronger than yours..."), 
                monster_info.desc) ;
          put_message(tempstr) ;
