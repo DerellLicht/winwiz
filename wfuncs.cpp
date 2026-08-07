@@ -913,8 +913,6 @@ static void draw_zot_window(HWND hwnd)
 //*********************************************************
 static void CheckCurses(HDC hdc) //  derived from hwndMapArea
 {
-   unsigned x, y, level, itemp ;
-
    player.turns++ ;
    
    /*       CURSE OF LETHARGY  */
@@ -924,9 +922,11 @@ static void CheckCurses(HDC hdc) //  derived from hwndMapArea
       if (player.treasures[TR_RUBY_RED]) {
          player.curse_flags &= ~CR_LETHARGY ;
          put_message(_T("The Ruby Red cures the Curse of Lethargy...")) ;
-      } else {
-         
-      }
+      } 
+      //  Curse of Lethargy is not implemented...
+      // else {
+      //    
+      // }
    }
 
    /*       CURSE OF THE LEECH */
@@ -936,7 +936,7 @@ static void CheckCurses(HDC hdc) //  derived from hwndMapArea
          player.curse_flags &= ~CR_LEECH ;
          put_message(_T("The Pale Pearl cures the Curse of the Leech...")) ;
       } else {
-         itemp = random(5);
+         uint itemp = random(5);
          if (itemp >= player.gold) {
             player.gold = 0 ;
          } else {
@@ -953,7 +953,9 @@ static void CheckCurses(HDC hdc) //  derived from hwndMapArea
          player.curse_flags &= ~CR_FORGET ;
          put_message(_T("The Green Gem cures the Curse of Forgetfulness...")) ;
       } else {
-         x = random(DIMEN_COUNT); y = random(DIMEN_COUNT); level = random(DIMEN_COUNT);
+         uint x = random(DIMEN_COUNT); 
+         uint y = random(DIMEN_COUNT); 
+         uint level = random(DIMEN_COUNT);
          hide_room(x, y, level) ;
          if (level == player.level) {
             draw_room_contents(hdc, x, y) ;
@@ -1803,9 +1805,10 @@ int teleport(HWND hwnd, unsigned inchr)
       if (level != player.level) {
          player.level = level ;
          draw_main_screen(NULL) ;   //  teleport to new location
-      } else {
-         player.level = level ;
-      }
+      } 
+      // else {
+      //    player.level = level ;
+      // }
       //  react to new room
       update_room() ;
       // react_to_room() ;

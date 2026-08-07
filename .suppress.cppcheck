@@ -2,6 +2,8 @@ variableScope:wfuncs.cpp:917
 duplicateExpression:der_libs\statbar.cpp:244
 legacyUninitvar:der_libs\statbar.cpp:225
 variableScope:wfuncs.cpp:918
+noExplicitConstructor:der_libs\gdi_plus.h:64
+noExplicitConstructor:der_libs\statbar.h:64
 
 unusedFunction
 missingIncludeSystem

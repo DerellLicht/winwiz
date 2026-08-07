@@ -29,14 +29,14 @@ static void increment_cursor()
 //  unallocated rooms, and deleting them from list as
 //  they were used, but that's alot of work.
 //*************************************************************
-static void LOCATE(unsigned Z, unsigned Q)
+static void LOCATE(unsigned Zed, unsigned Q)
 {                                         
    X = random(DIMEN_COUNT);
    Y = random(DIMEN_COUNT);
 
    while (LOOP_FOREVER) {
-      if (castle[X][Y][Z].contents == EMPTY_ROOM) {
-          castle[X][Y][Z].contents = Q;
+      if (castle[X][Y][Zed].contents == EMPTY_ROOM) {
+          castle[X][Y][Zed].contents = Q;
           break;
       }
       
