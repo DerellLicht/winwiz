@@ -2190,11 +2190,16 @@ void do_idle_tasks(void)
    update_book_status() ;
 }
 
-//*************************************************************
+//*********************************************************************
+//  The font name(s) specified here, must use the Font Family name,
+//  not the Windows Font name...
+//*********************************************************************
 void draw_beginning_screen(void)
 {
    draw_main_screen(NULL) ;   //  draw_beginning_screen()
-   term_set_font(_T("Bodacious-Normal"), 120, EZ_ATTR_NORMAL) ;
+   // term_set_font(_T("Bodacious-Normal"), 120, EZ_ATTR_NORMAL) ;
+   // term_set_font(_T("Times New Roman"), 120, EZ_ATTR_NORMAL) ;
+   term_set_font(_T("Comic Sans MS"), 110, EZ_ATTR_NORMAL) ;
    set_term_attr_default();
    update_room() ;
    level_known[0] = true ;
