@@ -12,53 +12,7 @@ USE_STATIC = NO
 # sadly, cygwin mingw does not support gdiplus...
 USE_CYGWIN = NO
 
-ifeq ($(USE_64BIT),YES)
-TOOLS=d:\tdm64\bin
-else
-ifeq ($(USE_CLANG),YES)
-TOOLS=d:\llvm\bin
-else
-ifeq ($(USE_CYGWIN),YES)
-TOOLS=C:\cygwin64\bin
-else
-TOOLS=d:\tdm32\bin
-endif
-endif
-endif
-
-#*****************************************************************************
-# notes on compiler quirks, using MinGW/G++ V4.3.3
-# if I build with -O3, I get following warnings from g++ :
-#   wfuncs.cpp: In function 'int light_a_flare(HWND__*)':
-#   wfuncs.cpp:338: warning: array subscript is above array bounds
-# where light_a_flare() starts at line 779 !!
-# If I build with -O2, I get no such warnings.
-# In either case, PcLint V9 is giving no warnings on this code.
-#*****************************************************************************
-
-# cygwin mingw paths
-# C:\cygwin64/bin/i686-w64-mingw32-g++.exe
-# C:\cygwin64/bin/x86_64-w64-mingw32-g++.exe
-# x86_64-w64-mingw32-g++ (GCC) 12.4.0
-# Your compiler is using C++17 (idx: 3, language standard code 201703)
-# C:\cygwin64/bin/i686-w64-mingw32-windres.exe
-# C:\cygwin64/bin/x86_64-w64-mingw32-windres.exe
-# sadly, cygwin mingw does not support gdiplus...
-
-ifeq ($(USE_64BIT),YES)
-ifeq ($(USE_CLANG),YES)
-GNAME=x86_64-w64-mingw32-clang++
-else
-#GNAME=g++
-GNAME=x86_64-w64-mingw32-g++
-endif
-else
-ifeq ($(USE_CYGWIN),YES)
-GNAME=i686-w64-mingw32-g++
-else
-GNAME=g++
-endif
-endif
+include ..\tool_select.mak 
 
 ifeq ($(USE_DEBUG),YES)
 CFLAGS=-Wall -O -g -mwindows 
