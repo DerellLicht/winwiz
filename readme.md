@@ -34,3 +34,4 @@ See the file LICENSE.txt for detailed information about this license
 <hr>
 
 See [Changelog](CHANGELOG.md) for the full revision history.
+
