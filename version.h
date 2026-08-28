@@ -1,9 +1,5 @@
 //*********************************************************************************************
-//  This data should be updated in readme.md as well
-//  
-//  version    changes
-//   =======   ======================================
-//    1.00     Initial release
+//  Version history is in file history.winwiz.txt
 //*********************************************************************************************
 #define VerNumA   "V1.47"
 #define VerNum    _T("V1.47")

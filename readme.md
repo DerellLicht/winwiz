@@ -31,3 +31,6 @@ and UNICODE support is now required, for the GDI+ library that has replaced it.
 This project is licensed under _Creative Commons CC0 1.0 Universal_   
 
 See the file LICENSE.txt for detailed information about this license
+<hr>
+
+See [Changelog](CHANGELOG.md) for the full revision history.
