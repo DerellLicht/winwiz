@@ -80,6 +80,9 @@ LIBS += -lgdiplus
 IMAGES=tiles32.png images.png
 endif
 
+# Automatically parse the latest version block
+VERSION := $(shell grep -oE '\[[0-9]+\.[0-9]+\]' CHANGELOG.md | head -n 1 | tr -d '[]')
+DIST_ZIP := $(BASE)V$(VERSION).zip
 #************************************************************
 %.o: %.cpp
 	$(TOOLS)\$(GNAME) $(CFLAGS) -c $< -o $@
@@ -92,8 +95,16 @@ clean:
 
 dist:
 	rm -f $(BASE).zip
-	zip $(BASE).zip *.exe winwiz.chm $(IMAGES) history.winwiz.txt LICENSE.txt readme.md
+	zip $(DIST_ZIP) *.exe $(BASE).chm $(IMAGES) LICENSE.txt readme.md CHANGELOG.md
 
+# Your new automated release workflow
+release:
+	cmd /C "@echo Preparing GitHub release for v$(VERSION)..."
+	sed -n '/## \['$(VERSION)'\]/,/## \[/p' CHANGELOG.md | sed '$$d' > temp_notes.md
+	gh release create v$(VERSION) ./$(DIST_ZIP) ./CHANGELOG.md --notes-file temp_notes.md
+	rm temp_notes.md
+	cmd /C "@echo Release v$(VERSION) successfully uploaded to GitHub!"wc:
+	
 wc:
 	wc -l $(CBASE) *.rc
 
@@ -119,16 +130,7 @@ winwiz.exe: $(OBJS)
 # note: though all other utilities can accept forward slash in paths,
 #       windres cannot... 
 rc.o: winwiz.rc 
-ifeq ($(USE_CLANG),YES)
-	$(TOOLS)\windres $< -O COFF -o $@
-#	d:\tdm32\bin\windres $< -O COFF -o $@
-else
-ifeq ($(USE_CYGWIN),YES)
-	$(TOOLS)\i686-w64-mingw32-windres $< -O COFF -o $@
-else	
-	$(TOOLS)\windres $< -O COFF -o $@
-endif	
-endif	
+	$(TOOLS)\$(WRNAME) $< -O COFF -o $@
 
 # DO NOT DELETE
 
