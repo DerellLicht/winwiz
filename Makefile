@@ -85,7 +85,7 @@ DIST_ZIP := $(BASE)V$(VERSION).zip
 .PHONY: dist release update
 #************************************************************
 %.o: %.cpp
-	$(TOOLS)\$(GNAME) $(CFLAGS) -c $< -o $@
+	$(TOOLS)\$(GNAME) $(CFLAGS) $< -o $@
 
 #************************************************************
 all: $(BIN)
