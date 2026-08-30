@@ -45,7 +45,15 @@ IFLAGS += -Ider_libs
 # link library files
 LiFLAGS += -Ider_libs
 CFLAGS += -Ider_libs
-CSRC=der_libs/common_funcs.cpp \
+
+# separate local source files from library files,
+# so that wc operation is more appropriate.
+CBASE=winwiz.cpp keyboard.cpp wfuncs.cpp about.cpp \
+CastleInit.cpp initscrn.cpp combat.cpp vendor.cpp loadhelp.cpp 
+
+CSRC = $(CBASE)
+
+CSRC+=der_libs/common_funcs.cpp \
 der_libs/common_win.cpp \
 der_libs/winmsgs.cpp \
 der_libs/statbar.cpp \
@@ -55,20 +63,6 @@ der_libs/tooltips.cpp \
 der_libs/hyperlinks.cpp \
 der_libs/vlistview.cpp 
 
-# separate local source files from library files,
-# so that wc operation is more appropriate.
-CBASE=winwiz.cpp keyboard.cpp wfuncs.cpp about.cpp \
-CastleInit.cpp initscrn.cpp combat.cpp vendor.cpp loadhelp.cpp 
-
-CSRC += $(CBASE)
-
-LINTFILES=lintdefs.cpp lintdefs.ref.h 
-
-OBJS = $(CSRC:.cpp=.o) rc.o
-
-BASE=winwiz
-BIN=$(BASE).exe
-
 LIBS= -lgdi32 -lcomdlg32 -lhtmlhelp -lolepro32 -lole32 -luuid
 
 # none of the BMP/JPG code is relevant, if UNICODE is defined
@@ -77,6 +71,11 @@ CSRC+=der_libs/gdi_plus.cpp der_libs/gdiplus_setup.cpp
 LIBS += -lgdiplus 
 IMAGES=tiles32.png images.png
 endif
+
+OBJS = $(CSRC:.cpp=.o) rc.o
+
+BASE=winwiz
+BINX=$(BASE).exe
 
 # Automatically parse the latest version block
 VERSION := $(shell grep -oE '\[[0-9]+\.[0-9]+\]' CHANGELOG.md | head -n 1 | tr -d '[]')
@@ -88,10 +87,10 @@ DIST_ZIP := $(BASE)V$(VERSION).zip
 	$(TOOLS)\$(GNAME) $(CFLAGS) $< -o $@
 
 #************************************************************
-all: $(BIN)
+all: $(BINX)
 
 clean:
-	rm -vf $(BIN) $(OBJS) *.zip *.bak *~
+	rm -vf $(BINX) $(OBJS) *.zip *.bak *~
 
 dist:
 	rm -f $(BASE).zip
@@ -124,15 +123,12 @@ check:
 clint:
 	cmd /C "python ..\ClaudeLint.py --exclude der_libs"
 	
-lint:
-	cmd /C "c:\lint9\lint-nt +v -width(160,4) $(LiFLAGS) -ic:\lint9 mingw.lnt -os(_lint.tmp) $(LINTFILES) $(CSRC)"
-
 depend:
 	makedepend $(IFLAGS) $(CSRC)
 
 #************************************************************
-winwiz.exe: $(OBJS)
-	$(TOOLS)/g++ $(LFLAGS) $(OBJS) -o $@ $(LIBS)
+$(BINX): $(OBJS)
+	$(TOOLS)/$(GNAME) $(OBJS) $(LFLAGS) -o $(BINX) $(LIBS) 
 
 # note: though all other utilities can accept forward slash in paths,
 #       windres cannot... 
