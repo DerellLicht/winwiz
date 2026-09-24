@@ -1,7 +1,5 @@
 #*************************************************************************************
-# NOTE regarding UNICODE support
-# This application now relies on GDI+ library, which in turn requires UINCODE.
-# Thus, the non-Unicode build is no longer supported.
+#  makefile for winwiz
 #*************************************************************************************
 USE_DEBUG = NO
 USE_UNICODE = YES
@@ -11,6 +9,7 @@ USE_CLANG = NO
 USE_CYGWIN = NO
 
 include der_libs\tool_select.mak
+include der_libs\release.mak
 
 ifeq ($(USE_DEBUG),YES)
 CFLAGS=-Wall -O -g -mwindows 
@@ -77,11 +76,9 @@ OBJS = $(CSRC:.cpp=.o) rc.o
 BASE=winwiz
 BINX=$(BASE).exe
 
-# Automatically parse the latest version block
-VERSION := $(shell grep -oE '\[[0-9]+\.[0-9]+\]' CHANGELOG.md | head -n 1 | tr -d '[]')
 DIST_ZIP := $(BASE)V$(VERSION).zip
 
-.PHONY: dist release update
+.PHONY: dist
 #************************************************************
 %.o: %.cpp
 	$(TOOLS)\$(GNAME) $(CFLAGS) $< -o $@
@@ -95,20 +92,6 @@ clean:
 dist:
 	rm -f $(BASE).zip
 	zip $(DIST_ZIP) *.exe $(BASE).chm $(IMAGES) LICENSE.txt readme.md CHANGELOG.md
-
-# Your new automated release workflow
-release: dist
-	cmd /C "@echo Preparing GitHub release for v$(VERSION)..."
-	sed -n '/## \['$(VERSION)'\]/,/## \[/p' CHANGELOG.md | sed '$$d' > temp_notes.md
-	gh release create v$(VERSION) ./$(DIST_ZIP) ./CHANGELOG.md --notes-file temp_notes.md
-	rm temp_notes.md
-	cmd /C "@echo Release v$(VERSION) successfully uploaded to GitHub!"
-	
-# Your corrected, bulletproof update-in-place pipeline
-update: dist
-	@cmd /C "@echo Updating assets for existing release v$(VERSION)..."
-	gh release upload v$(VERSION) ./$(DIST_ZIP) ./CHANGELOG.md --clobber
-	@cmd /C "@echo Release v$(VERSION) assets successfully updated on GitHub!"
 
 wc:
 	wc -l $(CBASE) *.rc
