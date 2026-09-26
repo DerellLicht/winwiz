@@ -5,8 +5,7 @@ USE_DEBUG = NO
 USE_UNICODE = YES
 USE_64BIT = NO
 USE_CLANG = NO
-# sadly, cygwin mingw does not support gdiplus...
-USE_CYGWIN = NO
+USE_CYGWIN = YES
 
 include der_libs\tool_select.mak
 include der_libs\release.mak
@@ -113,25 +112,12 @@ $(BINX): $(OBJS)
 	$(TOOLS)/$(GNAME) $(OBJS) $(LFLAGS) -o $(BINX) $(LIBS) 
 
 # note: though all other utilities can accept forward slash in paths,
-#       windres cannot... 
+#       tdm32's windres cannot... 
 rc.o: winwiz.rc 
-	$(TOOLS)\$(WRNAME) $< -O COFF -o $@
+	$(TOOLS)/$(WRNAME) $< -O COFF -o $@
 
 # DO NOT DELETE
 
-der_libs/common_funcs.o: der_libs/common.h
-der_libs/common_win.o: der_libs/common.h der_libs/commonw.h
-der_libs/statbar.o: der_libs/common.h der_libs/commonw.h der_libs/statbar.h
-der_libs/cterminal.o: der_libs/common.h der_libs/commonw.h
-der_libs/cterminal.o: der_libs/cterminal.h der_libs/vlistview.h
-der_libs/terminal.o: der_libs/common.h der_libs/commonw.h
-der_libs/terminal.o: der_libs/cterminal.h der_libs/vlistview.h
-der_libs/terminal.o: der_libs/terminal.h der_libs/winmsgs.h
-der_libs/tooltips.o: der_libs/iface_32_64.h der_libs/common.h
-der_libs/tooltips.o: der_libs/tooltips.h
-der_libs/hyperlinks.o: der_libs/iface_32_64.h der_libs/hyperlinks.h
-der_libs/vlistview.o: der_libs/common.h der_libs/commonw.h
-der_libs/vlistview.o: der_libs/vlistview.h
 winwiz.o: resource.h version.h der_libs/common.h der_libs/commonw.h
 winwiz.o: der_libs/statbar.h der_libs/cterminal.h der_libs/vlistview.h
 winwiz.o: der_libs/terminal.h der_libs/winmsgs.h wizard.h keywin32.h
@@ -146,5 +132,18 @@ initscrn.o: resource.h der_libs/common.h der_libs/commonw.h wizard.h
 combat.o: der_libs/common.h wizard.h keywin32.h
 vendor.o: resource.h der_libs/common.h wizard.h
 loadhelp.o: der_libs/common.h
+der_libs/common_funcs.o: der_libs/common.h
+der_libs/common_win.o: der_libs/common.h der_libs/commonw.h
+der_libs/statbar.o: der_libs/common.h der_libs/commonw.h der_libs/statbar.h
+der_libs/cterminal.o: der_libs/common.h der_libs/commonw.h
+der_libs/cterminal.o: der_libs/cterminal.h der_libs/vlistview.h
+der_libs/terminal.o: der_libs/common.h der_libs/commonw.h
+der_libs/terminal.o: der_libs/cterminal.h der_libs/vlistview.h
+der_libs/terminal.o: der_libs/terminal.h der_libs/winmsgs.h
+der_libs/tooltips.o: der_libs/iface_32_64.h der_libs/common.h
+der_libs/tooltips.o: der_libs/tooltips.h
+der_libs/hyperlinks.o: der_libs/iface_32_64.h der_libs/hyperlinks.h
+der_libs/vlistview.o: der_libs/common.h der_libs/commonw.h
+der_libs/vlistview.o: der_libs/vlistview.h
 der_libs/gdi_plus.o: der_libs/common.h der_libs/gdi_plus.h
 der_libs/gdiplus_setup.o: der_libs/gdi_plus.h
